@@ -1,0 +1,13 @@
+{
+    "name": "LegendaryMechStart",
+    "version": "1.0.0",
+    "title": "LegendaryMechStart",
+    "author": "zhihong",
+    "contact": "zhihong@nzhnb.com",
+    "homepage": "https://github.com/MRNIU/factorio_LegendaryMechStart",
+    "description": "Start the game with a legendary mech and some resources.",
+    "factorio_version": "2.0",
+    "dependencies": [
+        "base >= 2.0.55"
+    ]
+}
