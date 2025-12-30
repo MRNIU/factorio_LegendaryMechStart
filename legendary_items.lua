@@ -194,10 +194,14 @@ local preset_legendary_items = {
 
     -- 高级生产设施
     { name = "assembling-machine-3", count = 100 }, -- 组装机 3
+    { name = "oil-refinery", count = 20 },          -- 炼油厂
+    { name = "chemical-plant", count = 40 },        -- 化工厂
     { name = "foundry", count = 40 },               -- 铸造厂
     { name = "electromagnetic-plant", count = 40 }, -- 电磁工厂
+    { name = "biochamber", count = 40 },            -- 生物培养室
     { name = "biolab", count = 10 },                -- 生物实验室
     { name = "cryogenic-plant", count = 40 },       -- 低温工厂
+
 
     -- 信标和模块
     { name = "beacon", count = 40 },                 -- 信标

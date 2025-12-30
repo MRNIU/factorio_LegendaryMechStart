@@ -51,8 +51,11 @@ The Mech Armor comes pre-equipped with the following legendary modules:
 | Item / 物品 | Quality / 品质 | Count / 数量 |
 | :--- | :---: | :---: |
 | Assembling Machine 3 (组装机 3) | Legendary (传奇) | 100 |
+| Oil Refinery (炼油厂) | Legendary (传奇) | 20 |
+| Chemical Plant (化工厂) | Legendary (传奇) | 40 |
 | Foundry (铸造厂) | Legendary (传奇) | 40 |
 | Electromagnetic Plant (电磁工厂) | Legendary (传奇) | 40 |
+| Biochamber (生物培养室) | Legendary (传奇) | 40 |
 | Biolab (生物实验室) | Legendary (传奇) | 10 |
 | Cryogenic Plant (低温工厂) | Legendary (传奇) | 40 |
 | Electric Furnace (电炉) | Legendary (传奇) | 100 |
