@@ -39,7 +39,6 @@ The Mech Armor comes pre-equipped with the following legendary modules:
 
 | Item / 物品 | Quality / 品质 | Count / 数量 |
 | :--- | :---: | :---: |
-| Construction Robot (建造机器人) | Legendary (传奇) | 200 |
 | Construction Robot (建造机器人) | Normal (普通) | 200 |
 | Logistic Robot (物流机器人) | Normal (普通) | 200 |
 | Roboport (机器人港) | Normal (普通) | 20 |
@@ -51,34 +50,32 @@ The Mech Armor comes pre-equipped with the following legendary modules:
 | Item / 物品 | Quality / 品质 | Count / 数量 |
 | :--- | :---: | :---: |
 | Assembling Machine 3 (组装机 3) | Legendary (传奇) | 100 |
-| Oil Refinery (炼油厂) | Legendary (传奇) | 20 |
-| Chemical Plant (化工厂) | Legendary (传奇) | 40 |
-| Foundry (铸造厂) | Legendary (传奇) | 40 |
-| Electromagnetic Plant (电磁工厂) | Legendary (传奇) | 40 |
-| Biochamber (生物培养室) | Legendary (传奇) | 40 |
-| Biolab (生物实验室) | Legendary (传奇) | 10 |
-| Cryogenic Plant (低温工厂) | Legendary (传奇) | 40 |
+| Oil Refinery (炼油厂) | Legendary (传奇) | 10 |
+| Chemical Plant (化工厂) | Legendary (传奇) | 20 |
+| Foundry (铸造厂) | Legendary (传奇) | 20 |
+| Electromagnetic Plant (电磁工厂) | Legendary (传奇) | 20 |
+| Biochamber (生物培养室) | Legendary (传奇) | 20 |
+| Biolab (生物实验室) | Legendary (传奇) | 5 |
+| Cryogenic Plant (低温工厂) | Legendary (传奇) | 20 |
 | Electric Furnace (电炉) | Legendary (传奇) | 100 |
 
 #### Modules & Beacons / 插件与信标
 
 | Item / 物品 | Quality / 品质 | Count / 数量 |
 | :--- | :---: | :---: |
-| Beacon (信标) | Legendary (传奇) | 40 |
-| Speed Module 3 (速度插件 3) | Legendary (传奇) | 400 |
+| Beacon (信标) | Legendary (传奇) | 20 |
+| Speed Module 3 (速度插件 3) | Legendary (传奇) | 200 |
 | Efficiency Module 3 (效率插件 3) | Legendary (传奇) | 100 |
-| Productivity Module 3 (产能插件 3) | Legendary (传奇) | 400 |
+| Productivity Module 3 (产能插件 3) | Legendary (传奇) | 200 |
 
 #### Power Infrastructure / 电力设施
 
 | Item / 物品 | Quality / 品质 | Count / 数量 |
 | :--- | :---: | :---: |
-| Small Electric Pole (小电线杆) | Normal (普通) | 150 |
 | Big Electric Pole (大电线杆) | Normal (普通) | 50 |
-| Substation (变电站) | Normal (普通) | 400 |
-| Solar Panel (太阳能板) | Legendary (传奇) | 1000 |
-| Accumulator (蓄电池) | Legendary (传奇) | 1000 |
-| Uranium-235 (铀-235) | Normal (普通) | 400 |
+| Substation (变电站) | Normal (普通) | 100 |
+| Solar Panel (太阳能板) | Legendary (传奇) | 400 |
+| Accumulator (蓄电池) | Legendary (传奇) | 400 |
 
 #### Mining & Fluids / 采矿与流体
 
@@ -96,7 +93,7 @@ The Mech Armor comes pre-equipped with the following legendary modules:
 | Item / 物品 | Quality / 品质 | Count / 数量 |
 | :--- | :---: | :---: |
 | Long-handed Inserter (长臂机械臂) | Normal (普通) | 200 |
-| Fast Inserter (快速机械臂) | Normal (普通) | 400 |
+| Fast Inserter (快速机械臂) | Normal (普通) | 200 |
 | Bulk Inserter (批量机械臂) | Normal (普通) | 50 |
 | Stack Inserter (集装机械臂) | Normal (普通) | 50 |
 
@@ -125,6 +122,7 @@ The Mech Armor comes pre-equipped with the following legendary modules:
 | :--- | :---: | :---: |
 | Submachine Gun (冲锋枪) | Legendary (传奇) | 3 |
 | Uranium Rounds Magazine (铀弹药) | Legendary (传奇) | 1600 |
+| Uranium-235 (铀-235) | Normal (普通) | 400 |
 | Laser Turret (激光炮塔) | Normal (普通) | 100 |
 | Repair Pack (修理包) | Normal (普通) | 100 |
 
