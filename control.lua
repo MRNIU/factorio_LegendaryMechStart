@@ -1,7 +1,4 @@
--- This file is a part of MRNIU/factorio_LegendaryMechStart
--- (https://github.com/MRNIU/factorio_LegendaryMechStart).
---
--- control.lua for MRNIU/factorio_LegendaryMechStart.
+-- Copyright The MRNIU/factorio_LegendaryMechStart Contributors
 
 -- 引入传奇物品模块
 local legendary_items = require("legendary_items")

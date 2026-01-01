@@ -1,7 +1,4 @@
--- This file is a part of MRNIU/factorio_LegendaryMechStart
--- (https://github.com/MRNIU/factorio_LegendaryMechStart).
---
--- legendary_items.lua for MRNIU/factorio_LegendaryMechStart.
+-- Copyright The MRNIU/factorio_LegendaryMechStart Contributors
 
 --------------------------------------------------------------------------------------
 -- 配置传奇机甲
