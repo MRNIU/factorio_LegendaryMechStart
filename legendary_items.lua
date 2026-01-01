@@ -205,9 +205,9 @@ local preset_legendary_items = {
 
     -- 信标和模块
     { name = "beacon", count = 40 },                 -- 信标
-    { name = "speed-module-3", count = 100 },        -- 速度模块3
+    { name = "speed-module-3", count = 400 },        -- 速度模块3
     { name = "efficiency-module-3", count = 100 },   -- 效率模块3
-    { name = "productivity-module-3", count = 100 }, -- 产能模块3
+    { name = "productivity-module-3", count = 400 }, -- 产能模块3
 
     -- 电力设施
     { name = "small-electric-pole", count = 150, quality = "normal" }, -- 小电线杆
@@ -217,23 +217,24 @@ local preset_legendary_items = {
     { name = "accumulator", count = 1000 },                            -- 蓄电池
 
     -- 采掘和流体设备
-    { name = "electric-furnace", count = 100 }, -- 电炉
-    { name = "big-mining-drill", count = 40 },  -- 大型采矿机
-    { name = "offshore-pump", count = 20 },     -- 近海抽水机
-    { name = "pumpjack", count = 20 },          -- 抽油机
-    { name = "pump", count = 50 },              -- 泵
+    { name = "electric-furnace", count = 100 },                   -- 电炉
+    { name = "big-mining-drill", count = 40 },                    -- 大型采矿机
+    { name = "offshore-pump", count = 20 },                       -- 近海抽水机
+    { name = "pumpjack", count = 20 },                            -- 抽油机
+    { name = "pump", count = 50 },                                -- 泵
+    { name = "pipe", count = 200, quality = "normal" },           -- 管道
+    { name = "pipe-to-ground", count = 100, quality = "normal" }, -- 地下管道
 
     -- 机械臂
-    { name = "inserter", count = 200, quality = "normal" },             -- 机械臂
     { name = "long-handed-inserter", count = 200, quality = "normal" }, -- 长臂机械臂
-    { name = "fast-inserter", count = 200, quality = "normal" },        -- 快速机械臂
+    { name = "fast-inserter", count = 400, quality = "normal" },        -- 快速机械臂
     { name = "bulk-inserter", count = 50, quality = "normal" },         -- 批量机械臂
     { name = "stack-inserter", count = 50, quality = "normal" },        -- 集装机械臂
 
     -- 传送带系统
-    { name = "transport-belt", count = 4000, quality = "normal" },  -- 传送带
-    { name = "underground-belt", count = 200, quality = "normal" }, -- 地下传送带
-    { name = "splitter", count = 100, quality = "normal" },         -- 分流器
+    { name = "turbo-transport-belt", count = 4000, quality = "normal" },  -- 传送带
+    { name = "turbo-underground-belt", count = 200, quality = "normal" }, -- 地下传送带
+    { name = "turbo-splitter", count = 100, quality = "normal" },         -- 分流器
 
     -- 物流系统
     { name = "steel-chest", count = 50, quality = "normal" },                     -- 钢箱
@@ -242,6 +243,14 @@ local preset_legendary_items = {
     { name = "logistic-chest-storage", count = 50, quality = "normal" },          -- 黄箱
     { name = "logistic-chest-buffer", count = 50, quality = "normal" },           -- 绿箱
     { name = "logistic-chest-requester", count = 50, quality = "normal" },        -- 蓝箱
+
+    -- 太空探索
+    { name = "rocket-silo", count = 1 },                                     -- 火箭发射井
+    { name = "cargo-landing-pad", count = 1, quality = "normal" },           -- 货物着陆垫
+    { name = "space-platform-starter-pack", count = 1, quality = "normal" }, -- 太空平台启动包
+    { name = "low-density-structure", count = 200, quality = "normal" },     -- 低密度结构
+    { name = "rocket-fuel", count = 200, quality = "normal" },               -- 火箭燃料
+    { name = "processing-unit", count = 200, quality = "normal" },           -- 蓝板(处理器)
 
     -- 杂项
     { name = "uranium-235", count = 400, quality = "normal" },  -- 铀235

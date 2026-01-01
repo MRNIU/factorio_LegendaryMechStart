@@ -1,6 +1,6 @@
 {
     "name": "LegendaryMechStart",
-    "version": "1.0.2",
+    "version": "1.1.0",
     "title": "LegendaryMechStart",
     "author": "zhihong",
     "contact": "zhihong@nzhnb.com",
@@ -8,6 +8,9 @@
     "description": "Start the game with a legendary mech and some resources.",
     "factorio_version": "2.0",
     "dependencies": [
-        "base >= 2.0.55"
+        "base >= 2.0.55",
+        "space-age",
+        "quality",
+        "elevated-rails"
     ]
 }

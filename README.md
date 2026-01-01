@@ -65,9 +65,9 @@ The Mech Armor comes pre-equipped with the following legendary modules:
 | Item / 物品 | Quality / 品质 | Count / 数量 |
 | :--- | :---: | :---: |
 | Beacon (信标) | Legendary (传奇) | 40 |
-| Speed Module 3 (速度插件 3) | Legendary (传奇) | 100 |
+| Speed Module 3 (速度插件 3) | Legendary (传奇) | 400 |
 | Efficiency Module 3 (效率插件 3) | Legendary (传奇) | 100 |
-| Productivity Module 3 (产能插件 3) | Legendary (传奇) | 100 |
+| Productivity Module 3 (产能插件 3) | Legendary (传奇) | 400 |
 
 #### Power Infrastructure / 电力设施
 
@@ -88,33 +88,47 @@ The Mech Armor comes pre-equipped with the following legendary modules:
 | Offshore Pump (近海抽水机) | Legendary (传奇) | 20 |
 | Pumpjack (抽油机) | Legendary (传奇) | 20 |
 | Pump (泵) | Legendary (传奇) | 50 |
+| Pipe (管道) | Normal (普通) | 200 |
+| Pipe to Ground (地下管道) | Normal (普通) | 100 |
 
 #### Inserters / 机械臂
 
 | Item / 物品 | Quality / 品质 | Count / 数量 |
 | :--- | :---: | :---: |
-| Inserter (机械臂) | Normal (普通) | 200 |
 | Long-handed Inserter (长臂机械臂) | Normal (普通) | 200 |
-| Fast Inserter (快速机械臂) | Normal (普通) | 200 |
+| Fast Inserter (快速机械臂) | Normal (普通) | 400 |
 | Bulk Inserter (批量机械臂) | Normal (普通) | 50 |
 | Stack Inserter (集装机械臂) | Normal (普通) | 50 |
 
-#### Belts / 传送带
+#### Transport Belts / 传送带
 
 | Item / 物品 | Quality / 品质 | Count / 数量 |
 | :--- | :---: | :---: |
-| Transport Belt (传送带) | Normal (普通) | 4000 |
-| Underground Belt (地下传送带) | Normal (普通) | 200 |
-| Splitter (分流器) | Normal (普通) | 100 |
+| Turbo Transport Belt (极速传送带) | Normal (普通) | 4000 |
+| Turbo Underground Belt (极速地下传送带) | Normal (普通) | 200 |
+| Turbo Splitter (极速分流器) | Normal (普通) | 100 |
 
-#### Combat / 战斗
+#### Space Exploration / 太空探索
+
+| Item / 物品 | Quality / 品质 | Count / 数量 |
+| :--- | :---: | :---: |
+| Rocket Silo (火箭发射井) | Legendary (传奇) | 1 |
+| Cargo Landing Pad (货物着陆垫) | Normal (普通) | 1 |
+| Space Platform Starter Pack (太空平台启动包) | Normal (普通) | 1 |
+| Low Density Structure (低密度结构) | Normal (普通) | 200 |
+| Rocket Fuel (火箭燃料) | Normal (普通) | 200 |
+| Processing Unit (处理器) | Normal (普通) | 200 |
+
+#### Military & Miscellaneous / 军事与杂项
 
 | Item / 物品 | Quality / 品质 | Count / 数量 |
 | :--- | :---: | :---: |
 | Submachine Gun (冲锋枪) | Legendary (传奇) | 3 |
-| Uranium Rounds Magazine (铀弹匣) | Legendary (传奇) | 1600 |
+| Uranium Rounds Magazine (铀弹药) | Legendary (传奇) | 1600 |
 | Laser Turret (激光炮塔) | Normal (普通) | 100 |
 | Repair Pack (修理包) | Normal (普通) | 100 |
+
+
 
 ## Installation / 安装
 
