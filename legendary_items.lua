@@ -184,34 +184,32 @@ end
 -- 预设的传奇物品包
 local preset_legendary_items = {
     -- 建造机器人和武器装备
-    { name = "construction-robot", count = 200 },                     -- 建造机器人
     { name = "construction-robot", count = 200, quality = "normal" }, -- 建造机器人
     { name = "logistic-robot", count = 200, quality = "normal" },     -- 物流机器人
     { name = "roboport", count = 20, quality = "normal" },            -- 机器人港
 
     -- 高级生产设施
     { name = "assembling-machine-3", count = 100 }, -- 组装机 3
-    { name = "oil-refinery", count = 20 },          -- 炼油厂
-    { name = "chemical-plant", count = 40 },        -- 化工厂
-    { name = "foundry", count = 40 },               -- 铸造厂
-    { name = "electromagnetic-plant", count = 40 }, -- 电磁工厂
-    { name = "biochamber", count = 40 },            -- 生物培养室
-    { name = "biolab", count = 10 },                -- 生物实验室
-    { name = "cryogenic-plant", count = 40 },       -- 低温工厂
+    { name = "oil-refinery", count = 10 },          -- 炼油厂
+    { name = "chemical-plant", count = 20 },        -- 化工厂
+    { name = "foundry", count = 20 },               -- 铸造厂
+    { name = "electromagnetic-plant", count = 20 }, -- 电磁工厂
+    { name = "biochamber", count = 20 },            -- 生物培养室
+    { name = "biolab", count = 5 },                 -- 生物实验室
+    { name = "cryogenic-plant", count = 20 },       -- 低温工厂
 
 
     -- 信标和模块
-    { name = "beacon", count = 40 },                 -- 信标
-    { name = "speed-module-3", count = 400 },        -- 速度模块3
+    { name = "beacon", count = 20 },                 -- 信标
+    { name = "speed-module-3", count = 200 },        -- 速度模块3
     { name = "efficiency-module-3", count = 100 },   -- 效率模块3
-    { name = "productivity-module-3", count = 400 }, -- 产能模块3
+    { name = "productivity-module-3", count = 200 }, -- 产能模块3
 
     -- 电力设施
-    { name = "small-electric-pole", count = 150, quality = "normal" }, -- 小电线杆
-    { name = "big-electric-pole", count = 50, quality = "normal" },    -- 大电线杆
-    { name = "substation", count = 400, quality = "normal" },          -- 变电站
-    { name = "solar-panel", count = 1000 },                            -- 太阳能板
-    { name = "accumulator", count = 1000 },                            -- 蓄电池
+    { name = "big-electric-pole", count = 50, quality = "normal" }, -- 大电线杆
+    { name = "substation", count = 100, quality = "normal" },       -- 变电站
+    { name = "solar-panel", count = 400 },                          -- 太阳能板
+    { name = "accumulator", count = 400 },                          -- 蓄电池
 
     -- 采掘和流体设备
     { name = "electric-furnace", count = 100 },                   -- 电炉
@@ -224,7 +222,7 @@ local preset_legendary_items = {
 
     -- 机械臂
     { name = "long-handed-inserter", count = 200, quality = "normal" }, -- 长臂机械臂
-    { name = "fast-inserter", count = 400, quality = "normal" },        -- 快速机械臂
+    { name = "fast-inserter", count = 200, quality = "normal" },        -- 快速机械臂
     { name = "bulk-inserter", count = 50, quality = "normal" },         -- 批量机械臂
     { name = "stack-inserter", count = 50, quality = "normal" },        -- 集装机械臂
 
@@ -234,12 +232,12 @@ local preset_legendary_items = {
     { name = "turbo-splitter", count = 100, quality = "normal" },         -- 分流器
 
     -- 物流系统
-    { name = "steel-chest", count = 50, quality = "normal" },                     -- 钢箱
-    { name = "logistic-chest-active-provider", count = 50, quality = "normal" },  -- 紫箱
-    { name = "logistic-chest-passive-provider", count = 50, quality = "normal" }, -- 红箱
-    { name = "logistic-chest-storage", count = 50, quality = "normal" },          -- 黄箱
-    { name = "logistic-chest-buffer", count = 50, quality = "normal" },           -- 绿箱
-    { name = "logistic-chest-requester", count = 50, quality = "normal" },        -- 蓝箱
+    { name = "steel-chest", count = 50, quality = "normal" },            -- 钢箱
+    { name = "active-provider-chest", count = 50, quality = "normal" },  -- 紫箱
+    { name = "passive-provider-chest", count = 50, quality = "normal" }, -- 红箱
+    { name = "storage-chest", count = 50, quality = "normal" },          -- 黄箱
+    { name = "buffer-chest", count = 50, quality = "normal" },           -- 绿箱
+    { name = "requester-chest", count = 50, quality = "normal" },        -- 蓝箱
 
     -- 太空探索
     { name = "rocket-silo", count = 1 },                                     -- 火箭发射井
@@ -250,9 +248,8 @@ local preset_legendary_items = {
     { name = "processing-unit", count = 200, quality = "normal" },           -- 蓝板(处理器)
 
     -- 杂项
+    { name = "uranium-rounds-magazine", count = 1000 },         -- 铀弹药
     { name = "uranium-235", count = 400, quality = "normal" },  -- 铀235
-    { name = "submachine-gun", count = 3 },                     -- 冲锋枪
-    { name = "uranium-rounds-magazine", count = 1600 },         -- 铀弹药
     { name = "laser-turret", count = 100, quality = "normal" }, -- 激光炮塔
     { name = "repair-pack", count = 100, quality = "normal" }   -- 修理包
 }
@@ -281,6 +278,23 @@ local function add_start_items(player)
 
     -- 给玩家传奇机甲装甲（直接穿戴）
     give_legendary_mech_armor(player)
+
+    -- 装备武器
+    local guns = player.get_inventory(defines.inventory.character_guns)
+    if guns then
+        for i = 1, math.min(3, #guns) do
+            guns[i].set_stack({ name = "submachine-gun", count = 1, quality = "legendary" })
+        end
+    end
+
+    -- 装备弹药
+    local ammo = player.get_inventory(defines.inventory.character_ammo)
+    if ammo then
+        for i = 1, math.min(3, #ammo) do
+            ammo[i].set_stack({ name = "uranium-rounds-magazine", count = 200, quality = "legendary" })
+        end
+    end
+
     give_legendary_items(player, preset_legendary_items)
 end
 
