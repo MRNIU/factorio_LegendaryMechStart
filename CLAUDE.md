@@ -8,10 +8,21 @@ Factorio 2.0 Mod（`LegendaryMechStart`），用 Lua 编写。仓库本身即是
 
 `info.json` 声明的依赖：`base >= 2.0.76`、`space-age`、`quality`。代码里会直接使用 Space Age 和 Quality 提供的物品/API。
 
+## 兄弟 Mod
+
+本 Mod 是 NZH 维护的开局 Mod 家族的一员：
+
+- **`LegendaryMechStart`（本仓库）** — 传奇机甲 + 装备网格 + 初始物品
+- [`LegendaryShipStart`](https://github.com/MRNIU/factorio_LegendaryShipStart) — 预置传奇太空飞船
+- [`BestLanding`](https://github.com/MRNIU/factorio_BestLanding) — 着陆区清理 + 行星资源 + 传奇蜘蛛
+- [`nzh_factorio_mod`](https://github.com/MRNIU/nzh_factorio_mod) — 整合包，一键启用上面三个
+
+**如果发现本 Mod 要做的事和兄弟 Mod 重叠了**（比如"清理着陆区" vs `BestLanding`、"生成太空飞船" vs `LegendaryShipStart`），先停下问用户，不要在本仓库重复实现。
+
 ## 常用命令
 
 - **运行 / 迭代**：启动 Factorio，启用本 Mod，开新游戏。没有 CLI。（注：Claude Code 跑在 WSL、Mod 文件通过 Windows 挂载访问，Claude 无法直接启动 Factorio 或 FactorioModDebug；运行验证需要你在 Windows 侧手工操作。）
-- **语法检查**：`luac5.4 -p <file>.lua` 可以对 Lua 文件做 parse-only 校验，快速发现 `end` 缺失 / 括号不匹配等语法问题。不检查语义（undefined global、类型等）。
+- **语法检查 / 预提交**：改完任何 `.lua` 后跑一次 `for f in *.lua; do luac5.4 -p "$f" || break; done`（全 Mod 扫一遍 < 100ms），能抓 `end` 缺失 / 括号不匹配 / 字符串没闭合等语法问题；**不查语义**（undefined global、类型错误等）。提交前养成这个习惯可以避免把纯语法错推到 Mod portal。
 - **调试**：`.vscode/launch.json` 里配了三个 [FactorioModDebug](https://marketplace.visualstudio.com/items?itemName=justarandomgeek.factoriomod-debug) VS Code 插件的启动项（纯调试、hook settings+data、profile 模式）。追控制流问题时优先用它们，别靠 `print`。
 - **打包发布**：把文件夹压缩成 `LegendaryMechStart_<version>.zip`，压缩包最外层是文件夹本身。版本号必须和 `info.json`、`changelog.txt` 顶条一致。
 - **Changelog 格式**：Factorio 严格格式（99 个 `-` 的分隔行、`Version:`、`Date:`、缩进的 `Changes:` 块），用英文写。
