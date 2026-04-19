@@ -1,154 +1,144 @@
-﻿# Legendary Mech Start
+# Legendary Mech Start
 
-A mod designed for Factorio 2.0 that provides a legendary-tier mech armor starting experience.
-专为异星工厂 2.0 设计的模组，提供传奇级机甲护甲的开局体验。
+A Factorio 2.0 mod that gives players a fully-equipped legendary mech armor and a rich starting inventory the moment they spawn.
 
-## Features / 功能特性
+## Features
 
-- **Legendary Mech Start**: Players begin with a fully configured legendary-tier mech armor.
-  **传奇机甲开局**：玩家开局即拥有配置齐全的传奇级机甲护甲。
-- **Complete Equipment Setup**: Mech comes pre-equipped with fusion reactors, energy shields, night vision, and other advanced equipment.
-  **完整装备配置**：机甲预装了聚变反应堆、能量护盾、夜视仪等高级装备。
-- **Rich Starting Resources**: Provides a large amount of legendary and normal quality items to jumpstart your factory.
-  **丰富的初始资源**：提供大量传奇和普通品质的物品，助力工厂快速起步。
-- **Multiplayer Support**: Works for all players joining the game.
-  **多人游戏支持**：支持所有加入游戏的玩家。
+- **Legendary mech armor on spawn**: a pre-built `mech-armor` with a fully populated equipment grid.
+- **Complete equipment loadout**: fusion reactors, energy shields, personal laser defense, personal roboports, exoskeletons, night vision, toolbelts, batteries — all legendary.
+- **Starting inventory**: bulk production buildings, logistics, modules, beacons, belts, power infrastructure, mining, space-exploration items, military supplies.
+- **Works for every player**: the mod re-runs after the intro cutscene finishes, so Freeplay's default pistol/ammo doesn't stick around.
+- **Safe on missing prototypes**: items that don't exist (disabled DLC, renamed prototype) are silently skipped rather than crashing the save.
 
-## Included Items / 包含物品
+## Included items
 
-### Mech Armor Equipment (Legendary) / 机甲装备 (传奇级)
-The Mech Armor comes pre-equipped with the following legendary modules:
-机甲护甲预装了以下传奇级模块：
+### Equipment grid (all legendary)
 
-| Category / 分类 | Item / 物品 | Count / 数量 |
+| Category | Item | Count |
 | :--- | :--- | :---: |
-| **Power / 电力** | Fusion Reactor (聚变反应堆) | 4 |
-| | Battery MK3 (电池 MK3) | 7 |
-| | Solar Panel (太阳能板) | 1 |
-| **Defense / 防御** | Energy Shield MK2 (能量护盾 MK2) | 3 |
-| | Personal Laser Defense (个人激光防御) | 4 |
-| **Mobility / 机动** | Exoskeleton (外骨骼) | 14 |
-| | Belt Immunity (传送带免疫) | 1 |
-| **Utility / 辅助** | Personal Roboport MK2 (个人机器人港 MK2) | 4 |
-| | Night Vision (夜视仪) | 1 |
-| | Toolbelt (工具腰带) | 5 |
+| Power | Fusion Reactor | 4 |
+| | Battery MK3 | 7 |
+| | Solar Panel | 1 |
+| Defense | Energy Shield MK2 | 3 |
+| | Personal Laser Defense | 4 |
+| Mobility | Exoskeleton | 14 |
+| | Belt Immunity | 1 |
+| Utility | Personal Roboport MK2 | 4 |
+| | Night Vision | 1 |
+| | Toolbelt | 5 |
 
-### Inventory Items / 背包物品
+### Inventory — logistics & robots
 
-#### Logistics & Robots / 物流与机器人
-
-| Item / 物品 | Quality / 品质 | Count / 数量 |
+| Item | Quality | Count |
 | :--- | :---: | :---: |
-| Construction Robot (建造机器人) | Normal (普通) | 200 |
-| Logistic Robot (物流机器人) | Normal (普通) | 200 |
-| Roboport (机器人港) | Normal (普通) | 20 |
-| Steel Chest (钢箱) | Normal (普通) | 50 |
-| Logistic Chests (各类物流箱) | Normal (普通) | 50 each |
+| Construction Robot | Normal | 200 |
+| Logistic Robot | Normal | 200 |
+| Roboport | Normal | 20 |
+| Steel Chest | Normal | 50 |
+| Each logistic chest variant | Normal | 50 |
 
-#### Production / 生产设施
+### Inventory — production
 
-| Item / 物品 | Quality / 品质 | Count / 数量 |
+| Item | Quality | Count |
 | :--- | :---: | :---: |
-| Assembling Machine 3 (组装机 3) | Legendary (传奇) | 100 |
-| Oil Refinery (炼油厂) | Legendary (传奇) | 10 |
-| Chemical Plant (化工厂) | Legendary (传奇) | 20 |
-| Foundry (铸造厂) | Legendary (传奇) | 20 |
-| Electromagnetic Plant (电磁工厂) | Legendary (传奇) | 20 |
-| Biochamber (生物培养室) | Legendary (传奇) | 20 |
-| Biolab (生物实验室) | Legendary (传奇) | 5 |
-| Cryogenic Plant (低温工厂) | Legendary (传奇) | 20 |
-| Electric Furnace (电炉) | Legendary (传奇) | 100 |
+| Assembling Machine 3 | Legendary | 100 |
+| Oil Refinery | Legendary | 10 |
+| Chemical Plant | Legendary | 20 |
+| Foundry | Legendary | 20 |
+| Electromagnetic Plant | Legendary | 20 |
+| Biochamber | Legendary | 20 |
+| Biolab | Legendary | 5 |
+| Cryogenic Plant | Legendary | 20 |
+| Electric Furnace | Legendary | 100 |
 
-#### Modules & Beacons / 插件与信标
+### Inventory — modules & beacons
 
-| Item / 物品 | Quality / 品质 | Count / 数量 |
+| Item | Quality | Count |
 | :--- | :---: | :---: |
-| Beacon (信标) | Legendary (传奇) | 20 |
-| Speed Module 3 (速度插件 3) | Legendary (传奇) | 200 |
-| Efficiency Module 3 (效率插件 3) | Legendary (传奇) | 100 |
-| Productivity Module 3 (产能插件 3) | Legendary (传奇) | 200 |
+| Beacon | Legendary | 20 |
+| Speed Module 3 | Legendary | 200 |
+| Efficiency Module 3 | Legendary | 100 |
+| Productivity Module 3 | Legendary | 200 |
 
-#### Power Infrastructure / 电力设施
+### Inventory — power
 
-| Item / 物品 | Quality / 品质 | Count / 数量 |
+| Item | Quality | Count |
 | :--- | :---: | :---: |
-| Big Electric Pole (大电线杆) | Normal (普通) | 50 |
-| Substation (变电站) | Normal (普通) | 100 |
-| Solar Panel (太阳能板) | Legendary (传奇) | 400 |
-| Accumulator (蓄电池) | Legendary (传奇) | 400 |
+| Big Electric Pole | Normal | 50 |
+| Substation | Normal | 100 |
+| Solar Panel | Legendary | 400 |
+| Accumulator | Legendary | 400 |
 
-#### Mining & Fluids / 采矿与流体
+### Inventory — mining & fluids
 
-| Item / 物品 | Quality / 品质 | Count / 数量 |
+| Item | Quality | Count |
 | :--- | :---: | :---: |
-| Big Mining Drill (大型采矿机) | Legendary (传奇) | 40 |
-| Offshore Pump (近海抽水机) | Legendary (传奇) | 20 |
-| Pumpjack (抽油机) | Legendary (传奇) | 20 |
-| Pump (泵) | Legendary (传奇) | 50 |
-| Pipe (管道) | Normal (普通) | 200 |
-| Pipe to Ground (地下管道) | Normal (普通) | 100 |
+| Big Mining Drill | Legendary | 40 |
+| Offshore Pump | Legendary | 20 |
+| Pumpjack | Legendary | 20 |
+| Pump | Legendary | 50 |
+| Pipe | Normal | 200 |
+| Pipe to Ground | Normal | 100 |
 
-#### Inserters / 机械臂
+### Inventory — inserters
 
-| Item / 物品 | Quality / 品质 | Count / 数量 |
+| Item | Quality | Count |
 | :--- | :---: | :---: |
-| Long-handed Inserter (长臂机械臂) | Normal (普通) | 200 |
-| Fast Inserter (快速机械臂) | Normal (普通) | 200 |
-| Bulk Inserter (批量机械臂) | Normal (普通) | 50 |
-| Stack Inserter (集装机械臂) | Normal (普通) | 50 |
+| Long-handed Inserter | Normal | 200 |
+| Fast Inserter | Normal | 200 |
+| Bulk Inserter | Normal | 50 |
+| Stack Inserter | Normal | 50 |
 
-#### Transport Belts / 传送带
+### Inventory — transport belts
 
-| Item / 物品 | Quality / 品质 | Count / 数量 |
+| Item | Quality | Count |
 | :--- | :---: | :---: |
-| Turbo Transport Belt (极速传送带) | Normal (普通) | 4000 |
-| Turbo Underground Belt (极速地下传送带) | Normal (普通) | 200 |
-| Turbo Splitter (极速分流器) | Normal (普通) | 100 |
+| Turbo Transport Belt | Normal | 4000 |
+| Turbo Underground Belt | Normal | 200 |
+| Turbo Splitter | Normal | 100 |
 
-#### Space Exploration / 太空探索
+### Inventory — space exploration
 
-| Item / 物品 | Quality / 品质 | Count / 数量 |
+| Item | Quality | Count |
 | :--- | :---: | :---: |
-| Rocket Silo (火箭发射井) | Legendary (传奇) | 1 |
-| Cargo Landing Pad (货物着陆垫) | Normal (普通) | 1 |
-| Space Platform Starter Pack (太空平台启动包) | Normal (普通) | 1 |
-| Low Density Structure (低密度结构) | Normal (普通) | 200 |
-| Rocket Fuel (火箭燃料) | Normal (普通) | 200 |
-| Processing Unit (处理器) | Normal (普通) | 200 |
+| Rocket Silo | Legendary | 1 |
+| Cargo Landing Pad | Normal | 1 |
+| Space Platform Starter Pack | Normal | 1 |
+| Low Density Structure | Normal | 200 |
+| Rocket Fuel | Normal | 200 |
+| Processing Unit | Normal | 200 |
 
-#### Military & Miscellaneous / 军事与杂项
+### Inventory — military & misc
 
-| Item / 物品 | Quality / 品质 | Count / 数量 |
+| Item | Quality | Count |
 | :--- | :---: | :---: |
-| Submachine Gun (冲锋枪) | Legendary (传奇) | 3 |
-| Uranium Rounds Magazine (铀弹药) | Legendary (传奇) | 1600 |
-| Uranium-235 (铀-235) | Normal (普通) | 400 |
-| Laser Turret (激光炮塔) | Normal (普通) | 100 |
-| Repair Pack (修理包) | Normal (普通) | 100 |
+| Submachine Gun | Legendary | 3 |
+| Uranium Rounds Magazine | Legendary | 1600 |
+| Uranium-235 | Normal | 400 |
+| Laser Turret | Normal | 100 |
+| Repair Pack | Normal | 100 |
 
+## Installation
 
+1. Download the mod file.
+2. Drop it into your Factorio `mods` folder.
+3. Launch Factorio and enable the mod in the mod list.
+4. Start a new game.
 
-## Installation / 安装
+## Compatibility
 
-1. Download the mod file
-2. Place the file in your Factorio mods folder
-3. Launch the game and enable this mod in the mod list
-4. Create a new game to enjoy the legendary mech start experience
+- Factorio 2.0.55 or newer.
+- Requires `base`, `space-age`, `quality`.
 
-## Compatibility / 兼容性
+## License
 
-- **Factorio Version**: 2.0.55+
-- **Dependencies**: base >= 2.0.55
+MIT — see [LICENSE](LICENSE).
 
-## License / 许可证
+## Author
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
+- **NZH** — zhihong@nzhnb.com
+- Repository: <https://github.com/MRNIU/factorio_LegendaryMechStart>
 
-## Author / 作者
+## Changelog
 
-- **NZH** - zhihong@nzhnb.com
-- **Project Repository**: https://github.com/MRNIU/factorio_LegendaryMechStart
-
-## Changelog / 更新日志
-
-See [changelog.txt](changelog.txt) for version history.
+See [changelog.txt](changelog.txt).
