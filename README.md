@@ -127,7 +127,7 @@ A Factorio 2.0 mod that gives players a fully-equipped legendary mech armor and 
 
 ## Compatibility
 
-- Factorio 2.0.55 or newer.
+- Factorio 2.0.76 or newer.
 - Requires `base`, `space-age`, `quality`.
 
 ## License

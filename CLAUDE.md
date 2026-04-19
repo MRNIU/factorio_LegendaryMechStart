@@ -6,11 +6,12 @@
 
 Factorio 2.0 Mod（`LegendaryMechStart`），用 Lua 编写。仓库本身即是部署的 Mod——它以 `%APPDATA%/Factorio/mods/LegendaryMechStart/` 的形式被游戏直接加载，没有构建步骤、没有包管理器、没有测试套件。改代码后重启 Factorio（或重新载入存档）即生效。
 
-`info.json` 声明的依赖：`base >= 2.0.55`、`space-age`、`quality`。代码里会直接使用 Space Age 和 Quality 提供的物品/API。
+`info.json` 声明的依赖：`base >= 2.0.76`、`space-age`、`quality`。代码里会直接使用 Space Age 和 Quality 提供的物品/API。
 
 ## 常用命令
 
-- **运行 / 迭代**：启动 Factorio，启用本 Mod，开新游戏。没有 CLI。
+- **运行 / 迭代**：启动 Factorio，启用本 Mod，开新游戏。没有 CLI。（注：Claude Code 跑在 WSL、Mod 文件通过 Windows 挂载访问，Claude 无法直接启动 Factorio 或 FactorioModDebug；运行验证需要你在 Windows 侧手工操作。）
+- **语法检查**：`luac5.4 -p <file>.lua` 可以对 Lua 文件做 parse-only 校验，快速发现 `end` 缺失 / 括号不匹配等语法问题。不检查语义（undefined global、类型等）。
 - **调试**：`.vscode/launch.json` 里配了三个 [FactorioModDebug](https://marketplace.visualstudio.com/items?itemName=justarandomgeek.factoriomod-debug) VS Code 插件的启动项（纯调试、hook settings+data、profile 模式）。追控制流问题时优先用它们，别靠 `print`。
 - **打包发布**：把文件夹压缩成 `LegendaryMechStart_<version>.zip`，压缩包最外层是文件夹本身。版本号必须和 `info.json`、`changelog.txt` 顶条一致。
 - **Changelog 格式**：Factorio 严格格式（99 个 `-` 的分隔行、`Version:`、`Date:`、缩进的 `Changes:` 块），用英文写。
