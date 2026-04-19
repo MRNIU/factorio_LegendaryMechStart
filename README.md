@@ -1,122 +1,114 @@
 # Legendary Mech Start
 
-A Factorio 2.0 mod that gives players a fully-equipped legendary mech armor and a rich starting inventory the moment they spawn.
+A Factorio 2.0 Space Age mod that drops every player into a fully-equipped legendary mech armor at spawn and seeds the team with enough industrial gear to go interplanetary on day one.
 
-## Features
+## What it does
 
-- **Legendary mech armor on spawn**: a pre-built `mech-armor` with a fully populated equipment grid.
-- **Complete equipment loadout**: fusion reactors, energy shields, personal laser defense, personal roboports, exoskeletons, night vision, toolbelts, batteries — all legendary.
-- **Starting inventory**: bulk production buildings, logistics, modules, beacons, belts, power infrastructure, mining, space-exploration items, military supplies.
-- **Works for every player**: the mod re-runs after the intro cutscene finishes, so Freeplay's default pistol/ammo doesn't stick around.
-- **Safe on missing prototypes**: items that don't exist (disabled DLC, renamed prototype) are silently skipped rather than crashing the save.
+- **Legendary mech armor on spawn** for every player (single-player, host and late joiners in multiplayer). The equipment grid is packed automatically from a prioritised wishlist, so adding or removing items only takes editing the list.
+- **Personal starter kit** in each player's inventory: bootstrap materials, personal construction and logistic robots, defensive turrets, temporary wiring and piping, spare ammunition and repair packs.
+- **Team resource cache** placed once per save into legendary steel chests at map spawn: rocket silo, space-platform starter pack, all end-game production buildings (foundry, electromagnetic plant, biochamber, cryogenic plant, biolab, ...), modules, 4000 turbo belts, the legendary solar/accumulator array, etc. The placer is non-destructive — it only uses open tiles within 15 tiles of `(0, 0)` and spills the remainder on the ground if the spawn area is crowded.
+- **Freeplay intro cleanup**: the mod re-runs after the cutscene finishes, so the default pistol and firearm magazines Freeplay hands out are removed.
+- **Quality-aware**: every inserted stack declares its `quality` explicitly. End-game production buildings are legendary; bulk infrastructure (belts, pipes, chests, poles) stays normal on purpose.
+- **Multiplayer-aware**: the team cache is deposited on the first `on_player_created` in the save and tracked with `storage.team_cache_placed`, so cutscene replays and late joiners never duplicate it.
+- **Safe on missing prototypes**: every insert checks `prototypes.item[name]` / `prototypes.equipment[name]` first, so disabled DLC or renamed prototypes are silently skipped rather than crashing the save.
 
-## Included items
+## Equipment grid (legendary `mech-armor`, 15 × 17)
 
-### Equipment grid (all legendary)
+All items legendary; positions computed by a first-fit packer at runtime.
 
 | Category | Item | Count |
-| :--- | :--- | :---: |
-| Power | Fusion Reactor | 4 |
-| | Battery MK3 | 7 |
-| | Solar Panel | 1 |
-| Defense | Energy Shield MK2 | 3 |
+| :-- | :-- | :-: |
+| Power | Fusion Reactor | 6 |
+| | Battery MK3 | 8 |
+| | Solar Panel | fills remaining 1×1 gaps |
+| Defense | Energy Shield MK2 | 4 |
 | | Personal Laser Defense | 4 |
-| Mobility | Exoskeleton | 14 |
+| Mobility | Exoskeleton | 10 |
 | | Belt Immunity | 1 |
 | Utility | Personal Roboport MK2 | 4 |
 | | Night Vision | 1 |
-| | Toolbelt | 5 |
+| | Toolbelt | 5 (provides +125 main-inventory slots) |
 
-### Inventory — logistics & robots
+Steady-state draw is ~10–15 MW; peak (all four roboports charging simultaneously) approaches ~96 MW and is buffered by the MK3 batteries. Six legendary fusion reactors deliver 37.5 MW sustained.
 
-| Item | Quality | Count |
-| :--- | :---: | :---: |
-| Construction Robot | Normal | 200 |
-| Logistic Robot | Normal | 200 |
-| Roboport | Normal | 20 |
-| Steel Chest | Normal | 50 |
-| Each logistic chest variant | Normal | 50 |
+## Personal pack (every player's inventory)
 
-### Inventory — production
+| Category | Item | Quality | Count |
+| :-- | :-- | :-: | :-: |
+| Weapons (slot-filled) | Submachine Gun | Legendary | 3 |
+| Ammo (slot-filled) | Uranium Rounds Magazine | Legendary | 600 (200 × 3 slots) |
+| Spare ammo | Uranium Rounds Magazine | Legendary | 200 |
+| Repair | Repair Pack | Normal | 50 |
+| Raw materials | Iron / Copper Plate | Normal | 100 each |
+| | Steel Plate / Stone Brick / Concrete | Normal | 50 each |
+| | Coal | Normal | 100 |
+| Robots | Construction Robot | Normal | 100 |
+| | Logistic Robot | Normal | 50 |
+| Wiring | Small / Medium Electric Pole | Normal | 50 each |
+| Piping | Pipe | Normal | 50 |
+| | Pipe to Ground | Normal | 20 |
+| Defense | Laser Turret | Normal | 20 |
 
-| Item | Quality | Count |
-| :--- | :---: | :---: |
-| Assembling Machine 3 | Legendary | 100 |
-| Oil Refinery | Legendary | 10 |
-| Chemical Plant | Legendary | 20 |
-| Foundry | Legendary | 20 |
-| Electromagnetic Plant | Legendary | 20 |
-| Biochamber | Legendary | 20 |
-| Biolab | Legendary | 5 |
-| Cryogenic Plant | Legendary | 20 |
-| Electric Furnace | Legendary | 100 |
+## Team cache (legendary chests at map spawn, once per save)
 
-### Inventory — modules & beacons
+| Category | Item | Quality | Count |
+| :-- | :-- | :-: | :-: |
+| Raw materials | Iron / Copper Plate | Normal | 400 each |
+| | Steel Plate / Stone Brick | Normal | 150 each |
+| | Concrete / Landfill | Normal | 450 / 500 |
+| | Plastic Bar / Sulfur | Normal | 200 each |
+| | Coal | Normal | 400 |
+| Starter power | Boiler / Steam Engine | Normal | 20 each |
+| | Big Electric Pole | Normal | 50 |
+| | Substation | Legendary | 100 |
+| | Solar Panel / Accumulator | Legendary | 400 each |
+| Logistics network | Construction Robot | Normal | 100 |
+| | Logistic Robot | Normal | 150 |
+| | Roboport | Legendary | 20 |
+| | Steel Chest + 5 Logistic Chest variants | Normal | 50 each |
+| Inserters | Long-handed / Fast | Normal | 200 each |
+| | Bulk / Stack | Normal | 50 each |
+| Transport | Turbo Transport Belt | Normal | 4000 |
+| | Turbo Underground / Splitter | Normal | 200 / 100 |
+| Production | Assembling Machine 3 | Legendary | 100 |
+| | Electric Furnace | Legendary | 100 |
+| | Oil Refinery | Legendary | 10 |
+| | Chemical Plant | Legendary | 20 |
+| | Foundry | Legendary | 20 |
+| | Electromagnetic Plant | Legendary | 20 |
+| | Biochamber | Legendary | 20 |
+| | Cryogenic Plant | Legendary | 20 |
+| | Lab / Biolab | Legendary | 20 / 10 |
+| Modules & Beacons | Beacon | Legendary | 20 |
+| | Speed / Efficiency / Productivity Module 3 | Legendary | 200 / 100 / 200 |
+| Mining & Fluids | Big Mining Drill | Legendary | 40 |
+| | Offshore Pump / Pumpjack | Legendary | 20 each |
+| | Pump | Legendary | 50 |
+| | Pipe / Pipe to Ground | Normal | 150 / 80 |
+| Space | Rocket Silo | Legendary | 1 |
+| | Cargo Landing Pad | Normal | 1 |
+| | Space Platform Starter Pack | Normal | 1 |
+| | Low Density Structure | Normal | 500 |
+| | Rocket Fuel | Normal | 200 |
+| | Processing Unit | Normal | 400 |
+| Military | Uranium Rounds Magazine | Legendary | 800 |
+| | Uranium-235 (Kovarex seed) | Normal | 40 |
+| | Laser Turret | Normal | 80 |
+| | Repair Pack | Normal | 50 |
 
-| Item | Quality | Count |
-| :--- | :---: | :---: |
-| Beacon | Legendary | 20 |
-| Speed Module 3 | Legendary | 200 |
-| Efficiency Module 3 | Legendary | 100 |
-| Productivity Module 3 | Legendary | 200 |
+## Multiplayer behaviour
 
-### Inventory — power
+| Event | Personal pack | Team chests |
+| :-- | :-: | :-: |
+| Host / single player, first `on_player_created` | re-granted | spawned near `(0, 0)` |
+| Host `on_cutscene_finished` (wipes Freeplay's pistol) | re-granted | already placed, not re-spawned |
+| Late joiner `on_player_created` | granted | already placed, not re-spawned |
 
-| Item | Quality | Count |
-| :--- | :---: | :---: |
-| Big Electric Pole | Normal | 50 |
-| Substation | Normal | 100 |
-| Solar Panel | Legendary | 400 |
-| Accumulator | Legendary | 400 |
+## Design notes
 
-### Inventory — mining & fluids
-
-| Item | Quality | Count |
-| :--- | :---: | :---: |
-| Big Mining Drill | Legendary | 40 |
-| Offshore Pump | Legendary | 20 |
-| Pumpjack | Legendary | 20 |
-| Pump | Legendary | 50 |
-| Pipe | Normal | 200 |
-| Pipe to Ground | Normal | 100 |
-
-### Inventory — inserters
-
-| Item | Quality | Count |
-| :--- | :---: | :---: |
-| Long-handed Inserter | Normal | 200 |
-| Fast Inserter | Normal | 200 |
-| Bulk Inserter | Normal | 50 |
-| Stack Inserter | Normal | 50 |
-
-### Inventory — transport belts
-
-| Item | Quality | Count |
-| :--- | :---: | :---: |
-| Turbo Transport Belt | Normal | 4000 |
-| Turbo Underground Belt | Normal | 200 |
-| Turbo Splitter | Normal | 100 |
-
-### Inventory — space exploration
-
-| Item | Quality | Count |
-| :--- | :---: | :---: |
-| Rocket Silo | Legendary | 1 |
-| Cargo Landing Pad | Normal | 1 |
-| Space Platform Starter Pack | Normal | 1 |
-| Low Density Structure | Normal | 200 |
-| Rocket Fuel | Normal | 200 |
-| Processing Unit | Normal | 200 |
-
-### Inventory — military & misc
-
-| Item | Quality | Count |
-| :--- | :---: | :---: |
-| Submachine Gun | Legendary | 3 |
-| Uranium Rounds Magazine | Legendary | 1600 |
-| Uranium-235 | Normal | 400 |
-| Laser Turret | Normal | 100 |
-| Repair Pack | Normal | 100 |
+- **Total stacks** (first player: personal + everything they personally carry) fit well under the 330 main-inventory slots granted by legendary mech-armor (+125) and five legendary toolbelts (+125). The inventory delivery therefore has no overflow fallback.
+- **Team cache placement** is anchored to `LuaForce::get_spawn_position(surface)` — the force's configured spawn (`(0, 0)` on vanilla Nauvis) — rather than the character's actual position. This keeps the cache at map origin even when a sibling mod (e.g. [BestLanding](https://github.com/MRNIU/factorio_BestLanding)) pushes the player far from spawn by filling the area with a landing blueprint.
+- If no free tile exists within 15 tiles of `(0, 0)`, any items that could not be placed into a chest are spilled on the ground — the placer never destroys existing entities.
 
 ## Installation
 

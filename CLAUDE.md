@@ -6,83 +6,117 @@
 
 Factorio 2.0 Mod（`LegendaryMechStart`），用 Lua 编写。仓库本身即是部署的 Mod——它以 `%APPDATA%/Factorio/mods/LegendaryMechStart/` 的形式被游戏直接加载，没有构建步骤、没有包管理器、没有测试套件。改代码后重启 Factorio（或重新载入存档）即生效。
 
-`info.json` 声明的依赖：`base >= 2.0.76`、`space-age`、`quality`。代码里会直接使用 Space Age 和 Quality 提供的物品/API。
+`info.json` 声明的依赖：`base >= 2.0.76`、`space-age`、`quality`。代码里会直接使用 Space Age 和 Quality 提供的物品 / API。
 
 ## 兄弟 Mod
 
 本 Mod 是 NZH 维护的开局 Mod 家族的一员：
 
-- **`LegendaryMechStart`（本仓库）** — 传奇机甲 + 装备网格 + 初始物品
+- **`LegendaryMechStart`（本仓库）** — 传奇机甲 + 装备网格 + 个人包 + 团队资源箱
 - [`LegendaryShipStart`](https://github.com/MRNIU/factorio_LegendaryShipStart) — 预置传奇太空飞船
 - [`BestLanding`](https://github.com/MRNIU/factorio_BestLanding) — 着陆区清理 + 行星资源 + 传奇蜘蛛
 - [`nzh_factorio_mod`](https://github.com/MRNIU/nzh_factorio_mod) — 整合包，一键启用上面三个
 
 **如果发现本 Mod 要做的事和兄弟 Mod 重叠了**（比如"清理着陆区" vs `BestLanding`、"生成太空飞船" vs `LegendaryShipStart`），先停下问用户，不要在本仓库重复实现。
 
+和 `BestLanding` 交互时尤其要注意：它在 `on_init` 会在 spawn 附近铺一张几十万字符的蓝图 + 放一只传奇蜘蛛，会把玩家的实际落点推到几十瓦片外。本 Mod 的团队箱放置因此**锚定 `LuaForce::get_spawn_position(surface)`**（默认 `(0, 0)`）而不是 `player.position`。
+
 ## 常用命令
 
 - **运行 / 迭代**：启动 Factorio，启用本 Mod，开新游戏。没有 CLI。（注：Claude Code 跑在 WSL、Mod 文件通过 Windows 挂载访问，Claude 无法直接启动 Factorio 或 FactorioModDebug；运行验证需要你在 Windows 侧手工操作。）
-- **语法检查 / 预提交**：改完任何 `.lua` 后跑一次 `for f in *.lua; do luac5.4 -p "$f" || break; done`（全 Mod 扫一遍 < 100ms），能抓 `end` 缺失 / 括号不匹配 / 字符串没闭合等语法问题；**不查语义**（undefined global、类型错误等）。提交前养成这个习惯可以避免把纯语法错推到 Mod portal。
+- **语法检查 / 预提交**：改完任何 `.lua` 后跑一次 `for f in *.lua; do luac5.4 -p "$f" || break; done`（全 Mod 扫一遍 < 100 ms），能抓 `end` 缺失 / 括号不匹配 / 字符串没闭合等语法问题；**不查语义**（undefined global、类型错误等）。
 - **调试**：`.vscode/launch.json` 里配了三个 [FactorioModDebug](https://marketplace.visualstudio.com/items?itemName=justarandomgeek.factoriomod-debug) VS Code 插件的启动项（纯调试、hook settings+data、profile 模式）。追控制流问题时优先用它们，别靠 `print`。
 - **打包发布**：把文件夹压缩成 `LegendaryMechStart_<version>.zip`，压缩包最外层是文件夹本身。版本号必须和 `info.json`、`changelog.txt` 顶条一致。
 - **Changelog 格式**：Factorio 严格格式（99 个 `-` 的分隔行、`Version:`、`Date:`、缩进的 `Changes:` 块），用英文写。
 
 ## 架构
 
-两个 Lua 文件，按职责故意拆开：
+两个 Lua 文件，按职责拆开：
 
-- **`control.lua`** — 只管事件注册，挂了三个处理器：
-  - `on_init` → 初始化 `storage.given_items = {}`。
-  - `on_player_created` → 调 `AddStartItem`，已发过物品的玩家直接跳过。
-  - `on_cutscene_cancelled` + `on_cutscene_finished` → 调 `ForceAddStartItem`，**有意再清空、再发一遍**。这不是冗余：Freeplay 场景脚本会在开场动画结束时重新塞一批默认物品（手枪、子弹之类），我们需要第二轮把它们抹掉。改背包发放逻辑时保留这两段式结构。
+### `control.lua` — 事件注册 + 状态机
 
-- **`legendary_items.lua`** — 所有玩法逻辑。对外只导出一个函数 `add_start_items(player)`：
-  1. 清空 `character_main`、`character_armor`、`character_guns`、`character_ammo` 四个库存。
-  2. 塞一件传奇 `mech-armor`，通过 `init_legendary_mech_armor` 填满它的装备网格。
-  3. 枪位填满传奇冲锋枪，弹药位填满传奇铀弹。
-  4. 把 `preset_legendary_items` 列表塞进主背包。
+- `on_init` → 初始化 `storage.given_items = {}`、`storage.team_cache_placed = false`。
+- `on_player_created` → 调 `AddStartItem`，已发过个人包的玩家直接跳过。
+- `on_cutscene_cancelled` + `on_cutscene_finished` → 调 `ForceAddStartItem`，**有意再清背包、再发个人包**（用来抹掉 Freeplay 开场动画结束时塞给 host 的手枪 + 手枪子弹）。team cache 只看 `storage.team_cache_placed`，不会重发。
+- 首个玩家还会触发 `legendary_items.place_team_cache` 一次，在 spawn 附近生成传奇钢箱并塞入团队资源。
 
-### 机甲装备网格布局
+持久化状态：
 
-装备网格是 **15 宽 × 17 高**（下标从 0 开始）。`init_legendary_mech_armor` 对每件装备用手写 `(x, y)` 坐标摆位，没有自动装箱算法。各装备占地要记牢：
-- `fusion-reactor-equipment` 是 4×4；`exoskeleton-equipment` 是 2×4；`personal-roboport-mk2` / `personal-laser-defense` / `energy-shield-mk2` / `night-vision` 都是 2×2；`battery-mk3` 是 1×2；`toolbelt` 是 3×1；`solar-panel` / `belt-immunity` 是 1×1。
-- 增删装备时，必须手工验证坐标+占地不撞别的装备、也别越过 15×17 的边。源文件里每行坐标旁的注释很多已经过期（写的是老坐标），**以数字为准，别信注释**。
+| 字段 | 语义 |
+| :-- | :-- |
+| `storage.given_items[player_index] = true` | 这个玩家已经发过个人包 |
+| `storage.team_cache_placed : bool` | 整档的团队资源箱是否已经落地 |
 
-### 状态模型（Factorio 2.0）
+### `legendary_items.lua` — 玩法逻辑
 
-Factorio 2.0 把 1.x 的 `global` 改成了 `storage`。本 Mod 唯一持久化的状态就是 `storage.given_items[player_index] = true`。`AddStartItem` 里会防御性地再初始化一遍这个表，用来兼容在当前 Mod 版本还没跑过 `on_init` 的旧存档——重构时要保留这个保护。
+对外导出两个函数：
+
+| 函数 | 作用 |
+| :-- | :-- |
+| `add_start_items(player)` | 清 4 个库存 → 穿传奇机甲并装箱装备网格 → 武器槽和弹药槽铺满 → 按 `PERSONAL_WISHLIST` 塞背包 |
+| `place_team_cache(surface, center, force)` | 在 `center` 附近半径 15 瓦片内找空地，放传奇钢箱并装入 `TEAM_WISHLIST`；放不下的部分 `spill_item_stack` 撒到 `center`，**不会破坏任何既有实体** |
+
+三个主数据表（改数量 / 品质 / 物品时只要改这些）：
+
+| 表 | 含义 |
+| :-- | :-- |
+| `EQUIPMENT_WISHLIST` | 机甲装备按优先级排的 `{name, count}` 列表，`pack_equipment_grid` 用 first-fit 自动算坐标 |
+| `PERSONAL_WISHLIST` | 每个玩家都发的个人包（`{name, count, quality}`） |
+| `TEAM_WISHLIST` | 整档只发一次的团队资源（`{name, count, quality}`） |
+
+### 装备网格自动装箱
+
+装备网格 **15 宽 × 17 高**（legendary `mech-armor`，下标从 0 开始）。`pack_equipment_grid` 按 wishlist 顺序逐件调 `find_first_fit(grid, w, h)` 从左上往右下扫第一个空矩形。**大件放前面**（2×4 外骨骼、4×4 核聚变反应堆），否则会被小件切碎后放不下。
+
+尺寸速查：
+- `fusion-reactor-equipment` 4×4；`exoskeleton-equipment` 2×4；
+- `personal-roboport-mk2` / `personal-laser-defense` / `energy-shield-mk2` / `night-vision` 都是 2×2；
+- `battery-mk3` 1×2；`toolbelt` 3×1；`solar-panel` / `belt-immunity` 1×1。
+
+### 团队资源箱布置
+
+- 圆心是 `player.force.get_spawn_position(player.surface)`，默认 `(0, 0)`，**不是 `player.position`**——引擎会因为 `BestLanding` 的蓝图占满 spawn 而把玩家推出去几十瓦片。
+- 半径 15 瓦片（`TEAM_CHEST_RADIUS`）；每轮 `find_non_colliding_position` 返回离圆心最近的空格，放好箱子再循环，从而箱子会围着 spawn 聚成一小团。
+- 箱子是传奇 `steel-chest`（~120 槽/箱，团队 ~240 堆 → 2–3 箱）。
+- 半径内没有空位时退化为 `spill_item_stack` 撒到 `(0, 0)`。
+
+### 容量预算（不再做溢出保底）
+
+- 背包可用槽 = 80（基础）+ 125（legendary mech-armor）+ 125（5 × legendary toolbelt）= **330 槽**。
+- `PERSONAL_WISHLIST` ~16 堆；第一人（PERSONAL 进背包 + 团队资源另外进箱子）永远不会占满。背包不再处理 `insert` 的返回值。**如果未来加物品把总堆数推过 310，要么砍量，要么恢复溢出保底。**
 
 ### Quality 系统
 
-每次 `insert` 物品都显式写 `quality` 字段（默认 `"legendary"`，部分批量物品如传送带 / 管道 / 箱子写 `"normal"`）。`give_legendary_items` 助手函数在没写 `quality` 时默认 `"legendary"`。**生产建筑是传奇、物流基础设施刻意保持普通**——这是预期的平衡，不要未经用户同意就把什么都升到传奇。
+每个 wishlist 条目都显式写 `quality`；没写的话 `pack_equipment_grid` / `deliver_wishlist` / `dump_items_into_chests` 都默认 `"legendary"`。**生产建筑是传奇、物流基础设施（belt、pipe、chest、pole）刻意保持普通**——这是预期的平衡，别未经用户同意就把什么都升传奇。
 
 ### Prototype 存在性检查
 
-`give_legendary_items` 会在每次 `insert` 前先判断 `if prototypes.item[item_name] then`，这样当某个 DLC 被禁用或 prototype 改名时对应物品会静默跳过而不是崩溃。加新物品时保留这个检查。
+`deliver_wishlist`、`place_team_cache`、`pack_equipment_grid` 在每次插入/放置前都先查 `prototypes.item[name]` 或 `prototypes.equipment[name]`；这样 DLC 被禁用或 prototype 改名时对应条目会静默跳过而不是崩溃。加新物品时保留这个检查。
 
 ## Factorio API 参考
 
 - Wiki：<https://wiki.factorio.com/>
 - Mod 站：<https://mods.factorio.com/>
-- Mod settings 教程：<https://wiki.factorio.com/Tutorial:Mod_settings>
 - Prototype API（data 阶段）：<https://lua-api.factorio.com/latest/index-prototype.html>
 - Runtime API（control 阶段）：<https://lua-api.factorio.com/latest/index-runtime.html>
 
 本 Mod 常用的运行时 API：
-- `LuaPlayer::get_inventory`、`defines.inventory.character_main` / `character_armor` / `character_guns` / `character_ammo`
-- `LuaInventory::insert`、`LuaInventory::clear`、`LuaItemStack::set_stack`
-- `LuaEquipmentGrid::put`
-- `prototypes.item[<name>]`（insert 前做存在性检查）
-- `defines.events.on_init`、`on_player_created`、`on_cutscene_cancelled`、`on_cutscene_finished`
+
+- `LuaPlayer::get_inventory`、`defines.inventory.character_main` / `character_armor` / `character_guns` / `character_ammo` / `chest`
+- `LuaInventory::insert` / `clear`、`LuaItemStack::set_stack`
+- `LuaEquipmentGrid::put` / `get`、`width` / `height`、`prototypes.equipment[<name>].shape.{width,height}`
+- `LuaSurface::find_non_colliding_position` / `create_entity` / `spill_item_stack`
+- `LuaForce::get_spawn_position(surface)`（用它而不是 `player.position` 作团队箱圆心）
+- `defines.events.on_init` / `on_player_created` / `on_cutscene_cancelled` / `on_cutscene_finished`
 
 ## 本地化
 
-`locale/zh-CN/zh-CN.cfg` 提供中文翻译。注意 locale 文件里的 key 是 `factorio_LegendaryMechStart`，而 `info.json` 的 `name` 是 `LegendaryMechStart`——`[mod-name]` / `[mod-description]` 节里的 key 必须和 `info.json` 的 `name` 完全一致，Factorio 才会正确匹配。这是个已知不一致，动本地化时可以顺手改掉。
+`locale/zh-CN/zh-CN.cfg` 提供中文翻译。`[mod-name]` / `[mod-description]` 节里的 key 必须和 `info.json` 的 `name`（`LegendaryMechStart`）完全一致，Factorio 才会正确匹配。
 
 ## 语言约定
 
-- Lua 代码注释、`CLAUDE.md`：**中文**。改到已有文件时，双语注释只保留中文那一半；新注释只写中文。
-- `README.md`、`changelog.txt`、`info.json` 的 `description` / `title`、Mod portal 上对外展示的内容：**英文**。已有的双语条目在下次编辑到它时切换成纯英文。
+- Lua 代码注释、`CLAUDE.md`：**中文**。新注释只写中文。
+- `README.md`、`changelog.txt`、`info.json` 的 `description` / `title`、Mod portal 上对外展示的内容：**英文**。
 - `locale/*.cfg` 按对应语言写。
-- 版权头 `-- Copyright The MRNIU/factorio_LegendaryMechStart Contributors` 必须保留在每个 Lua/cfg 文件顶部。
+- 版权头 `-- Copyright The MRNIU/factorio_LegendaryMechStart Contributors` 必须保留在每个 Lua / cfg 文件顶部。
 - 技术标识符（函数名、API 字段、事件名）不翻译，用反引号包住原样保留。

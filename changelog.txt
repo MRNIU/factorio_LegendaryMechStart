@@ -1,4 +1,19 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.2.0
+Date: 2026-04-19
+  Changes:
+    - Replaced hand-coded equipment-grid coordinates with an automatic first-fit packer; equipment is declared as a prioritized wishlist of (name, count) and positions are computed at runtime, eliminating the stale coordinate comments.
+    - Rebalanced the mech-armor loadout after measuring real peak draw: fusion reactors 4 to 6 (25 to 37.5 MW), energy shields 3 to 4, batteries 7 to 8; exoskeletons trimmed 14 to 10 (still +750% speed at legendary) to free cells.
+    - Split the starter inventory into a personal pack and a team resource cache: every joiner receives the personal pack (legendary mech, personal robots, basic bootstrap materials, defensive gear) in their inventory, while the team cache (rocket silo, bulk factories, modules, 4000 turbo belts, etc.) is deposited once into legendary steel chests near the first player's spawn; the chest placer is non-destructive (searches within a 15-tile radius for free tiles and spills remaining items on the ground if the area is too crowded).
+    - Bumped roboport and substation in the team cache to legendary quality.
+    - Added storage.team_cache_placed so that ForceAddStartItem (cutscene end) re-grants only the personal pack without re-spawning team chests, and late joiners do not trigger a duplicate team cache.
+    - Added bootstrap raw materials (iron/copper/steel plates, stone brick, concrete, landfill, plastic, sulfur, coal) so the provided buildings actually have inputs.
+    - Added an early power chain (boilers, steam engines, small/medium electric poles) so the player has electricity before the legendary solar array is deployed.
+    - Added lab x20 and biolab x10; set uranium-235 to 40 (one Kovarex seed).
+    - Added pipe-to-ground and logistic robots to the personal pack so late joiners can extend fluid lines and use personal logistic requests.
+    - Removed the overflow-to-chests fallback after confirming that the current wishlist fits within the 330 main-inventory slots granted by legendary mech-armor plus five legendary toolbelts.
+
+---------------------------------------------------------------------------------------------------
 Version: 1.1.3
 Date: 2026-04-19
   Changes:
