@@ -44,7 +44,7 @@ Steady-state draw is ~10–15 MW; peak (all four roboports charging simultaneous
 | | Coal | Normal | 100 |
 | Robots | Construction Robot | Normal | 100 |
 | | Logistic Robot | Normal | 50 |
-| Wiring | Small / Medium Electric Pole | Normal | 50 each |
+| Wiring | Medium Electric Pole | Normal | 50 |
 | Piping | Pipe | Normal | 50 |
 | | Pipe to Ground | Normal | 20 |
 | Defense | Laser Turret | Normal | 20 |
@@ -58,9 +58,9 @@ Steady-state draw is ~10–15 MW; peak (all four roboports charging simultaneous
 | | Concrete / Landfill | Normal | 450 / 500 |
 | | Plastic Bar / Sulfur | Normal | 200 each |
 | | Coal | Normal | 400 |
-| Starter power | Boiler / Steam Engine | Normal | 20 each |
-| | Big Electric Pole | Normal | 50 |
-| | Substation | Legendary | 100 |
+| Starter power | Big Electric Pole | Normal | 50 |
+| | Substation | Normal | 100 |
+| | Substation | Legendary | 50 |
 | | Solar Panel / Accumulator | Legendary | 400 each |
 | Logistics network | Construction Robot | Normal | 100 |
 | | Logistic Robot | Normal | 150 |
@@ -78,12 +78,12 @@ Steady-state draw is ~10–15 MW; peak (all four roboports charging simultaneous
 | | Electromagnetic Plant | Legendary | 20 |
 | | Biochamber | Legendary | 20 |
 | | Cryogenic Plant | Legendary | 20 |
-| | Lab / Biolab | Legendary | 20 / 10 |
+| | Biolab | Legendary | 10 |
 | Modules & Beacons | Beacon | Legendary | 20 |
 | | Speed / Efficiency / Productivity Module 3 | Legendary | 200 / 100 / 200 |
 | Mining & Fluids | Big Mining Drill | Legendary | 40 |
 | | Offshore Pump / Pumpjack | Legendary | 20 each |
-| | Pump | Legendary | 50 |
+| | Pump | Normal | 50 |
 | | Pipe / Pipe to Ground | Normal | 150 / 80 |
 | Space | Rocket Silo | Legendary | 1 |
 | | Cargo Landing Pad | Normal | 1 |

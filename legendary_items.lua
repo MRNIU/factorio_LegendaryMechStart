@@ -42,7 +42,6 @@ local PERSONAL_WISHLIST = {
     { name = "logistic-robot",          count = 50,  quality = "normal" },
 
     -- 临时布线 / 布管
-    { name = "small-electric-pole",     count = 50,  quality = "normal" },
     { name = "medium-electric-pole",    count = 50,  quality = "normal" },
     { name = "pipe",                    count = 50,  quality = "normal" },
     { name = "pipe-to-ground",          count = 20,  quality = "normal" },
@@ -67,10 +66,9 @@ local TEAM_WISHLIST = {
     { name = "coal",                    count = 400,  quality = "normal" },
 
     -- 启动电力链
-    { name = "boiler",                  count = 20,   quality = "normal" },
-    { name = "steam-engine",            count = 20,   quality = "normal" },
     { name = "big-electric-pole",       count = 50,   quality = "normal" },
-    { name = "substation",              count = 100,  quality = "legendary" },
+    { name = "substation",              count = 100,  quality = "normal" },     -- 2 组：远距离骨架
+    { name = "substation",              count = 50,   quality = "legendary" },  -- 1 组：核心节点 VIP
     { name = "solar-panel",             count = 400,  quality = "legendary" },
     { name = "accumulator",             count = 400,  quality = "legendary" },
 
@@ -105,7 +103,6 @@ local TEAM_WISHLIST = {
     { name = "electromagnetic-plant",   count = 20,   quality = "legendary" },
     { name = "biochamber",              count = 20,   quality = "legendary" },
     { name = "cryogenic-plant",         count = 20,   quality = "legendary" },
-    { name = "lab",                     count = 20,   quality = "legendary" },
     { name = "biolab",                  count = 10,   quality = "legendary" },
 
     -- 模块 & 信标
@@ -118,7 +115,7 @@ local TEAM_WISHLIST = {
     { name = "big-mining-drill",        count = 40,   quality = "legendary" },
     { name = "offshore-pump",           count = 20,   quality = "legendary" },
     { name = "pumpjack",                count = 20,   quality = "legendary" },
-    { name = "pump",                    count = 50,   quality = "legendary" },
+    { name = "pump",                    count = 50,   quality = "normal" },
     { name = "pipe",                    count = 150,  quality = "normal" },
     { name = "pipe-to-ground",          count = 80,   quality = "normal" },
 
