@@ -68,6 +68,8 @@ Factorio 2.0 Mod（`LegendaryMechStart`），用 Lua 编写。仓库本身即是
 
 装备网格 **15 宽 × 17 高**（legendary `mech-armor`，下标从 0 开始）。`pack_equipment_grid` 按 wishlist 顺序逐件调 `find_first_fit(grid, w, h)` 从左上往右下扫第一个空矩形。**大件放前面**（2×4 外骨骼、4×4 核聚变反应堆），否则会被小件切碎后放不下。
 
+**wishlist 总占格必须 ≤ 255**（不含 `solar-panel` 这种填缝项）。`find_first_fit` 放不下时**静默跳过**该装备，不报错也不警告——`night-vision` / `belt-immunity` 这种 `count=1` 的小件超额时会直接消失。改任何 count 前先把每件 `count × width × height` 重新加一遍，逼近 255 时尤其要小心碎片化（小件的形状决定了实际可用空间小于面积差）。
+
 尺寸速查：
 - `fusion-reactor-equipment` 4×4；`exoskeleton-equipment` 2×4；
 - `personal-roboport-mk2` / `personal-laser-defense` / `energy-shield-mk2` / `night-vision` 都是 2×2；

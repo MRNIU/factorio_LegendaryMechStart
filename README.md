@@ -19,10 +19,10 @@ All items legendary; positions computed by a first-fit packer at runtime.
 | Category | Item | Count |
 | :-- | :-- | :-: |
 | Power | Fusion Reactor | 6 |
-| | Battery MK3 | 8 |
+| | Battery MK3 | 7 |
 | | Solar Panel | fills remaining 1×1 gaps |
 | Defense | Energy Shield MK2 | 4 |
-| | Personal Laser Defense | 4 |
+| | Personal Laser Defense | 3 |
 | Mobility | Exoskeleton | 10 |
 | | Belt Immunity | 1 |
 | Utility | Personal Roboport MK2 | 4 |

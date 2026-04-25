@@ -5,17 +5,23 @@
 -- 功率预算（传奇品质）：
 --   产能  6 × fusion-reactor-equipment = 37.5 MW
 --   稳态  ~10–15 MW（行走 + 机器人港巡航 + 偶发充护盾）
---   峰值  ~96 MW（4 × 机器人港 MK2 同时满充主导），靠 8 × battery-mk3 缓冲
+--   峰值  ~96 MW（4 × 机器人港 MK2 同时满充主导），靠 7 × battery-mk3 缓冲
 -- 网格  legendary mech-armor = 15 × 17 = 255 格
+--
+-- 网格预算（必须 ≤ 255）：
+--   exo 80 + fusion 96 + roboport 16 + shield 16 + laser 12 + nv 4
+--   + battery 14 + toolbelt 15 + belt-immunity 1 = 254；solar 填最后 1 格
+-- 改 wishlist 任何一项的 count 时记得重新核账，超 255 后面的小件会被
+-- find_first_fit 静默跳过（NV / belt-immunity 这种 count=1 的装备会消失）
 -- ============================================================================
 local EQUIPMENT_WISHLIST = {
     { name = "exoskeleton-equipment",            count = 10 }, -- 2×4
     { name = "fusion-reactor-equipment",         count = 6 },  -- 4×4
     { name = "personal-roboport-mk2-equipment",  count = 4 },  -- 2×2
     { name = "energy-shield-mk2-equipment",      count = 4 },  -- 2×2
-    { name = "personal-laser-defense-equipment", count = 4 },  -- 2×2
+    { name = "personal-laser-defense-equipment", count = 3 },  -- 2×2
     { name = "night-vision-equipment",           count = 1 },  -- 2×2
-    { name = "battery-mk3-equipment",            count = 8 },  -- 1×2
+    { name = "battery-mk3-equipment",            count = 7 },  -- 1×2
     { name = "toolbelt-equipment",               count = 5 },  -- 3×1，提供 +125 背包槽
     { name = "belt-immunity-equipment",          count = 1 },  -- 1×1
     { name = "solar-panel-equipment",            count = 99 }, -- 1×1 填剩余缝隙
