@@ -12,14 +12,14 @@ Factorio 2.0 Mod（`LegendaryMechStart`），用 Lua 编写。仓库本身即是
 
 本 Mod 是 NZH 维护的开局 Mod 家族的一员：
 
-- **`LegendaryMechStart`（本仓库）** — 传奇机甲 + 装备网格 + 个人包 + 团队资源箱
+- **`LegendaryMechStart`（本仓库）** — 传奇机甲 + 装备网格 + 个人包 + 团队资源箱 + 传奇蜘蛛
 - [`LegendaryShipStart`](https://github.com/MRNIU/factorio_LegendaryShipStart) — 预置传奇太空飞船
-- [`BestLanding`](https://github.com/MRNIU/factorio_BestLanding) — 着陆区清理 + 行星资源 + 传奇蜘蛛
+- [`BestLanding`](https://github.com/MRNIU/factorio_BestLanding) — 着陆区清理 + 行星资源 + 起始蓝图
 - [`nzh_factorio_mod`](https://github.com/MRNIU/nzh_factorio_mod) — 整合包，一键启用上面三个
 
 **如果发现本 Mod 要做的事和兄弟 Mod 重叠了**（比如"清理着陆区" vs `BestLanding`、"生成太空飞船" vs `LegendaryShipStart`），先停下问用户，不要在本仓库重复实现。
 
-和 `BestLanding` 交互时尤其要注意：它在 `on_init` 会在 spawn 附近铺一张几十万字符的蓝图 + 放一只传奇蜘蛛，会把玩家的实际落点推到几十瓦片外。本 Mod 的团队箱放置因此**锚定 `LuaForce::get_spawn_position(surface)`**（默认 `(0, 0)`）而不是 `player.position`。
+和 `BestLanding` 交互时尤其要注意：它在 `on_init` 会在 spawn 附近清地并铺一张几十万字符的蓝图，会把玩家的实际落点推到几十瓦片外。本 Mod 的团队箱放置因此**锚定 `LuaForce::get_spawn_position(surface)`**（默认 `(0, 0)`）而不是 `player.position`。传奇蜘蛛生成延后一 tick，避免抢在 `BestLanding` 清理流水线之前落地后又被删掉。
 
 ## 常用命令
 
@@ -31,13 +31,16 @@ Factorio 2.0 Mod（`LegendaryMechStart`），用 Lua 编写。仓库本身即是
 
 ## 架构
 
-两个 Lua 文件，按职责拆开：
+多个 Lua 文件，按职责拆开：
 
 ### `control.lua` — 事件注册 + 状态机
 
-- `on_init` → 初始化 `storage.given_items = {}`、`storage.team_cache_placed = false`。
+- `on_init` → 初始化 `storage.given_items = {}`、`storage.team_cache_placed = false`、蜘蛛生成队列，并把 Nauvis 加入待生成队列。
 - `on_player_created` → 调 `AddStartItem`，已发过个人包的玩家直接跳过。
 - `on_cutscene_cancelled` + `on_cutscene_finished` → 调 `ForceAddStartItem`，**有意再清背包、再发个人包**（用来抹掉 Freeplay 开场动画结束时塞给 host 的手枪 + 手枪子弹）。team cache 只看 `storage.team_cache_placed`，不会重发。
+- `on_surface_created` → 对新行星 surface 加入蜘蛛生成队列；太空平台跳过。
+- `on_tick` → 只在队列非空时临时注册，下一 tick 生成蜘蛛，然后自动注销。这样等兄弟 Mod 完成同一事件里的清理 / 蓝图后再找落脚点。
+- `on_runtime_mod_setting_changed` → 打开蜘蛛开关时，扫描已有行星 surface，为还没处理过的 surface 排队。
 - 首个玩家还会触发 `legendary_items.place_team_cache` 一次，在 spawn 附近生成传奇钢箱并塞入团队资源。
 
 持久化状态：
@@ -46,6 +49,8 @@ Factorio 2.0 Mod（`LegendaryMechStart`），用 Lua 编写。仓库本身即是
 | :-- | :-- |
 | `storage.given_items[player_index] = true` | 这个玩家已经发过个人包 |
 | `storage.team_cache_placed : bool` | 整档的团队资源箱是否已经落地 |
+| `storage.pending_spider_surfaces[index] = true` | 下一 tick 需要尝试生成蜘蛛的 surface |
+| `storage.spawned_spider_surfaces[index] = true` | 该 surface 已经生成或检测到起始蜘蛛 |
 
 ### `legendary_items.lua` — 玩法逻辑
 
@@ -60,13 +65,26 @@ Factorio 2.0 Mod（`LegendaryMechStart`），用 Lua 编写。仓库本身即是
 
 | 表 | 含义 |
 | :-- | :-- |
-| `EQUIPMENT_WISHLIST` | 机甲装备按优先级排的 `{name, count}` 列表，`pack_equipment_grid` 用 first-fit 自动算坐标 |
+| `EQUIPMENT_WISHLIST` | 机甲装备按优先级排的 `{name, count}` 列表，`equipment_grid.pack` 用 first-fit 自动算坐标 |
 | `PERSONAL_WISHLIST` | 每个玩家都发的个人包（`{name, count, quality}`） |
 | `TEAM_WISHLIST` | 整档只发一次的团队资源（`{name, count, quality}`） |
 
+### `legendary_spider.lua` — 行星传奇蜘蛛
+
+- `spawn_on_surface(surface, force)` 在 `(0,0)` 附近找不碰撞位置生成传奇 `spidertron`。
+- 搜索半径按 `{128, 256, 512}` 逐级放宽，三档都失败才退回 `(0,0)` 并写 log。
+- 生成前会在 512 半径内检查是否已有玩家势力 `spidertron`，用于避免老存档从 `BestLanding` 迁移过来后重复生成。
+- 蜘蛛装备网格走 `equipment_grid.pack`，清单正好填满 legendary spidertron 的 15×11 网格。
+- trunk / ammo 插入前检查 `prototypes.item`；trunk 插不满会写 log。
+
+### `equipment_grid.lua` — 通用 first-fit 装箱
+
+- `pack(grid, wishlist, default_quality)` 读取 `prototypes.equipment[name].shape`，按 wishlist 顺序从左上到右下找第一个空矩形。
+- 玩家机甲和蜘蛛机甲都用这套逻辑。改装备数量时优先调整 wishlist，不手写坐标。
+
 ### 装备网格自动装箱
 
-装备网格 **15 宽 × 17 高**（legendary `mech-armor`，下标从 0 开始）。`pack_equipment_grid` 按 wishlist 顺序逐件调 `find_first_fit(grid, w, h)` 从左上往右下扫第一个空矩形。**大件放前面**（2×4 外骨骼、4×4 核聚变反应堆），否则会被小件切碎后放不下。
+装备网格 **15 宽 × 17 高**（legendary `mech-armor`，下标从 0 开始）。`equipment_grid.pack` 按 wishlist 顺序逐件调 `find_first_fit(grid, w, h)` 从左上往右下扫第一个空矩形。**大件放前面**（2×4 外骨骼、4×4 核聚变反应堆），否则会被小件切碎后放不下。
 
 **wishlist 总占格必须 ≤ 255**（不含 `solar-panel` 这种填缝项）。`find_first_fit` 放不下时**静默跳过**该装备，不报错也不警告——`night-vision` / `belt-immunity` 这种 `count=1` 的小件超额时会直接消失。改任何 count 前先把每件 `count × width × height` 重新加一遍，逼近 255 时尤其要小心碎片化（小件的形状决定了实际可用空间小于面积差）。
 
@@ -89,11 +107,11 @@ Factorio 2.0 Mod（`LegendaryMechStart`），用 Lua 编写。仓库本身即是
 
 ### Quality 系统
 
-每个 wishlist 条目都显式写 `quality`；没写的话 `pack_equipment_grid` / `deliver_wishlist` / `dump_items_into_chests` 都默认 `"legendary"`。**生产建筑是传奇、物流基础设施（belt、pipe、chest、pole）刻意保持普通**——这是预期的平衡，别未经用户同意就把什么都升传奇。
+每个 wishlist 条目都显式写 `quality`；没写的话 `equipment_grid.pack` / `deliver_wishlist` / `dump_items_into_chests` 都默认 `"legendary"`。**生产建筑是传奇、物流基础设施（belt、pipe、chest、pole）刻意保持普通**——这是预期的平衡，别未经用户同意就把什么都升传奇。
 
 ### Prototype 存在性检查
 
-`deliver_wishlist`、`place_team_cache`、`pack_equipment_grid` 在每次插入/放置前都先查 `prototypes.item[name]` 或 `prototypes.equipment[name]`；这样 DLC 被禁用或 prototype 改名时对应条目会静默跳过而不是崩溃。加新物品时保留这个检查。
+`deliver_wishlist`、`place_team_cache`、`equipment_grid.pack`、蜘蛛 trunk 填充在每次插入/放置前都先查 `prototypes.item[name]` 或 `prototypes.equipment[name]`；这样 DLC 被禁用或 prototype 改名时对应条目会静默跳过而不是崩溃。加新物品时保留这个检查。
 
 ## Factorio API 参考
 
@@ -107,9 +125,11 @@ Factorio 2.0 Mod（`LegendaryMechStart`），用 Lua 编写。仓库本身即是
 - `LuaPlayer::get_inventory`、`defines.inventory.character_main` / `character_armor` / `character_guns` / `character_ammo` / `chest`
 - `LuaInventory::insert` / `clear`、`LuaItemStack::set_stack`
 - `LuaEquipmentGrid::put` / `get`、`width` / `height`、`prototypes.equipment[<name>].shape.{width,height}`
-- `LuaSurface::find_non_colliding_position` / `create_entity` / `spill_item_stack`
+- `LuaSurface::find_non_colliding_position` / `find_entities_filtered` / `create_entity` / `spill_item_stack`
 - `LuaForce::get_spawn_position(surface)`（用它而不是 `player.position` 作团队箱圆心）
-- `defines.events.on_init` / `on_player_created` / `on_cutscene_cancelled` / `on_cutscene_finished`
+- `defines.inventory.spider_trunk` / `spider_ammo`
+- `settings.global`、`defines.events.on_runtime_mod_setting_changed`
+- `defines.events.on_init` / `on_configuration_changed` / `on_player_created` / `on_cutscene_cancelled` / `on_cutscene_finished` / `on_surface_created` / `on_tick`
 
 ## 本地化
 

@@ -1,11 +1,16 @@
 -- Copyright The MRNIU/factorio_LegendaryMechStart Contributors
 
-local legendary_items = require("legendary_items")
+local legendary_items  = require("legendary_items")
+local legendary_spider = require("legendary_spider")
+
+local SETTING_SPAWN_SPIDERTRON = "LegendaryMechStart-spawn-spidertron"
 
 -- ============================================================================
 -- 持久化状态
 --   storage.given_items[player_index] = true  该玩家已经发过个人包
 --   storage.team_cache_placed                 整档只一次：团队箱是否已落地
+--   storage.pending_spider_surfaces[index]    下一 tick 再生成蜘蛛，避开清理流水线
+--   storage.spawned_spider_surfaces[index]    该 surface 已经处理过蜘蛛生成
 --
 -- 发放模型：
 --   - 每个玩家 on_player_created 时拿 PERSONAL 包（进背包）
@@ -18,11 +23,65 @@ local legendary_items = require("legendary_items")
 
 local function ensure_storage()
     if not storage.given_items then storage.given_items = {} end
+    if storage.team_cache_placed == nil then storage.team_cache_placed = false end
+    if not storage.pending_spider_surfaces then storage.pending_spider_surfaces = {} end
+    if not storage.spawned_spider_surfaces then storage.spawned_spider_surfaces = {} end
+end
+
+local OnTick
+
+local function spawn_spidertron_enabled()
+    local s = settings.global[SETTING_SPAWN_SPIDERTRON]
+    return s == nil or s.value
+end
+
+local function queue_spider(surface)
+    ensure_storage()
+    if not spawn_spidertron_enabled() then return end
+    if not (surface and surface.valid) then return end
+    if storage.spawned_spider_surfaces[surface.index] then return end
+    if storage.pending_spider_surfaces[surface.index] then return end
+
+    storage.pending_spider_surfaces[surface.index] = true
+    script.on_event(defines.events.on_tick, OnTick)
+end
+
+local function queue_all_planet_surfaces()
+    for _, surface in pairs(game.surfaces) do
+        if surface.name == "nauvis" or surface.planet then
+            queue_spider(surface)
+        end
+    end
 end
 
 local function OnInit()
-    storage.given_items       = {}
-    storage.team_cache_placed = false
+    storage.given_items              = {}
+    storage.team_cache_placed        = false
+    storage.pending_spider_surfaces  = {}
+    storage.spawned_spider_surfaces  = {}
+    queue_spider(game.surfaces.nauvis)
+end
+
+OnTick = function()
+    ensure_storage()
+    for surface_index in pairs(storage.pending_spider_surfaces) do
+        storage.pending_spider_surfaces[surface_index] = nil
+
+        local surface = game.surfaces[surface_index]
+        if surface and surface.valid and spawn_spidertron_enabled() then
+            local ok, result = pcall(legendary_spider.spawn_on_surface, surface, game.forces.player)
+            if ok then
+                storage.spawned_spider_surfaces[surface_index] = result and true or nil
+            else
+                log(("[LegendaryMechStart] spider stage failed on %s: %s")
+                    :format(surface.name, tostring(result)))
+            end
+        end
+    end
+
+    if not next(storage.pending_spider_surfaces) then
+        script.on_event(defines.events.on_tick, nil)
+    end
 end
 
 local function give(player_index)
@@ -69,6 +128,21 @@ end
 
 --------------------------------------------------------------------------------------
 script.on_init(OnInit)
+script.on_configuration_changed(function()
+    ensure_storage()
+    queue_all_planet_surfaces()
+end)
 script.on_event(defines.events.on_player_created, AddStartItem)
 script.on_event(defines.events.on_cutscene_cancelled, ForceAddStartItem)
 script.on_event(defines.events.on_cutscene_finished, ForceAddStartItem)
+script.on_event(defines.events.on_surface_created, function(event)
+    local surface = game.surfaces[event.surface_index]
+    if surface and surface.planet then
+        queue_spider(surface)
+    end
+end)
+script.on_event(defines.events.on_runtime_mod_setting_changed, function(event)
+    if event.setting == SETTING_SPAWN_SPIDERTRON and spawn_spidertron_enabled() then
+        queue_all_planet_surfaces()
+    end
+end)

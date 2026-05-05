@@ -1,4 +1,12 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.4.0
+Date: 2026-05-05
+  Changes:
+    - Moved fully-equipped legendary spidertron spawning from BestLanding into LegendaryMechStart, keeping the existing one-spidertron-per-planet behavior.
+    - Added a runtime-global map setting to disable future legendary spidertron spawns without removing already spawned spidertrons.
+    - Shared the first-fit equipment-grid packer between mech armor and spidertron loadouts; the spidertron wishlist now fills the legendary 15x11 grid exactly.
+
+---------------------------------------------------------------------------------------------------
 Version: 1.3.1
 Date: 2026-04-25
   Changes:

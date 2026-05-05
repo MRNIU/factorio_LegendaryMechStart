@@ -1,12 +1,13 @@
 # Legendary Mech Start
 
-A Factorio 2.0 Space Age mod that drops every player into a fully-equipped legendary mech armor at spawn and seeds the team with enough industrial gear to go interplanetary on day one.
+A Factorio 2.0 Space Age mod that drops every player into fully-equipped legendary mech armor, seeds the team with enough industrial gear to go interplanetary on day one, and can place a legendary spidertron on each planet.
 
 ## What it does
 
 - **Legendary mech armor on spawn** for every player (single-player, host and late joiners in multiplayer). The equipment grid is packed automatically from a prioritised wishlist, so adding or removing items only takes editing the list.
 - **Personal starter kit** in each player's inventory: bootstrap materials, personal construction and logistic robots, defensive turrets, temporary wiring and piping, spare ammunition and repair packs.
 - **Team resource cache** placed once per save into legendary steel chests at map spawn: rocket silo, space-platform starter pack, all end-game production buildings (foundry, electromagnetic plant, biochamber, cryogenic plant, biolab, ...), modules, 4000 turbo belts, the legendary solar/accumulator array, etc. The placer is non-destructive — it only uses open tiles within 15 tiles of `(0, 0)` and spills the remainder on the ground if the spawn area is crowded.
+- **Optional legendary spidertron on each planet**: a fully-equipped legendary spidertron is spawned once per planet surface, pre-loaded with robots, power, logistics, defenses, rockets, and repair packs. A map setting can disable future spidertron spawns without removing existing ones.
 - **Freeplay intro cleanup**: the mod re-runs after the cutscene finishes, so the default pistol and firearm magazines Freeplay hands out are removed.
 - **Quality-aware**: every inserted stack declares its `quality` explicitly. End-game production buildings are legendary; bulk infrastructure (belts, pipes, chests, poles) stays normal on purpose.
 - **Multiplayer-aware**: the team cache is deposited on the first `on_player_created` in the save and tracked with `storage.team_cache_placed`, so cutscene replays and late joiners never duplicate it.
@@ -30,6 +31,22 @@ All items legendary; positions computed by a first-fit packer at runtime.
 | | Toolbelt | 5 (provides +125 main-inventory slots) |
 
 Steady-state draw is ~10–15 MW; peak (all four roboports charging simultaneously) approaches ~96 MW and is buffered by the MK3 batteries. Six legendary fusion reactors deliver 37.5 MW sustained.
+
+## Spidertron grid (legendary `spidertron`, 15 × 11)
+
+All items legendary; positions are computed by the same first-fit packer used for mech armor. The current wishlist uses exactly 165 cells.
+
+| Category | Item | Count |
+| :-- | :-- | :-: |
+| Power | Fusion Reactor | 4 |
+| | Battery MK3 | 5 |
+| Mobility | Exoskeleton | 6 |
+| Defense | Energy Shield MK2 | 3 |
+| | Personal Laser Defense | 2 |
+| Utility | Personal Roboport MK2 | 2 |
+| | Toolbelt | 5 |
+
+The toolbelts are intentional: the starter spidertron carries more than a normal spidertron trunk comfortably holds once robots, power parts, logistics chests, rockets, and repair packs are included.
 
 ## Personal pack (every player's inventory)
 
@@ -108,6 +125,7 @@ Steady-state draw is ~10–15 MW; peak (all four roboports charging simultaneous
 
 - **Total stacks** (first player: personal + everything they personally carry) fit well under the 330 main-inventory slots granted by legendary mech-armor (+125) and five legendary toolbelts (+125). The inventory delivery therefore has no overflow fallback.
 - **Team cache placement** is anchored to `LuaForce::get_spawn_position(surface)` — the force's configured spawn (`(0, 0)` on vanilla Nauvis) — rather than the character's actual position. This keeps the cache at map origin even when a sibling mod (e.g. [BestLanding](https://github.com/MRNIU/factorio_BestLanding)) pushes the player far from spawn by filling the area with a landing blueprint.
+- **Spidertron placement** is delayed until the next tick after a surface appears. This lets sibling mods finish landing-area cleanup and blueprint placement before the spidertron searches for a non-colliding position near `(0, 0)`.
 - If no free tile exists within 15 tiles of `(0, 0)`, any items that could not be placed into a chest are spilled on the ground — the placer never destroys existing entities.
 
 ## Installation

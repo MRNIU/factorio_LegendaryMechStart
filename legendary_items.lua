@@ -1,5 +1,7 @@
 -- Copyright The MRNIU/factorio_LegendaryMechStart Contributors
 
+local equipment_grid = require("equipment_grid")
+
 -- ============================================================================
 -- 装备清单（first-fit 装箱；大件优先避免被切碎）
 -- 功率预算（传奇品质）：
@@ -151,49 +153,6 @@ local TEAM_CHEST_QUALITY = "legendary"
 local TEAM_CHEST_RADIUS  = 15
 
 -- ============================================================================
--- 装备网格 first-fit 装箱
--- ============================================================================
-
-local function is_rect_free(grid, x, y, w, h)
-    for dy = 0, h - 1 do
-        for dx = 0, w - 1 do
-            if grid.get({ x + dx, y + dy }) then
-                return false
-            end
-        end
-    end
-    return true
-end
-
-local function find_first_fit(grid, w, h)
-    for y = 0, grid.height - h do
-        for x = 0, grid.width - w do
-            if is_rect_free(grid, x, y, w, h) then
-                return { x, y }
-            end
-        end
-    end
-    return nil
-end
-
-local function pack_equipment_grid(grid, wishlist, default_quality)
-    default_quality = default_quality or "legendary"
-    for _, spec in ipairs(wishlist) do
-        local proto = prototypes.equipment[spec.name]
-        if proto then
-            local w       = proto.shape.width
-            local h       = proto.shape.height
-            local quality = spec.quality or default_quality
-            for _ = 1, spec.count do
-                local pos = find_first_fit(grid, w, h)
-                if not pos then break end
-                grid.put({ name = spec.name, position = pos, quality = quality })
-            end
-        end
-    end
-end
-
--- ============================================================================
 -- 背包发放（个人包）
 -- 容量充足：80(基础) + 125(mech-armor) + 125(5×toolbelt) = 330 槽；
 -- 个人包约 16 堆，不需要溢出处理。
@@ -309,7 +268,7 @@ local function equip_mech_armor(player)
     armor_inv.insert({ name = "mech-armor", count = 1, quality = "legendary" })
     local stack = armor_inv[1]
     if stack and stack.valid_for_read and stack.grid then
-        pack_equipment_grid(stack.grid, EQUIPMENT_WISHLIST, "legendary")
+        equipment_grid.pack(stack.grid, EQUIPMENT_WISHLIST, "legendary")
     end
 end
 
