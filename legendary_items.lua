@@ -1,6 +1,7 @@
 -- Copyright The MRNIU/factorio_LegendaryMechStart Contributors
 
 local equipment_grid = require("equipment_grid")
+local starter_loadouts = require("starter_loadouts")
 
 -- ============================================================================
 -- 装备清单（first-fit 装箱；大件优先避免被切碎）
@@ -58,96 +59,12 @@ local PERSONAL_WISHLIST = {
     { name = "laser-turret",            count = 20,  quality = "normal" },
 }
 
--- ============================================================================
--- 团队资源：一整档只生成一次，装进出生点附近的传奇钢箱
--- ============================================================================
-local TEAM_WISHLIST = {
-    -- 原料（工业量）
-    { name = "iron-plate",              count = 400,  quality = "normal" },
-    { name = "copper-plate",            count = 400,  quality = "normal" },
-    { name = "steel-plate",             count = 150,  quality = "normal" },
-    { name = "stone-brick",             count = 150,  quality = "normal" },
-    { name = "concrete",                count = 450,  quality = "normal" },
-    { name = "landfill",                count = 500,  quality = "normal" },
-    { name = "plastic-bar",             count = 200,  quality = "normal" },
-    { name = "sulfur",                  count = 200,  quality = "normal" },
-    { name = "coal",                    count = 400,  quality = "normal" },
-
-    -- 启动电力链
-    { name = "big-electric-pole",       count = 50,   quality = "normal" },
-    { name = "substation",              count = 100,  quality = "normal" },     -- 2 组：远距离骨架
-    { name = "substation",              count = 50,   quality = "legendary" },  -- 1 组：核心节点 VIP
-    { name = "solar-panel",             count = 400,  quality = "legendary" },
-    { name = "accumulator",             count = 400,  quality = "legendary" },
-
-    -- 团队物流网
-    { name = "construction-robot",      count = 100,  quality = "normal" },
-    { name = "logistic-robot",          count = 150,  quality = "normal" },
-    { name = "roboport",                count = 20,   quality = "legendary" },
-    { name = "steel-chest",             count = 50,   quality = "normal" },
-    { name = "active-provider-chest",   count = 50,   quality = "normal" },
-    { name = "passive-provider-chest",  count = 50,   quality = "normal" },
-    { name = "storage-chest",           count = 50,   quality = "normal" },
-    { name = "buffer-chest",            count = 50,   quality = "normal" },
-    { name = "requester-chest",         count = 50,   quality = "normal" },
-
-    -- 机械臂
-    { name = "long-handed-inserter",    count = 200,  quality = "normal" },
-    { name = "fast-inserter",           count = 200,  quality = "normal" },
-    { name = "bulk-inserter",           count = 50,   quality = "normal" },
-    { name = "stack-inserter",          count = 50,   quality = "normal" },
-
-    -- 传送带（turbo 贯穿）
-    { name = "turbo-transport-belt",    count = 4000, quality = "normal" },
-    { name = "turbo-underground-belt",  count = 200,  quality = "normal" },
-    { name = "turbo-splitter",          count = 100,  quality = "normal" },
-
-    -- 生产设施（全传奇）
-    { name = "assembling-machine-3",    count = 100,  quality = "legendary" },
-    { name = "electric-furnace",        count = 100,  quality = "legendary" },
-    { name = "oil-refinery",            count = 10,   quality = "legendary" },
-    { name = "chemical-plant",          count = 20,   quality = "legendary" },
-    { name = "foundry",                 count = 20,   quality = "legendary" },
-    { name = "electromagnetic-plant",   count = 20,   quality = "legendary" },
-    { name = "biochamber",              count = 20,   quality = "legendary" },
-    { name = "cryogenic-plant",         count = 20,   quality = "legendary" },
-    { name = "biolab",                  count = 10,   quality = "legendary" },
-
-    -- 模块 & 信标
-    { name = "beacon",                  count = 20,   quality = "legendary" },
-    { name = "speed-module-3",          count = 200,  quality = "legendary" },
-    { name = "efficiency-module-3",     count = 100,  quality = "legendary" },
-    { name = "productivity-module-3",   count = 200,  quality = "legendary" },
-
-    -- 采矿 & 流体
-    { name = "big-mining-drill",        count = 40,   quality = "legendary" },
-    { name = "offshore-pump",           count = 20,   quality = "legendary" },
-    { name = "pumpjack",                count = 20,   quality = "legendary" },
-    { name = "pump",                    count = 50,   quality = "normal" },
-    { name = "pipe",                    count = 150,  quality = "normal" },
-    { name = "pipe-to-ground",          count = 80,   quality = "normal" },
-
-    -- 太空进程
-    { name = "rocket-silo",                 count = 1,   quality = "legendary" },
-    { name = "cargo-landing-pad",           count = 1,   quality = "normal" },
-    { name = "space-platform-starter-pack", count = 1,   quality = "normal" },
-    { name = "low-density-structure",       count = 500, quality = "normal" },
-    { name = "rocket-fuel",                 count = 200, quality = "normal" },
-    { name = "processing-unit",             count = 400, quality = "normal" },
-
-    -- 军事 & 杂项
-    { name = "uranium-rounds-magazine", count = 800, quality = "legendary" },
-    { name = "uranium-235",             count = 40,  quality = "normal" }, -- 一组 Kovarex 种子
-    { name = "laser-turret",            count = 80,  quality = "normal" },
-    { name = "repair-pack",             count = 50,  quality = "normal" },
-}
-
 local WEAPON_FILL = { name = "submachine-gun", count = 1, quality = "legendary" }
 local AMMO_FILL   = { name = "uranium-rounds-magazine", count = 200, quality = "legendary" }
 
--- 团队资源箱的类型和品质；传奇钢箱 ≈ 48 × 2.5 = 120 槽/箱，~240 堆团队资源 → 2–3 箱
+-- 蜘蛛关闭时的团队资源箱；按规则箱子本身保持普通品质。
 local TEAM_CHEST_NAME    = "steel-chest"
-local TEAM_CHEST_QUALITY = "legendary"
+local TEAM_CHEST_QUALITY = "normal"
 -- 搜索半径：只在玩家视野范围内找空位。如果 sibling mod（BestLanding 等）
 -- 把近处全填满了，就让剩下的物品 spill 到地上，不破坏既有实体。
 local TEAM_CHEST_RADIUS  = 15
@@ -232,7 +149,7 @@ end
 -- 返回生成的箱子数；半径内放不下的条目会 spill 到 center
 local function place_team_cache(surface, center, force)
     local items = {}
-    for _, spec in ipairs(TEAM_WISHLIST) do
+    for _, spec in ipairs(starter_loadouts.team_cache_wishlist()) do
         if prototypes.item[spec.name] then
             items[#items + 1] = {
                 name    = spec.name,

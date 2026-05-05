@@ -6,11 +6,11 @@ A Factorio 2.0 Space Age mod that drops every player into fully-equipped legenda
 
 - **Legendary mech armor on spawn** for every player (single-player, host and late joiners in multiplayer). The equipment grid is packed automatically from a prioritised wishlist, so adding or removing items only takes editing the list.
 - **Personal starter kit** in each player's inventory: bootstrap materials, personal construction and logistic robots, defensive turrets, temporary wiring and piping, spare ammunition and repair packs.
-- **Team resource cache** placed once per save into legendary steel chests at map spawn: rocket silo, space-platform starter pack, all end-game production buildings (foundry, electromagnetic plant, biochamber, cryogenic plant, biolab, ...), modules, 4000 turbo belts, the legendary solar/accumulator array, etc. The placer is non-destructive — it only uses open tiles within 15 tiles of `(0, 0)` and spills the remainder on the ground if the spawn area is crowded.
-- **Optional legendary spidertron on each planet**: a fully-equipped legendary spidertron is spawned once per planet surface, pre-loaded with robots, power, logistics, defenses, rockets, and repair packs. A map setting can disable future spidertron spawns without removing existing ones.
+- **Team resource cache** delivered once per save. If legendary spidertrons are enabled, the Nauvis team resources are loaded into the Nauvis spidertron trunk instead of being placed on the ground. If spidertrons are disabled, the same Nauvis cache is placed into normal steel chests near map spawn.
+- **Optional legendary spidertron on each planet**: a fully-equipped legendary spidertron is spawned once per planet surface, pre-loaded with a common maintenance kit plus planet-specific cargo. Nauvis/Vulcanus/Gleba also receive a normal-quality defense package and dedicated spidertron ammo-slot rockets.
 - **Freeplay intro cleanup**: the mod re-runs after the cutscene finishes, so the default pistol and firearm magazines Freeplay hands out are removed.
-- **Quality-aware**: every inserted stack declares its `quality` explicitly. End-game production buildings are legendary; bulk infrastructure (belts, pipes, chests, poles) stays normal on purpose.
-- **Multiplayer-aware**: the team cache is deposited on the first `on_player_created` in the save and tracked with `storage.team_cache_placed`, so cutscene replays and late joiners never duplicate it.
+- **Quality-aware**: every inserted stack declares its `quality` explicitly. Core production assets, mining drills, pumpjacks, recyclers, agricultural towers, modules, and beacons are legendary; bulk infrastructure, robots, roboports, chests, inserters, power equipment, weapons, ammo, and consumables stay normal on purpose.
+- **Multiplayer-aware**: the team resources are tracked with `storage.team_cache_placed`, so cutscene replays and late joiners never duplicate them.
 - **Safe on missing prototypes**: every insert checks `prototypes.item[name]` / `prototypes.equipment[name]` first, so disabled DLC or renamed prototypes are silently skipped rather than crashing the save.
 
 ## Equipment grid (legendary `mech-armor`, 15 × 17)
@@ -66,67 +66,81 @@ The toolbelts are intentional: the starter spidertron carries more than a normal
 | | Pipe to Ground | Normal | 20 |
 | Defense | Laser Turret | Normal | 20 |
 
-## Team cache (legendary chests at map spawn, once per save)
+## Spidertron cargo and fallback team cache
 
-| Category | Item | Quality | Count |
+All planet spidertrons receive the common maintenance kit below. If spidertron spawning is disabled, the fallback Nauvis team cache uses the same common kit, defense kit, and Nauvis-specific cargo in normal steel chests near map spawn.
+
+| Scope | Item | Quality | Count |
 | :-- | :-- | :-: | :-: |
-| Raw materials | Iron / Copper Plate | Normal | 400 each |
-| | Steel Plate / Stone Brick | Normal | 150 each |
-| | Concrete / Landfill | Normal | 450 / 500 |
-| | Plastic Bar / Sulfur | Normal | 200 each |
-| | Coal | Normal | 400 |
-| Starter power | Big Electric Pole | Normal | 50 |
-| | Substation | Normal | 100 |
-| | Substation | Legendary | 50 |
-| | Solar Panel / Accumulator | Legendary | 400 each |
-| Logistics network | Construction Robot | Normal | 100 |
-| | Logistic Robot | Normal | 150 |
-| | Roboport | Legendary | 20 |
-| | Steel Chest + 5 Logistic Chest variants | Normal | 50 each |
-| Inserters | Long-handed / Fast | Normal | 200 each |
-| | Bulk / Stack | Normal | 50 each |
-| Transport | Turbo Transport Belt | Normal | 4000 |
-| | Turbo Underground / Splitter | Normal | 200 / 100 |
-| Production | Assembling Machine 3 | Legendary | 100 |
-| | Electric Furnace | Legendary | 100 |
-| | Oil Refinery | Legendary | 10 |
-| | Chemical Plant | Legendary | 20 |
-| | Foundry | Legendary | 20 |
-| | Electromagnetic Plant | Legendary | 20 |
-| | Biochamber | Legendary | 20 |
-| | Cryogenic Plant | Legendary | 20 |
-| | Biolab | Legendary | 10 |
-| Modules & Beacons | Beacon | Legendary | 20 |
-| | Speed / Efficiency / Productivity Module 3 | Legendary | 200 / 100 / 200 |
-| Mining & Fluids | Big Mining Drill | Legendary | 40 |
-| | Offshore Pump / Pumpjack | Legendary | 20 each |
-| | Pump | Normal | 50 |
-| | Pipe / Pipe to Ground | Normal | 150 / 80 |
-| Space | Rocket Silo | Legendary | 1 |
+| Common | Construction Robot | Normal | 500 |
+| | Logistic Robot | Normal | 200 |
+| | Roboport | Normal | 20 |
+| | Repair Pack | Normal | 200 |
+| | Big Electric Pole / Substation | Normal | 50 each |
+| | Steel / Passive Provider / Storage / Requester Chest | Normal | 50 each |
+| | Fast Inserter | Normal | 100 |
+| | Bulk / Stack Inserter | Normal | 50 each |
+| Defense: Nauvis/Vulcanus/Gleba only | Rocket / Explosive Rocket | Normal | 200 each |
+| | Atomic Bomb | Normal | 10 |
+| | Laser Turret | Normal | 50 |
+| | Spidertron ammo slot: Rocket | Normal | 400 |
+
+| Planet | Item | Quality | Count |
+| :-- | :-- | :-: | :-: |
+| Nauvis | Rocket Silo | Legendary | 1 |
 | | Cargo Landing Pad | Normal | 1 |
 | | Space Platform Starter Pack | Normal | 1 |
-| | Low Density Structure | Normal | 500 |
-| | Rocket Fuel | Normal | 200 |
-| | Processing Unit | Normal | 400 |
-| Military | Uranium Rounds Magazine | Legendary | 800 |
-| | Uranium-235 (Kovarex seed) | Normal | 40 |
-| | Laser Turret | Normal | 80 |
-| | Repair Pack | Normal | 50 |
+| | Assembling Machine 3 / Electric Furnace | Legendary | 100 each |
+| | Oil Refinery | Legendary | 10 |
+| | Chemical Plant / Foundry / Electromagnetic Plant / Biochamber / Cryogenic Plant | Legendary | 20 each |
+| | Biolab | Legendary | 10 |
+| | Beacon | Legendary | 20 |
+| | Speed / Productivity / Efficiency Module 3 | Legendary | 200 / 200 / 100 |
+| | Big Mining Drill | Legendary | 40 |
+| | Pumpjack | Legendary | 20 |
+| | Offshore Pump | Normal | 20 |
+| | Turbo Transport Belt | Normal | 4000 |
+| | Turbo Underground Belt / Turbo Splitter | Normal | 200 / 100 |
+| Vulcanus | Foundry / Big Mining Drill | Legendary | 30 each |
+| | Calcite | Normal | 1000 |
+| | Tungsten Ore / Tungsten Plate / Tungsten Carbide | Normal | 500 each |
+| | Carbon | Normal | 500 |
+| | Pipe / Pipe to Ground / Pump | Normal | 300 / 150 / 50 |
+| | Foundation | Normal | 200 |
+| Fulgora | Recycler | Legendary | 50 |
+| | Electromagnetic Plant | Legendary | 30 |
+| | Lightning Rod / Lightning Collector | Normal | 100 / 50 |
+| | Accumulator / Scrap | Normal | 1000 each |
+| | Holmium Ore / Holmium Plate | Normal | 500 each |
+| | Superconductor / Supercapacitor | Normal | 200 each |
+| Gleba | Biochamber / Agricultural Tower | Legendary | 30 each |
+| | Heating Tower / Rocket Turret | Normal | 10 / 20 |
+| | Carbon Fiber / Landfill | Normal | 200 / 500 |
+| Aquilo | Cryogenic Plant | Legendary | 30 |
+| | Heating Tower | Normal | 20 |
+| | Heat Pipe | Normal | 500 |
+| | Heat Exchanger / Steam Turbine | Normal | 50 each |
+| | Rocket Fuel / Ice Platform | Normal | 500 each |
+| | Concrete / Refined Concrete | Normal | 1000 each |
+| | Lithium / Lithium Plate | Normal | 500 each |
+| | Quantum Processor | Normal | 100 |
+| | Fusion Reactor / Fusion Generator / Fusion Power Cell | Normal | 2 / 8 / 100 |
 
 ## Multiplayer behaviour
 
-| Event | Personal pack | Team chests |
+| Event | Personal pack | Team resources |
 | :-- | :-: | :-: |
-| Host / single player, first `on_player_created` | re-granted | spawned near `(0, 0)` |
-| Host `on_cutscene_finished` (wipes Freeplay's pistol) | re-granted | already placed, not re-spawned |
-| Late joiner `on_player_created` | granted | already placed, not re-spawned |
+| Host / single player, first `on_player_created` | re-granted | queued for Nauvis spidertron, or chests if spidertrons are disabled |
+| Host `on_cutscene_finished` (wipes Freeplay's pistol) | re-granted | already delivered, not duplicated |
+| Late joiner `on_player_created` | granted | already delivered, not duplicated |
 
 ## Design notes
 
-- **Total stacks** (first player: personal + everything they personally carry) fit well under the 330 main-inventory slots granted by legendary mech-armor (+125) and five legendary toolbelts (+125). The inventory delivery therefore has no overflow fallback.
-- **Team cache placement** is anchored to `LuaForce::get_spawn_position(surface)` — the force's configured spawn (`(0, 0)` on vanilla Nauvis) — rather than the character's actual position. This keeps the cache at map origin even when a sibling mod (e.g. [BestLanding](https://github.com/MRNIU/factorio_BestLanding)) pushes the player far from spawn by filling the area with a landing blueprint.
+- **Total personal stacks** fit well under the 330 main-inventory slots granted by legendary mech-armor (+125) and five legendary toolbelts (+125). The personal inventory delivery therefore has no overflow fallback.
+- **Fallback team cache placement** is anchored to `LuaForce::get_spawn_position(surface)` — the force's configured spawn (`(0, 0)` on vanilla Nauvis) — rather than the character's actual position. This keeps the cache at map origin even when a sibling mod (e.g. [BestLanding](https://github.com/MRNIU/factorio_BestLanding)) pushes the player far from spawn by filling the area with a landing blueprint.
 - **Spidertron placement** is delayed until the next tick after a surface appears. This lets sibling mods finish landing-area cleanup and blueprint placement before the spidertron searches for a non-colliding position near `(0, 0)`.
-- If no free tile exists within 15 tiles of `(0, 0)`, any items that could not be placed into a chest are spilled on the ground — the placer never destroys existing entities.
+- **Spidertron trunk capacity** is checked through `LuaInventory::insert`; partial inserts are logged. The toolbelt equipment is installed before trunk cargo is inserted so the trunk sees the grid inventory bonus.
+- If spidertrons are disabled and no free tile exists within 15 tiles of `(0, 0)`, any fallback chest items that could not be placed are spilled on the ground — the placer never destroys existing entities.
 
 ## Installation
 

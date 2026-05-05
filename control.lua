@@ -8,16 +8,16 @@ local SETTING_SPAWN_SPIDERTRON = "LegendaryMechStart-spawn-spidertron"
 -- ============================================================================
 -- 持久化状态
 --   storage.given_items[player_index] = true  该玩家已经发过个人包
---   storage.team_cache_placed                 整档只一次：团队箱是否已落地
+--   storage.team_cache_placed                 整档只一次：团队资源是否已发放
 --   storage.pending_spider_surfaces[index]    下一 tick 再生成蜘蛛，避开清理流水线
 --   storage.spawned_spider_surfaces[index]    该 surface 已经处理过蜘蛛生成
 --
 -- 发放模型：
 --   - 每个玩家 on_player_created 时拿 PERSONAL 包（进背包）
---   - 第一个被创建的玩家同时触发团队箱落地：以他的 position 为中心，
---     在出生点附近生成若干传奇钢箱并装入所有团队资源
+--   - 蜘蛛开关开启时，团队资源随 Nauvis 蜘蛛进入 trunk，不再地面落箱
+--   - 蜘蛛开关关闭时，第一个被创建的玩家触发团队箱落地
 --   - host 经历 cutscene 会再触发 ForceAddStartItem，这时只重发个人包；
---     `storage.team_cache_placed` 已是 true，不会重复生成团队箱
+--     `storage.team_cache_placed` 已是 true，不会重复生成团队资源
 --   - late joiner 不经历 cutscene，ForceAddStartItem 对他们不触发
 -- ============================================================================
 
@@ -39,7 +39,11 @@ local function queue_spider(surface)
     ensure_storage()
     if not spawn_spidertron_enabled() then return end
     if not (surface and surface.valid) then return end
-    if storage.spawned_spider_surfaces[surface.index] then return end
+    if storage.spawned_spider_surfaces[surface.index]
+        and not (surface.name == "nauvis" and not storage.team_cache_placed)
+    then
+        return
+    end
     if storage.pending_spider_surfaces[surface.index] then return end
 
     storage.pending_spider_surfaces[surface.index] = true
@@ -51,6 +55,12 @@ local function queue_all_planet_surfaces()
         if surface.name == "nauvis" or surface.planet then
             queue_spider(surface)
         end
+    end
+end
+
+local function notify_players(message)
+    for _, player in pairs(game.connected_players) do
+        player.print(message)
     end
 end
 
@@ -72,6 +82,10 @@ OnTick = function()
             local ok, result = pcall(legendary_spider.spawn_on_surface, surface, game.forces.player)
             if ok then
                 storage.spawned_spider_surfaces[surface_index] = result and true or nil
+                if result and surface.name == "nauvis" and not storage.team_cache_placed then
+                    storage.team_cache_placed = true
+                    notify_players("[LegendaryMechStart] Team resources loaded into the Nauvis spidertron trunk.")
+                end
             else
                 log(("[LegendaryMechStart] spider stage failed on %s: %s")
                     :format(surface.name, tostring(result)))
@@ -93,20 +107,24 @@ local function give(player_index)
     storage.given_items[player_index] = true
 
     if not storage.team_cache_placed then
-        -- 以"力量的出生点"为中心（Nauvis 默认是 (0,0)），而不是 player.position：
-        -- BestLanding 等 mod 会在 (0,0) 铺大蓝图，引擎找不到落脚点就把玩家推到几十
-        -- 瓦片外；用 spawn 点能保证箱子稳定出现在地图原点附近。
-        local spawn = player.force.get_spawn_position(player.surface)
-        local chest_count = legendary_items.place_team_cache(
-            player.surface, spawn, player.force)
-        storage.team_cache_placed = true
-        if chest_count > 0 then
-            player.print("[LegendaryMechStart] Team resources placed into " ..
-                chest_count ..
-                " legendary steel chests at map spawn (any remainder spilled on the ground).")
+        if spawn_spidertron_enabled() then
+            queue_spider(game.surfaces.nauvis or player.surface)
         else
-            player.print("[LegendaryMechStart] No free tiles within 15 of map spawn; " ..
-                "all team resources spilled on the ground there.")
+            -- 以"力量的出生点"为中心（Nauvis 默认是 (0,0)），而不是 player.position：
+            -- BestLanding 等 mod 会在 (0,0) 铺大蓝图，引擎找不到落脚点就把玩家推到几十
+            -- 瓦片外；用 spawn 点能保证箱子稳定出现在地图原点附近。
+            local spawn = player.force.get_spawn_position(player.surface)
+            local chest_count = legendary_items.place_team_cache(
+                player.surface, spawn, player.force)
+            storage.team_cache_placed = true
+            if chest_count > 0 then
+                player.print("[LegendaryMechStart] Team resources placed into " ..
+                    chest_count ..
+                    " steel chests at map spawn (any remainder spilled on the ground).")
+            else
+                player.print("[LegendaryMechStart] No free tiles within 15 of map spawn; " ..
+                    "all team resources spilled on the ground there.")
+            end
         end
     end
 end

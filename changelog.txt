@@ -1,4 +1,13 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.5.0
+Date: 2026-05-05
+  Changes:
+    - Added shared starter loadout tables for planet-specific spidertron trunks and the fallback Nauvis team cache.
+    - When spidertron spawning is enabled, the Nauvis team resources are loaded into the Nauvis spidertron trunk instead of being placed in ground chests.
+    - Rebalanced spidertron cargo by planet: production buildings, mining drills, pumpjacks, recyclers, agricultural towers, modules, and beacons stay legendary; large-scale infrastructure, weapons, ammo, power equipment, robots, roboports, chests, inserters, and consumables stay normal.
+    - Preserved spidertron ammo-slot delivery through defines.inventory.spider_ammo for planets that receive the defense package.
+
+---------------------------------------------------------------------------------------------------
 Version: 1.4.0
 Date: 2026-05-05
   Changes:

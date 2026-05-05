@@ -2,6 +2,7 @@
 -- 每个行星 surface 生成一台满配传奇蜘蛛机甲。
 
 local equipment_grid = require("equipment_grid")
+local starter_loadouts = require("starter_loadouts")
 
 local M = {}
 
@@ -18,35 +19,6 @@ local SPIDER_EQUIPMENT_WISHLIST = {
     { name = "toolbelt-equipment",               count = 5 }, -- 3×1，15 格
 }
 
---------------------------------------------------------------------------------
--- 蜘蛛背包预设物资
-local SPIDER_TRUNK_WISHLIST = {
-    { name = "construction-robot",     count = 1000, quality = "normal"    },
-    { name = "logistic-robot",         count = 1000, quality = "normal"    },
-    { name = "roboport",               count = 100,  quality = "normal"    },
-    { name = "big-electric-pole",      count = 50,   quality = "normal"    },
-    { name = "substation",             count = 200,  quality = "normal"    },
-    { name = "solar-panel",            count = 1000, quality = "legendary" },
-    { name = "accumulator",            count = 1000, quality = "legendary" },
-    { name = "long-handed-inserter",   count = 50,   quality = "normal"    },
-    { name = "fast-inserter",          count = 50,   quality = "normal"    },
-    { name = "bulk-inserter",          count = 50,   quality = "normal"    },
-    { name = "stack-inserter",         count = 50,   quality = "normal"    },
-    { name = "steel-chest",            count = 50,   quality = "normal"    },
-    { name = "active-provider-chest",  count = 50,   quality = "normal"    },
-    { name = "passive-provider-chest", count = 50,   quality = "normal"    },
-    { name = "storage-chest",          count = 50,   quality = "normal"    },
-    { name = "buffer-chest",           count = 50,   quality = "normal"    },
-    { name = "requester-chest",        count = 50,   quality = "normal"    },
-    { name = "rocket",                 count = 400,  quality = "legendary" },
-    { name = "explosive-rocket",       count = 400,  quality = "legendary" },
-    { name = "atomic-bomb",            count = 10,   quality = "legendary" },
-    { name = "laser-turret",           count = 100,  quality = "legendary" },
-    { name = "repair-pack",            count = 200,  quality = "normal"    },
-}
-
-local SPIDER_AMMO_FILL = { name = "rocket", count = 400, quality = "legendary" }
-
 local SPIDER_SEARCH_RADII     = { 128, 256, 512 }
 local SPIDER_SEARCH_PRECISION = 1
 
@@ -61,49 +33,62 @@ local function find_safe_position(surface, origin)
     return nil, nil
 end
 
-local function has_starter_spider(surface, force)
+local function find_starter_spider(surface, force)
     local r = SPIDER_SEARCH_RADII[#SPIDER_SEARCH_RADII]
     local spiders = surface.find_entities_filtered({
         area = { { -r, -r }, { r, r } },
         name = "spidertron",
         force = force,
     })
-    return #spiders > 0
+    return spiders[1]
 end
 
-local function fill_trunk(spider)
-    local inv = spider.get_inventory(defines.inventory.spider_trunk)
-    if not inv then return end
+local function insert_items(inv, items, label)
+    if not (inv and items) then return end
 
-    for _, item in ipairs(SPIDER_TRUNK_WISHLIST) do
+    for _, item in ipairs(items) do
         if prototypes.item[item.name] then
+            local quality = item.quality or "normal"
             local inserted = inv.insert({
                 name    = item.name,
                 count   = item.count,
-                quality = item.quality or "legendary",
+                quality = quality,
             })
             if inserted < item.count then
-                log(("[LegendaryMechStart] spider trunk inserted %d/%d %s")
-                    :format(inserted, item.count, item.name))
+                log(("[LegendaryMechStart] %s inserted %d/%d %s (%s)")
+                    :format(label, inserted, item.count, item.name, quality))
             end
         end
     end
 end
 
-local function fill_ammo(spider)
+local function fill_trunk(spider, surface_name)
+    local inv = spider.get_inventory(defines.inventory.spider_trunk)
+    if not inv then return end
+
+    insert_items(inv, starter_loadouts.trunk_wishlist_for_surface(surface_name),
+        "spider trunk " .. surface_name)
+end
+
+local function fill_ammo(spider, surface_name)
+    local ammo = starter_loadouts.ammo_fill_for_surface(surface_name)
+    if not ammo then return end
+
     local inv = spider.get_inventory(defines.inventory.spider_ammo)
     if not inv then return end
-    if prototypes.item[SPIDER_AMMO_FILL.name] then
-        inv.insert(SPIDER_AMMO_FILL)
-    end
+
+    insert_items(inv, { ammo }, "spider ammo " .. surface_name)
 end
 
 function M.spawn_on_surface(surface, force)
     if not (surface and surface.valid) then return false end
 
     force = force or game.forces.player
-    if has_starter_spider(surface, force) then
-        return true
+    local existing = find_starter_spider(surface, force)
+    if existing then
+        fill_trunk(existing, surface.name)
+        fill_ammo(existing, surface.name)
+        return existing
     end
 
     local origin = { x = 0, y = 0 }
@@ -130,9 +115,13 @@ function M.spawn_on_surface(surface, force)
     end
 
     equipment_grid.pack(spider.grid, SPIDER_EQUIPMENT_WISHLIST, "legendary")
-    fill_trunk(spider)
-    fill_ammo(spider)
-    return true
+    local trunk = spider.get_inventory(defines.inventory.spider_trunk)
+    log(("[LegendaryMechStart] spider trunk slots on %s: %d (grid inventory bonus %d)")
+        :format(surface.name, trunk and #trunk or 0, spider.grid and spider.grid.inventory_bonus or 0))
+
+    fill_trunk(spider, surface.name)
+    fill_ammo(spider, surface.name)
+    return spider
 end
 
 return M
