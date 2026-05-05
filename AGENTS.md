@@ -1,4 +1,4 @@
-# CLAUDE.md
+# AGENTS.md
 
 本文档为 Claude Code（claude.ai/code）在本仓库中工作时提供指引。
 
@@ -117,7 +117,7 @@ Factorio 2.0 Mod（`LegendaryMechStart`），用 Lua 编写。仓库本身即是
 
 ## 语言约定
 
-- Lua 代码注释、`CLAUDE.md`：**中文**。新注释只写中文。
+- Lua 代码注释、`AGENTS.md`：**中文**。新注释只写中文。
 - `README.md`、`changelog.txt`、`info.json` 的 `description` / `title`、Mod portal 上对外展示的内容：**英文**。
 - `locale/*.cfg` 按对应语言写。
 - 版权头 `-- Copyright The MRNIU/factorio_LegendaryMechStart Contributors` 必须保留在每个 Lua / cfg 文件顶部。
