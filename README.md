@@ -90,15 +90,18 @@ All planet spidertrons receive the common maintenance kit below. If spidertron s
 | Nauvis | Rocket Silo | Legendary | 1 |
 | | Cargo Landing Pad | Normal | 1 |
 | | Space Platform Starter Pack | Normal | 1 |
-| | Assembling Machine 3 / Electric Furnace | Legendary | 100 each |
+| | Assembling Machine 3 / Electric Furnace | Legendary | 100 / 200 |
 | | Oil Refinery | Legendary | 10 |
 | | Chemical Plant / Foundry / Electromagnetic Plant / Biochamber / Cryogenic Plant | Legendary | 20 each |
 | | Biolab | Legendary | 10 |
-| | Beacon | Legendary | 20 |
-| | Speed / Productivity / Efficiency Module 3 | Legendary | 200 / 200 / 100 |
-| | Big Mining Drill | Legendary | 40 |
+| | Centrifuge | Legendary | 50 |
+| | Beacon | Legendary | 60 |
+| | Speed / Productivity / Efficiency Module 3 | Legendary | 600 / 200 / 100 |
+| | Big Mining Drill | Legendary | 60 |
 | | Pumpjack | Legendary | 20 |
 | | Offshore Pump | Normal | 20 |
+| | Uranium-235 | Normal | 100 |
+| | Radar | Legendary | 50 |
 | | Turbo Transport Belt | Normal | 4000 |
 | | Turbo Underground Belt / Turbo Splitter | Normal | 200 / 100 |
 | Vulcanus | Foundry / Big Mining Drill | Legendary | 30 each |

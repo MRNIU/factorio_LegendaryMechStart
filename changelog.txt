@@ -1,4 +1,11 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.5.1
+Date: 2026-05-30
+  Changes:
+    - Expanded the Nauvis spidertron cargo with one stack each of legendary centrifuges, uranium-235, and legendary radars.
+    - Increased Nauvis legendary speed module 3 to 600, electric furnace to 200, big mining drill to 60, and beacon to 60.
+
+---------------------------------------------------------------------------------------------------
 Version: 1.5.0
 Date: 2026-05-05
   Changes:
