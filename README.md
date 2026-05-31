@@ -77,7 +77,8 @@ All planet spidertrons receive the common maintenance kit below. If spidertron s
 | | Roboport | Normal | 20 |
 | | Repair Pack | Normal | 200 |
 | | Big Electric Pole / Substation | Normal | 50 each |
-| | Steel / Passive Provider / Storage / Requester Chest | Normal | 50 each |
+| | Steel Chest | Normal | 50 |
+| | Active Provider / Passive Provider / Storage / Requester / Buffer Chest | Normal | 50 each |
 | | Fast Inserter | Normal | 100 |
 | | Bulk / Stack Inserter | Normal | 50 each |
 | Defense: Nauvis/Vulcanus/Gleba only | Rocket / Explosive Rocket | Normal | 200 each |
@@ -90,13 +91,13 @@ All planet spidertrons receive the common maintenance kit below. If spidertron s
 | Nauvis | Rocket Silo | Legendary | 1 |
 | | Cargo Landing Pad | Normal | 1 |
 | | Space Platform Starter Pack | Normal | 1 |
-| | Assembling Machine 3 / Electric Furnace | Legendary | 100 / 200 |
-| | Oil Refinery | Legendary | 10 |
-| | Chemical Plant / Foundry / Electromagnetic Plant / Biochamber / Cryogenic Plant | Legendary | 20 each |
+| | Assembling Machine 3 / Electric Furnace | Legendary | 100 / 400 |
+| | Oil Refinery | Legendary | 20 |
+| | Chemical Plant / Foundry / Electromagnetic Plant / Biochamber / Cryogenic Plant | Legendary | 80 / 20 / 20 / 20 / 20 |
 | | Biolab | Legendary | 10 |
 | | Centrifuge | Legendary | 50 |
-| | Beacon | Legendary | 60 |
-| | Speed / Productivity / Efficiency Module 3 | Legendary | 600 / 200 / 100 |
+| | Beacon | Legendary | 100 |
+| | Speed / Productivity / Efficiency Module 3 | Legendary | 1000 / 400 / 100 |
 | | Big Mining Drill | Legendary | 60 |
 | | Pumpjack | Legendary | 20 |
 | | Offshore Pump | Normal | 20 |

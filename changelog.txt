@@ -1,4 +1,11 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.5.2
+Date: 2026-05-31
+  Changes:
+    - Expanded the Nauvis spidertron cargo with more legendary electric furnaces, oil refineries, chemical plants, beacons, speed module 3, and productivity module 3.
+    - Added one stack each of all five normal logistic chest types to every planet spidertron cargo.
+
+---------------------------------------------------------------------------------------------------
 Version: 1.5.1
 Date: 2026-05-30
   Changes:
