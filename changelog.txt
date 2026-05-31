@@ -1,4 +1,10 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.5.3
+Date: 2026-05-31
+  Changes:
+    - Added 2000 legendary automation, logistic, military, chemical, production, utility, and space science packs to the Nauvis spidertron cargo.
+
+---------------------------------------------------------------------------------------------------
 Version: 1.5.2
 Date: 2026-05-31
   Changes:

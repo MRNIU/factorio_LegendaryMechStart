@@ -95,6 +95,7 @@ All planet spidertrons receive the common maintenance kit below. If spidertron s
 | | Oil Refinery | Legendary | 20 |
 | | Chemical Plant / Foundry / Electromagnetic Plant / Biochamber / Cryogenic Plant | Legendary | 80 / 20 / 20 / 20 / 20 |
 | | Biolab | Legendary | 10 |
+| | Automation / Logistic / Military / Chemical / Production / Utility / Space Science Pack | Legendary | 2000 each |
 | | Centrifuge | Legendary | 50 |
 | | Beacon | Legendary | 100 |
 | | Speed / Productivity / Efficiency Module 3 | Legendary | 1000 / 400 / 100 |
