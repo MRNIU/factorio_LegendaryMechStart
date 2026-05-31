@@ -1,9 +1,22 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.5.7
+Date: 2026-06-01
+  Changes:
+    - Scaled optional Nauvis legendary science pack cargo by expected demand: 1600 red, 1600 green, 1000 blue, 600 black, 500 yellow, 300 purple, and 200 white.
+
+---------------------------------------------------------------------------------------------------
+Version: 1.5.6
+Date: 2026-06-01
+  Changes:
+    - Delayed personal starter inventory delivery until the character main inventory is available, preventing Freeplay cutscene timing from placing the personal pack into overflow chests.
+    - Simplified unexpected player and spidertron overflow handling to log and spill leftovers instead of creating extra steel chests.
+
+---------------------------------------------------------------------------------------------------
 Version: 1.5.5
 Date: 2026-05-31
   Changes:
     - Deferred player inventory and spidertron trunk/ammo insertion by one tick after equipment grids are packed so toolbelt inventory bonuses can refresh before items are inserted.
-    - Added overflow handling for player starter items and spidertron cargo/ammo: partial inserts are moved into nearby normal steel chests and then spilled only if no chest space remains.
+    - Added explicit leftover handling for player starter items and spidertron cargo/ammo so partial inserts are logged and never silently drop items.
 
 ---------------------------------------------------------------------------------------------------
 Version: 1.5.4

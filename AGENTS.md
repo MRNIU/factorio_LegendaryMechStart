@@ -39,7 +39,8 @@ Factorio 2.0 Mod（`LegendaryMechStart`），用 Lua 编写。仓库本身即是
 - `on_player_created` → 调 `AddStartItem`，已发过个人包的玩家直接跳过。
 - `on_cutscene_cancelled` + `on_cutscene_finished` → 调 `ForceAddStartItem`，**有意再清背包、再发个人包**（用来抹掉 Freeplay 开场动画结束时塞给 host 的手枪 + 手枪子弹）。team cache 只看 `storage.team_cache_placed`，不会重发。
 - `on_surface_created` → 对新行星 surface 加入蜘蛛生成队列；太空平台跳过。
-- `on_tick` → 只在队列非空时临时注册：下一 tick 生成蜘蛛，再下一 tick 填 trunk / ammo；玩家个人背包也延后一 tick 插入。这样等兄弟 Mod 完成同一事件里的清理 / 蓝图后再找落脚点，同时给工具腰带的背包容量加成时间刷新。
+- `on_tick` → 只在队列非空时临时注册：下一 tick 生成蜘蛛，再下一 tick 填 trunk / ammo；玩家个人背包在角色主背包可用后延后一 tick 插入。这样等兄弟 Mod 完成同一事件里的清理 / 蓝图后再找落脚点，同时给工具腰带的背包容量加成时间刷新。
+- `on_configuration_changed` → 只补齐 `storage` 字段，不做旧存档补发 / 补蜘蛛逻辑。
 - `on_runtime_mod_setting_changed` → 打开蜘蛛开关时，扫描已有行星 surface，为还没处理过的 surface 排队。
 - 蜘蛛开关开启时，Nauvis 团队资源随 Nauvis 蜘蛛进入 trunk，不落地生成箱子；蜘蛛开关关闭时才由首个玩家触发 `legendary_items.place_team_cache`，在 spawn 附近生成普通钢箱兜底。
 
@@ -56,13 +57,12 @@ Factorio 2.0 Mod（`LegendaryMechStart`），用 Lua 编写。仓库本身即是
 
 ### `legendary_items.lua` — 玩法逻辑
 
-对外导出四个函数：
+对外导出三个函数：
 
 | 函数 | 作用 |
 | :-- | :-- |
 | `prepare_start_items(player)` | 清 4 个库存 → 穿传奇机甲并装箱装备网格 → 武器槽和弹药槽铺满 |
-| `finish_start_items(player)` | 在下一 tick 按 `PERSONAL_WISHLIST` 塞主背包；插不满的部分进附近普通钢箱，再放不下才 spill |
-| `add_start_items(player)` | 兼容包装：立即执行 `prepare_start_items` + `finish_start_items` |
+| `finish_start_items(player)` | 在角色主背包可用后按 `PERSONAL_WISHLIST` 塞主背包；背包还不可用时返回未完成并由 control 继续排队；插不满属于异常，只写 log 并 spill |
 | `place_team_cache(surface, center, force)` | 蜘蛛关闭时的兜底：在 `center` 附近半径 15 瓦片内找空地，放普通钢箱并装入 Nauvis 团队清单；放不下的部分 `spill_item_stack` 撒到 `center`，**不会破坏任何既有实体** |
 
 个人包和机甲装备仍在本文件里；团队资源和蜘蛛背包改到 `starter_loadouts.lua`：
@@ -86,15 +86,15 @@ Factorio 2.0 Mod（`LegendaryMechStart`），用 Lua 编写。仓库本身即是
 - 生成前会在 512 半径内检查是否已有玩家势力 `spidertron`，用于避免老存档从 `BestLanding` 迁移过来后重复生成。
 - 蜘蛛装备网格走 `equipment_grid.pack`，清单正好填满 legendary spidertron 的 15×11 网格。
 - `spawn_on_surface` 只负责找/建蜘蛛和装装备网格；control 会排 `pending_spider_cargo`，下一 tick 才填 trunk / ammo。
-- trunk / ammo 插入前检查 `prototypes.item`；插不满会写 log，并把剩余物品转入蜘蛛旁的普通钢箱，再放不下才 spill。
+- trunk / ammo 插入前检查 `prototypes.item`；设计清单应全部装入目标 inventory，插不满属于异常，只写 log 并 spill。
 - `fill_cargo_on_surface` 返回蜘蛛实体；control 用这个返回值判断 Nauvis 团队资源是否已完成。
 - 填 cargo 前会重新读取 trunk，并记录 trunk 槽数、网格尺寸、工具腰带数量和 `LuaEquipmentGrid::inventory_bonus`。
 
 ### `item_delivery.lua` — 插入与溢出兜底
 
 - `insert_into_inventory(inv, items, default_quality, label)` 统一处理 `LuaInventory::insert` 返回值，返回未插入的 leftover；有 `label` 时会记录 partial insert。
-- `dump_into_chests(surface, center, force, items, options)` 在指定中心附近放普通钢箱并塞 leftover，不破坏既有实体。
-- `spill_items(surface, center, force, items)` 只作为最后兜底；个人包和蜘蛛 cargo/ammo 都必须先走钢箱。
+- `dump_into_chests(surface, center, force, items, options)` 只给“蜘蛛关闭时的团队资源兜底箱”使用，不用于个人包或蜘蛛 trunk/ammo overflow。
+- `spill_items(surface, center, force, items)` 是异常兜底；个人包和蜘蛛 cargo/ammo 正常情况下不应触发。
 
 ### `equipment_grid.lua` — 通用 first-fit 装箱
 
@@ -123,8 +123,8 @@ Factorio 2.0 Mod（`LegendaryMechStart`），用 Lua 编写。仓库本身即是
 ### 容量预算与溢出保底
 
 - 背包可用槽 = 80（基础）+ 125（legendary mech-armor）+ 125（5 × legendary toolbelt）= **330 槽**。
-- `PERSONAL_WISHLIST` ~16 堆；正常应全部进入玩家主背包，但仍要保留 `insert` leftover 处理，因为工具腰带 bonus 可能在装备后下一 tick 才刷新。
-- 蜘蛛 trunk / ammo 也延后一 tick 再插入；如果工具腰带 bonus 仍没刷新，leftover 会进蜘蛛旁普通钢箱，避免科技瓶或弹药静默丢失。
+- `PERSONAL_WISHLIST` ~16 堆；正常应全部进入玩家主背包。Freeplay 过场期间如果 `character_main` 还不可用，只能继续等待，不能走 overflow。
+- 蜘蛛 trunk / ammo 也延后一 tick 再插入；正常应全部进入目标 inventory。若仍有 leftover，视为异常，只 log 并 spill，避免为了异常状态引入复杂箱子逻辑。
 
 ### Quality 系统
 

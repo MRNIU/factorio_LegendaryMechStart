@@ -2,9 +2,9 @@
 
 local M = {}
 
-local DEFAULT_OVERFLOW_CHEST_NAME    = "steel-chest"
-local DEFAULT_OVERFLOW_CHEST_QUALITY = "normal"
-local DEFAULT_OVERFLOW_CHEST_RADIUS  = 15
+local DEFAULT_CHEST_NAME    = "steel-chest"
+local DEFAULT_CHEST_QUALITY = "normal"
+local DEFAULT_CHEST_RADIUS  = 15
 
 local function normalise_item(spec, default_quality)
     if not (spec and spec.name and spec.count and spec.count > 0) then return nil end
@@ -62,9 +62,9 @@ function M.dump_into_chests(surface, center, force, items, options)
     end
 
     options = options or {}
-    local chest_name    = options.chest_name or DEFAULT_OVERFLOW_CHEST_NAME
-    local chest_quality = options.chest_quality or DEFAULT_OVERFLOW_CHEST_QUALITY
-    local radius        = options.radius or DEFAULT_OVERFLOW_CHEST_RADIUS
+    local chest_name    = options.chest_name or DEFAULT_CHEST_NAME
+    local chest_quality = options.chest_quality or DEFAULT_CHEST_QUALITY
+    local radius        = options.radius or DEFAULT_CHEST_RADIUS
     local remaining     = M.copy_items(items, "normal")
     local chest_count   = 0
 

@@ -31,13 +31,13 @@ local DEFENSE_TRUNK_WISHLIST = {
 }
 
 local NAUVIS_SCIENCE_PACK_WISHLIST = {
-    { name = "automation-science-pack", count = 2000, quality = "legendary" },
-    { name = "logistic-science-pack",   count = 2000, quality = "legendary" },
-    { name = "military-science-pack",   count = 2000, quality = "legendary" },
-    { name = "chemical-science-pack",   count = 2000, quality = "legendary" },
-    { name = "production-science-pack", count = 2000, quality = "legendary" },
-    { name = "utility-science-pack",    count = 2000, quality = "legendary" },
-    { name = "space-science-pack",      count = 2000, quality = "legendary" },
+    { name = "automation-science-pack", count = 1600, quality = "legendary" },
+    { name = "logistic-science-pack",   count = 1600, quality = "legendary" },
+    { name = "chemical-science-pack",   count = 1000, quality = "legendary" },
+    { name = "military-science-pack",   count = 600,  quality = "legendary" },
+    { name = "utility-science-pack",    count = 500,  quality = "legendary" },
+    { name = "production-science-pack", count = 300,  quality = "legendary" },
+    { name = "space-science-pack",      count = 200,  quality = "legendary" },
 }
 
 local PLANET_TRUNK_WISHLISTS = {

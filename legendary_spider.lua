@@ -22,11 +22,6 @@ local SPIDER_EQUIPMENT_WISHLIST = {
 
 local SPIDER_SEARCH_RADII     = { 128, 256, 512 }
 local SPIDER_SEARCH_PRECISION = 1
-local OVERFLOW_CHEST_OPTIONS  = {
-    chest_name    = "steel-chest",
-    chest_quality = "normal",
-    radius        = 15,
-}
 
 --------------------------------------------------------------------------------
 local function find_safe_position(surface, origin)
@@ -54,15 +49,13 @@ local function insert_items(inv, items, label)
 end
 
 local function place_overflow(spider, items, label)
-    if #items == 0 then return 0, 0 end
+    if #items == 0 then return 0 end
 
-    local chest_count, leftover = item_delivery.dump_into_chests(
-        spider.surface, spider.position, spider.force, items, OVERFLOW_CHEST_OPTIONS)
     local spilled = item_delivery.spill_items(
-        spider.surface, spider.position, spider.force, leftover)
-    log(("[LegendaryMechStart] %s overflow: %d steel chests, %d spilled items")
-        :format(label, chest_count, spilled))
-    return chest_count, spilled
+        spider.surface, spider.position, spider.force, items)
+    log(("[LegendaryMechStart] unexpected %s overflow: %d spilled items")
+        :format(label, spilled))
+    return spilled
 end
 
 local function log_trunk_capacity(spider, surface_name)
@@ -81,7 +74,7 @@ end
 
 local function fill_trunk(spider, surface_name)
     local inv = spider.get_inventory(defines.inventory.spider_trunk)
-    if not inv then return 0, 0 end
+    if not inv then return 0 end
 
     local leftover = insert_items(inv, starter_loadouts.trunk_wishlist_for_surface(surface_name),
         "spider trunk " .. surface_name)
@@ -90,10 +83,10 @@ end
 
 local function fill_ammo(spider, surface_name)
     local ammo = starter_loadouts.ammo_fill_for_surface(surface_name)
-    if not ammo then return 0, 0 end
+    if not ammo then return 0 end
 
     local inv = spider.get_inventory(defines.inventory.spider_ammo)
-    if not inv then return 0, 0 end
+    if not inv then return 0 end
 
     local leftover = insert_items(inv, { ammo }, "spider ammo " .. surface_name)
     return place_overflow(spider, leftover, "spider ammo " .. surface_name)
@@ -136,16 +129,16 @@ function M.spawn_on_surface(surface, force)
 end
 
 function M.fill_cargo_on_surface(surface, force)
-    if not (surface and surface.valid) then return nil, 0, 0 end
+    if not (surface and surface.valid) then return nil, 0 end
 
     force = force or game.forces.player
     local spider = find_starter_spider(surface, force)
-    if not (spider and spider.valid) then return nil, 0, 0 end
+    if not (spider and spider.valid) then return nil, 0 end
 
     log_trunk_capacity(spider, surface.name)
-    local trunk_chests, trunk_spilled = fill_trunk(spider, surface.name)
-    local ammo_chests, ammo_spilled = fill_ammo(spider, surface.name)
-    return spider, trunk_chests + ammo_chests, trunk_spilled + ammo_spilled
+    local trunk_spilled = fill_trunk(spider, surface.name)
+    local ammo_spilled = fill_ammo(spider, surface.name)
+    return spider, trunk_spilled + ammo_spilled
 end
 
 return M

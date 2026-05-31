@@ -73,7 +73,7 @@ local TEAM_CHEST_RADIUS  = 15
 -- ============================================================================
 -- 背包发放（个人包）
 -- 机甲和工具腰带先装好，背包物品由 control.lua 延后一 tick 插入；
--- 如果当时容量仍不够，剩余物品进入附近普通钢箱，再放不下才 spill。
+-- 如果当时容量仍不够，这是异常路径，只记录并 spill，避免引入额外箱子状态。
 -- ============================================================================
 
 local function equipment_inventory_state(player)
@@ -89,25 +89,25 @@ end
 local function deliver_personal_wishlist(player)
     local main_inv = player.get_inventory(defines.inventory.character_main)
     local inventory_bonus, toolbelts = equipment_inventory_state(player)
+    if not main_inv or #main_inv == 0 then
+        log(("[LegendaryMechStart] player %d main inventory is not ready; delaying personal items")
+            :format(player.index))
+        return false, 0
+    end
+
     log(("[LegendaryMechStart] player %d main inventory slots: %d (toolbelts %d, armor grid inventory bonus %d)")
-        :format(player.index, main_inv and #main_inv or 0, toolbelts, inventory_bonus))
+        :format(player.index, #main_inv, toolbelts, inventory_bonus))
 
     local leftover = item_delivery.insert_into_inventory(
         main_inv, PERSONAL_WISHLIST, "legendary",
         "player inventory " .. player.index)
-    if #leftover == 0 then return 0, 0 end
+    if #leftover == 0 then return true, 0 end
 
-    local chest_count, remaining = item_delivery.dump_into_chests(
-        player.surface, player.position, player.force, leftover, {
-            chest_name    = TEAM_CHEST_NAME,
-            chest_quality = TEAM_CHEST_QUALITY,
-            radius        = TEAM_CHEST_RADIUS,
-        })
     local spilled = item_delivery.spill_items(
-        player.surface, player.position, player.force, remaining)
-    log(("[LegendaryMechStart] player %d inventory overflow: %d steel chests, %d spilled items")
-        :format(player.index, chest_count, spilled))
-    return chest_count, spilled
+        player.surface, player.position, player.force, leftover)
+    log(("[LegendaryMechStart] unexpected player %d inventory overflow: %d spilled items")
+        :format(player.index, spilled))
+    return true, spilled
 end
 
 -- ============================================================================
@@ -180,17 +180,11 @@ local function prepare_start_items(player)
 end
 
 local function finish_start_items(player)
-    if not (player and player.valid) then return 0, 0 end
+    if not (player and player.valid) then return false, 0 end
     return deliver_personal_wishlist(player)
 end
 
-local function add_start_items(player)
-    prepare_start_items(player)
-    return finish_start_items(player)
-end
-
 return {
-    add_start_items     = add_start_items,
     prepare_start_items = prepare_start_items,
     finish_start_items  = finish_start_items,
     place_team_cache    = place_team_cache,

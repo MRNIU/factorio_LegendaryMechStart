@@ -5,14 +5,14 @@ A Factorio 2.0 Space Age mod that drops every player into fully-equipped legenda
 ## What it does
 
 - **Legendary mech armor on spawn** for every player (single-player, host and late joiners in multiplayer). The equipment grid is packed automatically from a prioritised wishlist, so adding or removing items only takes editing the list.
-- **Personal starter kit** in each player's inventory: bootstrap materials, personal construction and logistic robots, defensive turrets, temporary wiring and piping, spare ammunition and repair packs. Inventory items are inserted one tick after the mech armor is equipped so toolbelt bonuses can refresh first.
+- **Personal starter kit** in each player's inventory: bootstrap materials, personal construction and logistic robots, defensive turrets, temporary wiring and piping, spare ammunition and repair packs. Inventory items are inserted after the character main inventory is available and at least one tick after the mech armor is equipped so toolbelt bonuses can refresh first.
 - **Team resource cache** delivered once per save. If legendary spidertrons are enabled, the Nauvis team resources are loaded into the Nauvis spidertron trunk instead of being placed on the ground. If spidertrons are disabled, the same Nauvis cache is placed into normal steel chests near map spawn.
 - **Optional seven-color legendary science packs** can be enabled with a runtime-global map setting before the team resource cache is delivered.
 - **Optional legendary spidertron on each planet**: a fully-equipped legendary spidertron is spawned once per planet surface, then loaded one tick later with a common maintenance kit plus planet-specific cargo. Nauvis/Vulcanus/Gleba also receive a normal-quality defense package and dedicated spidertron ammo-slot rockets.
 - **Freeplay intro cleanup**: the mod re-runs after the cutscene finishes, so the default pistol and firearm magazines Freeplay hands out are removed.
 - **Quality-aware**: every inserted stack declares its `quality` explicitly. Core production assets, mining drills, pumpjacks, recyclers, agricultural towers, modules, and beacons are legendary; bulk infrastructure, robots, roboports, chests, inserters, power equipment, weapons, ammo, and consumables stay normal on purpose.
 - **Multiplayer-aware**: the team resources are tracked with `storage.team_cache_placed`, so cutscene replays and late joiners never duplicate them.
-- **Safe on missing prototypes and overflow**: every insert checks `prototypes.item[name]` / `prototypes.equipment[name]` first, and partial inserts move leftovers into nearby normal steel chests before spilling to the ground.
+- **Safe on missing prototypes and unexpected overflow**: every insert checks `prototypes.item[name]` / `prototypes.equipment[name]` first. The intended path fits in the target inventory; if an unexpected partial insert still happens, the remainder is logged and spilled near the player or spidertron.
 
 ## Equipment grid (legendary `mech-armor`, 15 × 17)
 
@@ -96,7 +96,7 @@ All planet spidertrons receive the common maintenance kit below. If spidertron s
 | | Oil Refinery | Legendary | 20 |
 | | Chemical Plant / Foundry / Electromagnetic Plant / Biochamber / Cryogenic Plant | Legendary | 80 / 20 / 20 / 20 / 20 |
 | | Biolab | Legendary | 10 |
-| | Automation (red) / Logistic (green) / Military (black) / Chemical (blue) / Production (purple) / Utility (yellow) / Space (white) Science Pack (setting enabled) | Legendary | 2000 each |
+| | Automation (red) / Logistic (green) / Chemical (blue) / Military (black) / Utility (yellow) / Production (purple) / Space (white) Science Pack (setting enabled) | Legendary | 1600 / 1600 / 1000 / 600 / 500 / 300 / 200 |
 | | Centrifuge | Legendary | 50 |
 | | Beacon | Legendary | 100 |
 | | Speed / Productivity / Efficiency Module 3 | Legendary | 1000 / 400 / 100 |
@@ -142,10 +142,10 @@ All planet spidertrons receive the common maintenance kit below. If spidertron s
 
 ## Design notes
 
-- **Personal inventory capacity** is checked through `LuaInventory::insert` one tick after legendary mech-armor and five toolbelts are equipped. Any partial insert is moved into nearby normal steel chests, then spilled only if no chest space remains.
+- **Personal inventory capacity** is checked through `LuaInventory::insert` after the character main inventory is available and at least one tick after legendary mech-armor and five toolbelts are equipped. The designed loadout should fit; unexpected leftovers are logged and spilled near the player.
 - **Fallback team cache placement** is anchored to `LuaForce::get_spawn_position(surface)` — the force's configured spawn (`(0, 0)` on vanilla Nauvis) — rather than the character's actual position. This keeps the cache at map origin even when a sibling mod (e.g. [BestLanding](https://github.com/MRNIU/factorio_BestLanding)) pushes the player far from spawn by filling the area with a landing blueprint.
 - **Spidertron placement** is delayed until the next tick after a surface appears. This lets sibling mods finish landing-area cleanup and blueprint placement before the spidertron searches for a non-colliding position near `(0, 0)`.
-- **Spidertron trunk and ammo capacity** is checked through `LuaInventory::insert` one tick after the spidertron equipment grid is packed. The log records trunk slots, grid size, toolbelt count, and inventory bonus; any partial insert is moved into nearby normal steel chests before spilling.
+- **Spidertron trunk and ammo capacity** is checked through `LuaInventory::insert` one tick after the spidertron equipment grid is packed. The log records trunk slots, grid size, toolbelt count, and inventory bonus; the designed cargo should fit, and unexpected leftovers are logged and spilled near the spidertron.
 - If spidertrons are disabled and no free tile exists within 15 tiles of `(0, 0)`, any fallback chest items that could not be placed are spilled on the ground — the placer never destroys existing entities.
 
 ## Installation

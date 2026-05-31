@@ -34,14 +34,10 @@ end
 
 local OnTick
 
-local function due_now(ready_tick)
-    return type(ready_tick) ~= "number" or ready_tick <= game.tick
-end
-
 local function due_keys(queue)
     local keys = {}
     for key, ready_tick in pairs(queue) do
-        if due_now(ready_tick) then keys[#keys + 1] = key end
+        if ready_tick <= game.tick then keys[#keys + 1] = key end
     end
     return keys
 end
@@ -65,11 +61,7 @@ local function queue_spider(surface)
     ensure_storage()
     if not spawn_spidertron_enabled() then return end
     if not (surface and surface.valid) then return end
-    if storage.spawned_spider_surfaces[surface.index]
-        and not (surface.name == "nauvis" and not storage.team_cache_placed)
-    then
-        return
-    end
+    if storage.spawned_spider_surfaces[surface.index] then return end
     if storage.pending_spider_surfaces[surface.index] then
         ensure_tick_handler()
         return
@@ -152,14 +144,14 @@ OnTick = function()
 
         local surface = game.surfaces[surface_index]
         if surface and surface.valid and spawn_spidertron_enabled() then
-            local ok, spider, chest_count, spilled = pcall(
+            local ok, spider, spilled = pcall(
                 legendary_spider.fill_cargo_on_surface, surface, game.forces.player)
             if ok and spider then
                 if surface.name == "nauvis" and not storage.team_cache_placed then
                     storage.team_cache_placed = true
                     local overflow_note = ""
-                    if (chest_count or 0) > 0 or (spilled or 0) > 0 then
-                        overflow_note = " Overflow was placed near the spidertron."
+                    if (spilled or 0) > 0 then
+                        overflow_note = " Unexpected overflow was spilled near the spidertron."
                     end
                     notify_players("[LegendaryMechStart] Team resources loaded into the Nauvis spidertron trunk." ..
                         overflow_note)
@@ -180,17 +172,19 @@ OnTick = function()
 
         local player = game.players[player_index]
         if player and player.valid then
-            local ok, chest_count, spilled = pcall(
+            local ok, finished, spilled = pcall(
                 legendary_items.finish_start_items, player)
-            if ok then
+            if ok and finished then
                 storage.given_items[player_index] = true
-                if (chest_count or 0) > 0 or (spilled or 0) > 0 then
+                if (spilled or 0) > 0 then
                     player.print("[LegendaryMechStart] Some personal starter items did not fit in your inventory; " ..
-                        "the remainder was placed near your character.")
+                        "the remainder was spilled near your character.")
                 end
+            elseif ok then
+                queue_player_loadout(player)
             else
                 log(("[LegendaryMechStart] player loadout stage failed for player %d: %s")
-                    :format(player_index, tostring(chest_count)))
+                    :format(player_index, tostring(finished)))
             end
         end
     end
@@ -251,10 +245,6 @@ end
 script.on_init(OnInit)
 script.on_configuration_changed(function()
     ensure_storage()
-    queue_all_planet_surfaces()
-    if has_pending_work() then
-        ensure_tick_handler()
-    end
 end)
 script.on_event(defines.events.on_player_created, AddStartItem)
 script.on_event(defines.events.on_cutscene_cancelled, ForceAddStartItem)
