@@ -9,4 +9,11 @@ data:extend({
         default_value = true,
         order         = "a-spidertron",
     },
+    {
+        type          = "bool-setting",
+        name          = "LegendaryMechStart-include-science-packs",
+        setting_type  = "runtime-global",
+        default_value = false,
+        order         = "b-science-packs",
+    },
 })

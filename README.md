@@ -7,6 +7,7 @@ A Factorio 2.0 Space Age mod that drops every player into fully-equipped legenda
 - **Legendary mech armor on spawn** for every player (single-player, host and late joiners in multiplayer). The equipment grid is packed automatically from a prioritised wishlist, so adding or removing items only takes editing the list.
 - **Personal starter kit** in each player's inventory: bootstrap materials, personal construction and logistic robots, defensive turrets, temporary wiring and piping, spare ammunition and repair packs.
 - **Team resource cache** delivered once per save. If legendary spidertrons are enabled, the Nauvis team resources are loaded into the Nauvis spidertron trunk instead of being placed on the ground. If spidertrons are disabled, the same Nauvis cache is placed into normal steel chests near map spawn.
+- **Optional seven-color legendary science packs** can be enabled with a runtime-global map setting before the team resource cache is delivered.
 - **Optional legendary spidertron on each planet**: a fully-equipped legendary spidertron is spawned once per planet surface, pre-loaded with a common maintenance kit plus planet-specific cargo. Nauvis/Vulcanus/Gleba also receive a normal-quality defense package and dedicated spidertron ammo-slot rockets.
 - **Freeplay intro cleanup**: the mod re-runs after the cutscene finishes, so the default pistol and firearm magazines Freeplay hands out are removed.
 - **Quality-aware**: every inserted stack declares its `quality` explicitly. Core production assets, mining drills, pumpjacks, recyclers, agricultural towers, modules, and beacons are legendary; bulk infrastructure, robots, roboports, chests, inserters, power equipment, weapons, ammo, and consumables stay normal on purpose.
@@ -95,7 +96,7 @@ All planet spidertrons receive the common maintenance kit below. If spidertron s
 | | Oil Refinery | Legendary | 20 |
 | | Chemical Plant / Foundry / Electromagnetic Plant / Biochamber / Cryogenic Plant | Legendary | 80 / 20 / 20 / 20 / 20 |
 | | Biolab | Legendary | 10 |
-| | Automation / Logistic / Military / Chemical / Production / Utility / Space Science Pack | Legendary | 2000 each |
+| | Automation (red) / Logistic (green) / Military (black) / Chemical (blue) / Production (purple) / Utility (yellow) / Space (white) Science Pack (setting enabled) | Legendary | 2000 each |
 | | Centrifuge | Legendary | 50 |
 | | Beacon | Legendary | 100 |
 | | Speed / Productivity / Efficiency Module 3 | Legendary | 1000 / 400 / 100 |

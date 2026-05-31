@@ -3,6 +3,8 @@
 
 local M = {}
 
+local SETTING_INCLUDE_SCIENCE_PACKS = "LegendaryMechStart-include-science-packs"
+
 local COMMON_TRUNK_WISHLIST = {
     { name = "construction-robot",     count = 500, quality = "normal" },
     { name = "logistic-robot",         count = 200, quality = "normal" },
@@ -28,6 +30,16 @@ local DEFENSE_TRUNK_WISHLIST = {
     { name = "laser-turret",     count = 50,  quality = "normal" },
 }
 
+local NAUVIS_SCIENCE_PACK_WISHLIST = {
+    { name = "automation-science-pack", count = 2000, quality = "legendary" },
+    { name = "logistic-science-pack",   count = 2000, quality = "legendary" },
+    { name = "military-science-pack",   count = 2000, quality = "legendary" },
+    { name = "chemical-science-pack",   count = 2000, quality = "legendary" },
+    { name = "production-science-pack", count = 2000, quality = "legendary" },
+    { name = "utility-science-pack",    count = 2000, quality = "legendary" },
+    { name = "space-science-pack",      count = 2000, quality = "legendary" },
+}
+
 local PLANET_TRUNK_WISHLISTS = {
     nauvis = {
         { name = "rocket-silo",                 count = 1,    quality = "legendary" },
@@ -42,13 +54,6 @@ local PLANET_TRUNK_WISHLISTS = {
         { name = "biochamber",                  count = 20,   quality = "legendary" },
         { name = "cryogenic-plant",             count = 20,   quality = "legendary" },
         { name = "biolab",                      count = 10,   quality = "legendary" },
-        { name = "automation-science-pack",     count = 2000, quality = "legendary" },
-        { name = "logistic-science-pack",       count = 2000, quality = "legendary" },
-        { name = "military-science-pack",       count = 2000, quality = "legendary" },
-        { name = "chemical-science-pack",       count = 2000, quality = "legendary" },
-        { name = "production-science-pack",     count = 2000, quality = "legendary" },
-        { name = "utility-science-pack",        count = 2000, quality = "legendary" },
-        { name = "space-science-pack",          count = 2000, quality = "legendary" },
         { name = "centrifuge",                  count = 50,   quality = "legendary" },
         { name = "beacon",                      count = 100,  quality = "legendary" },
         { name = "speed-module-3",              count = 1000, quality = "legendary" },
@@ -138,6 +143,11 @@ local function append_items(target, source)
     end
 end
 
+local function include_science_packs_enabled()
+    local s = settings.global[SETTING_INCLUDE_SCIENCE_PACKS]
+    return s and s.value
+end
+
 function M.trunk_wishlist_for_surface(surface_name)
     local items = {}
     append_items(items, COMMON_TRUNK_WISHLIST)
@@ -145,6 +155,9 @@ function M.trunk_wishlist_for_surface(surface_name)
         append_items(items, DEFENSE_TRUNK_WISHLIST)
     end
     append_items(items, PLANET_TRUNK_WISHLISTS[surface_name])
+    if surface_name == "nauvis" and include_science_packs_enabled() then
+        append_items(items, NAUVIS_SCIENCE_PACK_WISHLIST)
+    end
     return items
 end
 

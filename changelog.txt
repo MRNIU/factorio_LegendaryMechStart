@@ -1,4 +1,11 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.5.4
+Date: 2026-05-31
+  Changes:
+    - Added a runtime-global map setting that gates the optional Nauvis seven-color legendary science pack cargo.
+    - Disabled the seven-color legendary science pack cargo by default unless the setting is enabled before team resources are delivered.
+
+---------------------------------------------------------------------------------------------------
 Version: 1.5.3
 Date: 2026-05-31
   Changes:
