@@ -1,4 +1,11 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.5.5
+Date: 2026-05-31
+  Changes:
+    - Deferred player inventory and spidertron trunk/ammo insertion by one tick after equipment grids are packed so toolbelt inventory bonuses can refresh before items are inserted.
+    - Added overflow handling for player starter items and spidertron cargo/ammo: partial inserts are moved into nearby normal steel chests and then spilled only if no chest space remains.
+
+---------------------------------------------------------------------------------------------------
 Version: 1.5.4
 Date: 2026-05-31
   Changes:

@@ -1,6 +1,7 @@
 -- Copyright The MRNIU/factorio_LegendaryMechStart Contributors
 
 local equipment_grid = require("equipment_grid")
+local item_delivery = require("item_delivery")
 local starter_loadouts = require("starter_loadouts")
 
 -- ============================================================================
@@ -71,23 +72,42 @@ local TEAM_CHEST_RADIUS  = 15
 
 -- ============================================================================
 -- 背包发放（个人包）
--- 容量充足：80(基础) + 125(mech-armor) + 125(5×toolbelt) = 330 槽；
--- 个人包约 16 堆，不需要溢出处理。
+-- 机甲和工具腰带先装好，背包物品由 control.lua 延后一 tick 插入；
+-- 如果当时容量仍不够，剩余物品进入附近普通钢箱，再放不下才 spill。
 -- ============================================================================
 
-local function deliver_wishlist(player, wishlist)
-    local main_inv = player.get_inventory(defines.inventory.character_main)
-    if not main_inv then return end
-
-    for _, spec in ipairs(wishlist) do
-        if prototypes.item[spec.name] then
-            main_inv.insert({
-                name    = spec.name,
-                count   = spec.count,
-                quality = spec.quality or "legendary",
-            })
-        end
+local function equipment_inventory_state(player)
+    local armor_inv = player.get_inventory(defines.inventory.character_armor)
+    local stack = armor_inv and armor_inv[1]
+    if stack and stack.valid_for_read and stack.grid then
+        return stack.grid.inventory_bonus or 0,
+            stack.grid.count("toolbelt-equipment")
     end
+    return 0, 0
+end
+
+local function deliver_personal_wishlist(player)
+    local main_inv = player.get_inventory(defines.inventory.character_main)
+    local inventory_bonus, toolbelts = equipment_inventory_state(player)
+    log(("[LegendaryMechStart] player %d main inventory slots: %d (toolbelts %d, armor grid inventory bonus %d)")
+        :format(player.index, main_inv and #main_inv or 0, toolbelts, inventory_bonus))
+
+    local leftover = item_delivery.insert_into_inventory(
+        main_inv, PERSONAL_WISHLIST, "legendary",
+        "player inventory " .. player.index)
+    if #leftover == 0 then return 0, 0 end
+
+    local chest_count, remaining = item_delivery.dump_into_chests(
+        player.surface, player.position, player.force, leftover, {
+            chest_name    = TEAM_CHEST_NAME,
+            chest_quality = TEAM_CHEST_QUALITY,
+            radius        = TEAM_CHEST_RADIUS,
+        })
+    local spilled = item_delivery.spill_items(
+        player.surface, player.position, player.force, remaining)
+    log(("[LegendaryMechStart] player %d inventory overflow: %d steel chests, %d spilled items")
+        :format(player.index, chest_count, spilled))
+    return chest_count, spilled
 end
 
 -- ============================================================================
@@ -95,81 +115,19 @@ end
 -- 找不到空位时剩余物品 spill 到玩家脚下
 -- ============================================================================
 
--- 在 center 附近贪心生成钢箱并塞 items；find_non_colliding_position 每次
--- 返回"离 center 最近的空格"，箱子创建后占位，下一轮自然扩散到次近空格
-local function dump_items_into_chests(surface, center, force, items)
-    local remaining = {}
-    for _, it in ipairs(items) do
-        remaining[#remaining + 1] = {
-            name    = it.name,
-            count   = it.count,
-            quality = it.quality,
-        }
-    end
-
-    local chest_count = 0
-    while #remaining > 0 do
-        local pos = surface.find_non_colliding_position(
-            TEAM_CHEST_NAME, center, TEAM_CHEST_RADIUS, 1)
-        if not pos then break end -- 半径内已无空位，剩下的交给 spill
-
-        local chest = surface.create_entity({
-            name        = TEAM_CHEST_NAME,
-            position    = pos,
-            force       = force,
-            quality     = TEAM_CHEST_QUALITY,
-            raise_built = true,
-        })
-        if not chest then break end
-
-        chest_count = chest_count + 1
-        local chest_inv = chest.get_inventory(defines.inventory.chest)
-        while #remaining > 0 do
-            local item = remaining[1]
-            local inserted = chest_inv.insert({
-                name    = item.name,
-                count   = item.count,
-                quality = item.quality,
-            })
-            if inserted == 0 then
-                break -- 本箱塞满了，换下一个
-            elseif inserted >= item.count then
-                table.remove(remaining, 1)
-            else
-                item.count = item.count - inserted
-                break
-            end
-        end
-    end
-
-    return chest_count, remaining
-end
-
 -- 入口：在 (surface, center, force) 身边摆箱子装入全部团队资源
 -- 返回生成的箱子数；半径内放不下的条目会 spill 到 center
 local function place_team_cache(surface, center, force)
-    local items = {}
-    for _, spec in ipairs(starter_loadouts.team_cache_wishlist()) do
-        if prototypes.item[spec.name] then
-            items[#items + 1] = {
-                name    = spec.name,
-                count   = spec.count,
-                quality = spec.quality or "legendary",
-            }
-        end
-    end
+    local items = item_delivery.copy_items(
+        starter_loadouts.team_cache_wishlist(), "legendary")
 
-    local chest_count, leftover = dump_items_into_chests(surface, center, force, items)
-
-    for _, item in ipairs(leftover) do
-        surface.spill_item_stack({
-            position      = center,
-            stack         = { name = item.name, count = item.count, quality = item.quality },
-            enable_looted = true,
-            force         = force,
-            allow_belts   = false,
+    local chest_count, leftover = item_delivery.dump_into_chests(
+        surface, center, force, items, {
+            chest_name    = TEAM_CHEST_NAME,
+            chest_quality = TEAM_CHEST_QUALITY,
+            radius        = TEAM_CHEST_RADIUS,
         })
-    end
+    item_delivery.spill_items(surface, center, force, leftover)
 
     return chest_count
 end
@@ -208,7 +166,7 @@ local CLEARED_INVENTORIES = {
     defines.inventory.character_ammo,
 }
 
-local function add_start_items(player)
+local function prepare_start_items(player)
     if not (player and player.valid) then return end
 
     for _, idx in ipairs(CLEARED_INVENTORIES) do
@@ -219,11 +177,21 @@ local function add_start_items(player)
     equip_mech_armor(player)
     fill_all_slots(player.get_inventory(defines.inventory.character_guns), WEAPON_FILL)
     fill_all_slots(player.get_inventory(defines.inventory.character_ammo), AMMO_FILL)
+end
 
-    deliver_wishlist(player, PERSONAL_WISHLIST)
+local function finish_start_items(player)
+    if not (player and player.valid) then return 0, 0 end
+    return deliver_personal_wishlist(player)
+end
+
+local function add_start_items(player)
+    prepare_start_items(player)
+    return finish_start_items(player)
 end
 
 return {
-    add_start_items  = add_start_items,
-    place_team_cache = place_team_cache,
+    add_start_items     = add_start_items,
+    prepare_start_items = prepare_start_items,
+    finish_start_items  = finish_start_items,
+    place_team_cache    = place_team_cache,
 }

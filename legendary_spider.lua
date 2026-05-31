@@ -2,6 +2,7 @@
 -- 每个行星 surface 生成一台满配传奇蜘蛛机甲。
 
 local equipment_grid = require("equipment_grid")
+local item_delivery = require("item_delivery")
 local starter_loadouts = require("starter_loadouts")
 
 local M = {}
@@ -21,6 +22,11 @@ local SPIDER_EQUIPMENT_WISHLIST = {
 
 local SPIDER_SEARCH_RADII     = { 128, 256, 512 }
 local SPIDER_SEARCH_PRECISION = 1
+local OVERFLOW_CHEST_OPTIONS  = {
+    chest_name    = "steel-chest",
+    chest_quality = "normal",
+    radius        = 15,
+}
 
 --------------------------------------------------------------------------------
 local function find_safe_position(surface, origin)
@@ -44,40 +50,53 @@ local function find_starter_spider(surface, force)
 end
 
 local function insert_items(inv, items, label)
-    if not (inv and items) then return end
+    return item_delivery.insert_into_inventory(inv, items, "normal", label)
+end
 
-    for _, item in ipairs(items) do
-        if prototypes.item[item.name] then
-            local quality = item.quality or "normal"
-            local inserted = inv.insert({
-                name    = item.name,
-                count   = item.count,
-                quality = quality,
-            })
-            if inserted < item.count then
-                log(("[LegendaryMechStart] %s inserted %d/%d %s (%s)")
-                    :format(label, inserted, item.count, item.name, quality))
-            end
-        end
+local function place_overflow(spider, items, label)
+    if #items == 0 then return 0, 0 end
+
+    local chest_count, leftover = item_delivery.dump_into_chests(
+        spider.surface, spider.position, spider.force, items, OVERFLOW_CHEST_OPTIONS)
+    local spilled = item_delivery.spill_items(
+        spider.surface, spider.position, spider.force, leftover)
+    log(("[LegendaryMechStart] %s overflow: %d steel chests, %d spilled items")
+        :format(label, chest_count, spilled))
+    return chest_count, spilled
+end
+
+local function log_trunk_capacity(spider, surface_name)
+    local trunk = spider.get_inventory(defines.inventory.spider_trunk)
+    local grid = spider.grid
+    local toolbelts = 0
+    if grid and grid.count then
+        toolbelts = grid.count("toolbelt-equipment")
     end
+
+    log(("[LegendaryMechStart] spider trunk slots on %s after equipment tick: %d (grid %dx%d, toolbelts %d, inventory bonus %d)")
+        :format(surface_name, trunk and #trunk or 0,
+            grid and grid.width or 0, grid and grid.height or 0,
+            toolbelts, grid and grid.inventory_bonus or 0))
 end
 
 local function fill_trunk(spider, surface_name)
     local inv = spider.get_inventory(defines.inventory.spider_trunk)
-    if not inv then return end
+    if not inv then return 0, 0 end
 
-    insert_items(inv, starter_loadouts.trunk_wishlist_for_surface(surface_name),
+    local leftover = insert_items(inv, starter_loadouts.trunk_wishlist_for_surface(surface_name),
         "spider trunk " .. surface_name)
+    return place_overflow(spider, leftover, "spider trunk " .. surface_name)
 end
 
 local function fill_ammo(spider, surface_name)
     local ammo = starter_loadouts.ammo_fill_for_surface(surface_name)
-    if not ammo then return end
+    if not ammo then return 0, 0 end
 
     local inv = spider.get_inventory(defines.inventory.spider_ammo)
-    if not inv then return end
+    if not inv then return 0, 0 end
 
-    insert_items(inv, { ammo }, "spider ammo " .. surface_name)
+    local leftover = insert_items(inv, { ammo }, "spider ammo " .. surface_name)
+    return place_overflow(spider, leftover, "spider ammo " .. surface_name)
 end
 
 function M.spawn_on_surface(surface, force)
@@ -86,8 +105,6 @@ function M.spawn_on_surface(surface, force)
     force = force or game.forces.player
     local existing = find_starter_spider(surface, force)
     if existing then
-        fill_trunk(existing, surface.name)
-        fill_ammo(existing, surface.name)
         return existing
     end
 
@@ -115,13 +132,20 @@ function M.spawn_on_surface(surface, force)
     end
 
     equipment_grid.pack(spider.grid, SPIDER_EQUIPMENT_WISHLIST, "legendary")
-    local trunk = spider.get_inventory(defines.inventory.spider_trunk)
-    log(("[LegendaryMechStart] spider trunk slots on %s: %d (grid inventory bonus %d)")
-        :format(surface.name, trunk and #trunk or 0, spider.grid and spider.grid.inventory_bonus or 0))
-
-    fill_trunk(spider, surface.name)
-    fill_ammo(spider, surface.name)
     return spider
+end
+
+function M.fill_cargo_on_surface(surface, force)
+    if not (surface and surface.valid) then return nil, 0, 0 end
+
+    force = force or game.forces.player
+    local spider = find_starter_spider(surface, force)
+    if not (spider and spider.valid) then return nil, 0, 0 end
+
+    log_trunk_capacity(spider, surface.name)
+    local trunk_chests, trunk_spilled = fill_trunk(spider, surface.name)
+    local ammo_chests, ammo_spilled = fill_ammo(spider, surface.name)
+    return spider, trunk_chests + ammo_chests, trunk_spilled + ammo_spilled
 end
 
 return M

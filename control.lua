@@ -10,6 +10,8 @@ local SETTING_SPAWN_SPIDERTRON = "LegendaryMechStart-spawn-spidertron"
 --   storage.given_items[player_index] = true  该玩家已经发过个人包
 --   storage.team_cache_placed                 整档只一次：团队资源是否已发放
 --   storage.pending_spider_surfaces[index]    下一 tick 再生成蜘蛛，避开清理流水线
+--   storage.pending_spider_cargo[index]       蜘蛛装备刷新后再插 trunk / ammo
+--   storage.pending_player_loadouts[index]    玩家机甲装备刷新后再插个人背包
 --   storage.spawned_spider_surfaces[index]    该 surface 已经处理过蜘蛛生成
 --
 -- 发放模型：
@@ -25,10 +27,34 @@ local function ensure_storage()
     if not storage.given_items then storage.given_items = {} end
     if storage.team_cache_placed == nil then storage.team_cache_placed = false end
     if not storage.pending_spider_surfaces then storage.pending_spider_surfaces = {} end
+    if not storage.pending_spider_cargo then storage.pending_spider_cargo = {} end
+    if not storage.pending_player_loadouts then storage.pending_player_loadouts = {} end
     if not storage.spawned_spider_surfaces then storage.spawned_spider_surfaces = {} end
 end
 
 local OnTick
+
+local function due_now(ready_tick)
+    return type(ready_tick) ~= "number" or ready_tick <= game.tick
+end
+
+local function due_keys(queue)
+    local keys = {}
+    for key, ready_tick in pairs(queue) do
+        if due_now(ready_tick) then keys[#keys + 1] = key end
+    end
+    return keys
+end
+
+local function ensure_tick_handler()
+    script.on_event(defines.events.on_tick, OnTick)
+end
+
+local function has_pending_work()
+    return next(storage.pending_spider_surfaces) ~= nil
+        or next(storage.pending_spider_cargo) ~= nil
+        or next(storage.pending_player_loadouts) ~= nil
+end
 
 local function spawn_spidertron_enabled()
     local s = settings.global[SETTING_SPAWN_SPIDERTRON]
@@ -44,10 +70,37 @@ local function queue_spider(surface)
     then
         return
     end
-    if storage.pending_spider_surfaces[surface.index] then return end
+    if storage.pending_spider_surfaces[surface.index] then
+        ensure_tick_handler()
+        return
+    end
 
-    storage.pending_spider_surfaces[surface.index] = true
-    script.on_event(defines.events.on_tick, OnTick)
+    storage.pending_spider_surfaces[surface.index] = game.tick + 1
+    ensure_tick_handler()
+end
+
+local function queue_spider_cargo(surface)
+    ensure_storage()
+    if not (surface and surface.valid) then return end
+    if storage.pending_spider_cargo[surface.index] then
+        ensure_tick_handler()
+        return
+    end
+
+    storage.pending_spider_cargo[surface.index] = game.tick + 1
+    ensure_tick_handler()
+end
+
+local function queue_player_loadout(player)
+    ensure_storage()
+    if not (player and player.valid) then return end
+    if storage.pending_player_loadouts[player.index] then
+        ensure_tick_handler()
+        return
+    end
+
+    storage.pending_player_loadouts[player.index] = game.tick + 1
+    ensure_tick_handler()
 end
 
 local function queue_all_planet_surfaces()
@@ -68,13 +121,15 @@ local function OnInit()
     storage.given_items              = {}
     storage.team_cache_placed        = false
     storage.pending_spider_surfaces  = {}
+    storage.pending_spider_cargo     = {}
+    storage.pending_player_loadouts  = {}
     storage.spawned_spider_surfaces  = {}
     queue_spider(game.surfaces.nauvis)
 end
 
 OnTick = function()
     ensure_storage()
-    for surface_index in pairs(storage.pending_spider_surfaces) do
+    for _, surface_index in ipairs(due_keys(storage.pending_spider_surfaces)) do
         storage.pending_spider_surfaces[surface_index] = nil
 
         local surface = game.surfaces[surface_index]
@@ -82,9 +137,8 @@ OnTick = function()
             local ok, result = pcall(legendary_spider.spawn_on_surface, surface, game.forces.player)
             if ok then
                 storage.spawned_spider_surfaces[surface_index] = result and true or nil
-                if result and surface.name == "nauvis" and not storage.team_cache_placed then
-                    storage.team_cache_placed = true
-                    notify_players("[LegendaryMechStart] Team resources loaded into the Nauvis spidertron trunk.")
+                if result then
+                    queue_spider_cargo(surface)
                 end
             else
                 log(("[LegendaryMechStart] spider stage failed on %s: %s")
@@ -93,7 +147,55 @@ OnTick = function()
         end
     end
 
-    if not next(storage.pending_spider_surfaces) then
+    for _, surface_index in ipairs(due_keys(storage.pending_spider_cargo)) do
+        storage.pending_spider_cargo[surface_index] = nil
+
+        local surface = game.surfaces[surface_index]
+        if surface and surface.valid and spawn_spidertron_enabled() then
+            local ok, spider, chest_count, spilled = pcall(
+                legendary_spider.fill_cargo_on_surface, surface, game.forces.player)
+            if ok and spider then
+                if surface.name == "nauvis" and not storage.team_cache_placed then
+                    storage.team_cache_placed = true
+                    local overflow_note = ""
+                    if (chest_count or 0) > 0 or (spilled or 0) > 0 then
+                        overflow_note = " Overflow was placed near the spidertron."
+                    end
+                    notify_players("[LegendaryMechStart] Team resources loaded into the Nauvis spidertron trunk." ..
+                        overflow_note)
+                end
+            elseif ok then
+                storage.spawned_spider_surfaces[surface_index] = nil
+                log(("[LegendaryMechStart] spider cargo stage found no spider on %s")
+                    :format(surface.name))
+            else
+                log(("[LegendaryMechStart] spider cargo stage failed on %s: %s")
+                    :format(surface.name, tostring(spider)))
+            end
+        end
+    end
+
+    for _, player_index in ipairs(due_keys(storage.pending_player_loadouts)) do
+        storage.pending_player_loadouts[player_index] = nil
+
+        local player = game.players[player_index]
+        if player and player.valid then
+            local ok, chest_count, spilled = pcall(
+                legendary_items.finish_start_items, player)
+            if ok then
+                storage.given_items[player_index] = true
+                if (chest_count or 0) > 0 or (spilled or 0) > 0 then
+                    player.print("[LegendaryMechStart] Some personal starter items did not fit in your inventory; " ..
+                        "the remainder was placed near your character.")
+                end
+            else
+                log(("[LegendaryMechStart] player loadout stage failed for player %d: %s")
+                    :format(player_index, tostring(chest_count)))
+            end
+        end
+    end
+
+    if not has_pending_work() then
         script.on_event(defines.events.on_tick, nil)
     end
 end
@@ -103,8 +205,8 @@ local function give(player_index)
     local player = game.players[player_index]
     if not (player and player.valid) then return end
 
-    legendary_items.add_start_items(player)
-    storage.given_items[player_index] = true
+    legendary_items.prepare_start_items(player)
+    queue_player_loadout(player)
 
     if not storage.team_cache_placed then
         if spawn_spidertron_enabled() then
@@ -134,6 +236,7 @@ end
 local function AddStartItem(event)
     ensure_storage()
     if storage.given_items[event.player_index] then return end
+    if storage.pending_player_loadouts[event.player_index] then return end
     give(event.player_index)
 end
 
@@ -149,6 +252,9 @@ script.on_init(OnInit)
 script.on_configuration_changed(function()
     ensure_storage()
     queue_all_planet_surfaces()
+    if has_pending_work() then
+        ensure_tick_handler()
+    end
 end)
 script.on_event(defines.events.on_player_created, AddStartItem)
 script.on_event(defines.events.on_cutscene_cancelled, ForceAddStartItem)
