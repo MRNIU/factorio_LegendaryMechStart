@@ -9,8 +9,8 @@ local M = {}
 
 --------------------------------------------------------------------------------
 -- 传奇蜘蛛网格：base 10×6，legendary 后实际 15×11，共 165 格。
--- 采用和玩家机甲相同的 first-fit 装箱逻辑，大件优先，当前清单正好填满。
-local SPIDER_EQUIPMENT_WISHLIST = {
+-- 采用和玩家机甲相同的 first-fit 装箱逻辑，大件优先，两套清单都正好填满。
+local HOSTILE_SPIDER_EQUIPMENT_WISHLIST = {
     { name = "fusion-reactor-equipment",         count = 4 }, -- 4×4，64 格
     { name = "exoskeleton-equipment",            count = 6 }, -- 2×4，48 格
     { name = "energy-shield-mk2-equipment",      count = 3 }, -- 2×2，12 格
@@ -18,6 +18,14 @@ local SPIDER_EQUIPMENT_WISHLIST = {
     { name = "personal-laser-defense-equipment", count = 2 }, -- 2×2，8 格
     { name = "battery-mk3-equipment",            count = 5 }, -- 1×2，10 格
     { name = "toolbelt-equipment",               count = 5 }, -- 3×1，15 格
+}
+
+local PEACEFUL_SPIDER_EQUIPMENT_WISHLIST = {
+    { name = "fusion-reactor-equipment",        count = 4 }, -- 4×4，64 格
+    { name = "exoskeleton-equipment",           count = 6 }, -- 2×4，48 格
+    { name = "personal-roboport-mk2-equipment", count = 7 }, -- 2×2，28 格
+    { name = "battery-mk3-equipment",           count = 5 }, -- 1×2，10 格
+    { name = "toolbelt-equipment",              count = 5 }, -- 3×1，15 格
 }
 
 local SPIDER_SEARCH_RADII     = { 128, 256, 512 }
@@ -46,6 +54,13 @@ end
 
 local function insert_items(inv, items, label)
     return item_delivery.insert_into_inventory(inv, items, "normal", label)
+end
+
+local function equipment_wishlist_for_surface(surface_name)
+    if starter_loadouts.is_hostile_surface(surface_name) then
+        return HOSTILE_SPIDER_EQUIPMENT_WISHLIST
+    end
+    return PEACEFUL_SPIDER_EQUIPMENT_WISHLIST
 end
 
 local function place_overflow(spider, items, label)
@@ -124,7 +139,7 @@ function M.spawn_on_surface(surface, force)
         return false
     end
 
-    equipment_grid.pack(spider.grid, SPIDER_EQUIPMENT_WISHLIST, "legendary")
+    equipment_grid.pack(spider.grid, equipment_wishlist_for_surface(surface.name), "legendary")
     return spider
 end
 

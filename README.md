@@ -35,17 +35,22 @@ Steady-state draw is ~10–15 MW; peak (all four roboports charging simultaneous
 
 ## Spidertron grid (legendary `spidertron`, 15 × 11)
 
-All items legendary; positions are computed by the same first-fit packer used for mech armor. The current wishlist uses exactly 165 cells.
+All items legendary; positions are computed by the same first-fit packer used for mech armor. Both current wishlists use exactly 165 cells.
 
-| Category | Item | Count |
-| :-- | :-- | :-: |
-| Power | Fusion Reactor | 4 |
-| | Battery MK3 | 5 |
-| Mobility | Exoskeleton | 6 |
-| Defense | Energy Shield MK2 | 3 |
-| | Personal Laser Defense | 2 |
-| Utility | Personal Roboport MK2 | 2 |
-| | Toolbelt | 5 |
+| Trait | Category | Item | Count |
+| :-- | :-- | :-- | :-: |
+| Hostile planets | Power | Fusion Reactor | 4 |
+| | | Battery MK3 | 5 |
+| | Mobility | Exoskeleton | 6 |
+| | Defense | Energy Shield MK2 | 3 |
+| | | Personal Laser Defense | 2 |
+| | Utility | Personal Roboport MK2 | 2 |
+| | | Toolbelt | 5 |
+| Peaceful planets | Power | Fusion Reactor | 4 |
+| | | Battery MK3 | 5 |
+| | Mobility | Exoskeleton | 6 |
+| | Utility | Personal Roboport MK2 | 7 |
+| | | Toolbelt | 5 |
 
 The toolbelts are intentional: the starter spidertron carries more than a normal spidertron trunk comfortably holds once robots, power parts, logistics chests, rockets, and repair packs are included.
 
@@ -69,68 +74,94 @@ The toolbelts are intentional: the starter spidertron carries more than a normal
 
 ## Spidertron cargo and fallback team cache
 
-All planet spidertrons receive the common maintenance kit below. If spidertron spawning is disabled, the fallback Nauvis team cache uses the same common kit, defense kit, and Nauvis-specific cargo in normal steel chests near map spawn.
+Planet spidertron cargo is assembled from trait-based packages. If spidertron spawning is disabled, the fallback Nauvis team cache uses the same Nauvis packages in normal steel chests near map spawn.
 
-| Scope | Item | Quality | Count |
+| Scope | Item | Quality | Stacks |
 | :-- | :-- | :-: | :-: |
-| Common | Construction Robot | Normal | 500 |
-| | Logistic Robot | Normal | 200 |
-| | Roboport | Normal | 20 |
-| | Repair Pack | Normal | 200 |
-| | Big Electric Pole / Substation | Normal | 50 each |
-| | Steel Chest | Normal | 50 |
-| | Active Provider / Passive Provider / Storage / Requester / Buffer Chest | Normal | 50 each |
-| | Fast Inserter | Normal | 100 |
-| | Bulk / Stack Inserter | Normal | 50 each |
-| Defense: Nauvis/Vulcanus/Gleba only | Rocket / Explosive Rocket | Normal | 200 each |
-| | Atomic Bomb | Normal | 10 |
-| | Laser Turret | Normal | 50 |
-| | Spidertron ammo slot: Rocket | Normal | 400 |
+| Common logistics | Construction Robot | Normal | 10 |
+| | Logistic Robot | Normal | 4 |
+| | Roboport | Normal | 2 |
+| | Big Electric Pole / Substation | Normal | 1 each |
+| | Steel Chest | Normal | 1 |
+| | Active Provider / Passive Provider / Storage / Requester / Buffer Chest | Normal | 1 each |
+| | Bulk Inserter | Normal | 3 |
+| | Stack Inserter | Normal | 1 |
+| | Turbo Transport Belt | Normal | 40 |
+| | Turbo Underground Belt / Turbo Splitter | Normal | 4 / 2 |
+| Common exploration | Cargo Landing Pad | Normal | 1 |
+| | Radar | Legendary | 1 |
+| Common rocket launch | Rocket Silo | Legendary | 1 |
+| | Processing Unit / Low Density Structure / Rocket Fuel | Normal | 2 / 4 / 10 |
+| Common nuclear power | Nuclear Reactor | Legendary | 1 |
+| | Uranium Fuel Cell | Legendary | 4 |
+| | Heat Pipe | Legendary | 4 |
+| | Heat Exchanger | Legendary | 1 |
+| | Steam Turbine | Legendary | 10 |
+| Common fluids | Offshore Pump | Normal | 1 |
+| Common circuit control | Arithmetic / Decider / Selector / Constant Combinator | Normal | 1 each |
+| | Power Switch / Display Panel | Normal | 1 each |
+| Common industry | Assembling Machine 3 | Legendary | 2 |
+| | Chemical Plant | Legendary | 2 |
+| | Electromagnetic Plant / Recycler / Cryogenic Plant | Legendary | 1 each |
+| | Beacon | Legendary | 2 |
+| | Speed / Productivity / Efficiency Module 3 | Legendary | 8 / 4 / 2 |
+| Hostile support: Nauvis/Vulcanus/Gleba only | Repair Pack | Normal | 2 |
+| | Rocket / Explosive Rocket | Normal | 2 each |
+| | Atomic Bomb | Normal | 1 |
+| | Laser Turret | Normal | 1 |
+| | Spidertron ammo slot: Rocket | Normal | 4 |
 
-| Planet | Item | Quality | Count |
+| Power trait | Planets | Item | Quality | Stacks |
+| :-- | :-- | :-- | :-: | :-: |
+| Solar | Nauvis / Vulcanus / Gleba / Aquilo | Solar Panel | Normal | 10 |
+| | | Accumulator | Normal | 10 |
+| Accumulator only | Fulgora | Accumulator | Normal | 20 |
+
+| Planet | Item | Quality | Stacks |
 | :-- | :-- | :-: | :-: |
-| Nauvis | Rocket Silo | Legendary | 1 |
-| | Cargo Landing Pad | Normal | 1 |
-| | Space Platform Starter Pack | Normal | 1 |
-| | Assembling Machine 3 / Electric Furnace | Legendary | 100 / 400 |
-| | Oil Refinery | Legendary | 20 |
-| | Chemical Plant / Foundry / Electromagnetic Plant / Biochamber / Cryogenic Plant | Legendary | 80 / 20 / 20 / 20 / 20 |
-| | Biolab | Legendary | 10 |
-| | Automation (red) / Logistic (green) / Chemical (blue) / Military (black) / Utility (yellow) / Production (purple) / Space (white) Science Pack (setting enabled) | Legendary | 1600 / 1600 / 1000 / 600 / 500 / 300 / 200 |
-| | Centrifuge | Legendary | 50 |
-| | Beacon | Legendary | 100 |
-| | Speed / Productivity / Efficiency Module 3 | Legendary | 1000 / 400 / 100 |
-| | Big Mining Drill | Legendary | 60 |
-| | Pumpjack | Legendary | 20 |
-| | Offshore Pump | Normal | 20 |
-| | Uranium-235 | Normal | 100 |
-| | Radar | Legendary | 50 |
-| | Turbo Transport Belt | Normal | 4000 |
-| | Turbo Underground Belt / Turbo Splitter | Normal | 200 / 100 |
-| Vulcanus | Foundry / Big Mining Drill | Legendary | 30 each |
-| | Calcite | Normal | 1000 |
-| | Tungsten Ore / Tungsten Plate / Tungsten Carbide | Normal | 500 each |
-| | Carbon | Normal | 500 |
-| | Pipe / Pipe to Ground / Pump | Normal | 300 / 150 / 50 |
-| | Foundation | Normal | 200 |
-| Fulgora | Recycler | Legendary | 50 |
-| | Electromagnetic Plant | Legendary | 30 |
-| | Lightning Rod / Lightning Collector | Normal | 100 / 50 |
-| | Accumulator / Scrap | Normal | 1000 each |
-| | Holmium Ore / Holmium Plate | Normal | 500 each |
-| | Superconductor / Supercapacitor | Normal | 200 each |
-| Gleba | Biochamber / Agricultural Tower | Legendary | 30 each |
-| | Heating Tower / Rocket Turret | Normal | 10 / 20 |
-| | Carbon Fiber / Landfill | Normal | 200 / 500 |
-| Aquilo | Cryogenic Plant | Legendary | 30 |
-| | Heating Tower | Normal | 20 |
-| | Heat Pipe | Normal | 500 |
-| | Heat Exchanger / Steam Turbine | Normal | 50 each |
-| | Rocket Fuel / Ice Platform | Normal | 500 each |
-| | Concrete / Refined Concrete | Normal | 1000 each |
-| | Lithium / Lithium Plate | Normal | 500 each |
-| | Quantum Processor | Normal | 100 |
-| | Fusion Reactor / Fusion Generator / Fusion Power Cell | Normal | 2 / 8 / 100 |
+| Nauvis | Space Platform Starter Pack | Normal | 1 |
+| | Electric Furnace | Legendary | 8 |
+| | Oil Refinery | Legendary | 2 |
+| | Chemical Plant | Legendary | 8 total |
+| | Foundry | Legendary | 1 |
+| | Biochamber | Legendary | 1 |
+| | Biolab | Legendary | 1 |
+| | Automation (red) / Logistic (green) / Chemical (blue) / Military (black) / Utility (yellow) / Production (purple) / Space (white) Science Pack (setting enabled) | Legendary | 8 / 8 / 5 / 3 / 3 / 2 / 1 |
+| | Centrifuge | Legendary | 1 |
+| | Beacon | Legendary | 5 total |
+| | Speed / Productivity Module 3 | Legendary | 20 / 8 total |
+| | Big Mining Drill | Legendary | 3 |
+| | Pumpjack | Legendary | 1 |
+| | Uranium-235 | Normal | 1 |
+| | Fast Inserter | Normal | 2 |
+| Vulcanus | Electric Furnace | Legendary | 2 |
+| | Foundry / Big Mining Drill | Legendary | 2 / 2 |
+| | Pumpjack | Legendary | 1 |
+| | Calcite | Normal | 20 |
+| | Tungsten Ore / Tungsten Plate / Tungsten Carbide | Normal | 10 / 5 / 10 |
+| | Carbon | Normal | 10 |
+| | Pipe / Pipe to Ground / Pump | Normal | 3 / 3 / 1 |
+| | Foundation | Normal | 2 |
+| Fulgora | Electromagnetic Plant / Recycler | Legendary | 2 total / 3 total |
+| | Lightning Collector | Legendary | 1 |
+| | Scrap | Normal | 20 |
+| | Holmium Ore / Holmium Plate | Normal | 10 / 5 |
+| | Superconductor / Supercapacitor | Normal | 4 each |
+| Gleba | Electric Furnace | Legendary | 2 |
+| | Foundry | Legendary | 1 |
+| | Biochamber / Agricultural Tower | Legendary | 2 each |
+| | Heating Tower / Rocket Turret | Normal | 2 / 2 |
+| | Carbon Fiber / Landfill | Normal | 2 / 5 |
+| Aquilo | Electric Furnace | Legendary | 2 |
+| | Foundry | Legendary | 1 |
+| | Cryogenic Plant | Legendary | 2 total |
+| | Heating Tower | Normal | 2 |
+| | Ice Platform | Normal | 5 |
+| | Concrete / Refined Concrete | Normal | 10 each |
+| | Lithium / Lithium Plate | Normal | 5 each |
+| | Tungsten Carbide / Superconductor / Carbon Fiber / Holmium Plate | Normal | 10 / 10 / 5 / 5 |
+| | Quantum Processor | Normal | 2 |
+| | Fusion Reactor / Fusion Generator / Fusion Power Cell | Normal | 2 / 2 / 2 |
 
 ## Multiplayer behaviour
 

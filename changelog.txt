@@ -1,4 +1,19 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.5.8
+Date: 2026-06-01
+  Changes:
+    - Added a shared per-planet industrial bootstrap cargo package with legendary radars, production buildings, larger speed and productivity module reserves, offshore pumps, turbo belts, beacons, and accumulator support.
+    - Expanded planet-specific spidertron cargo for Nauvis, Vulcanus, Fulgora, Gleba, and Aquilo while keeping the space platform starter pack exclusive to Nauvis.
+    - Rebalanced inserter cargo so fast inserters stay exclusive to Nauvis and other planets receive more bulk inserters by default.
+    - Reorganized spidertron cargo into logistics, exploration, fluids, industry, power, hostile-support, and planet-special packages; repair packs now only go to hostile planets.
+    - Added a legendary rocket silo and four-launch component reserve to every planet, and switched peaceful-planet spidertrons from shields and lasers to extra personal roboports.
+    - Added a shared legendary nuclear power package to every planet, replacing extra heating rocket fuel with reactors, uranium fuel cells, heat pipes, heat exchangers, and steam turbines.
+    - Added a shared circuit-control package with one stack each of combinators plus power switches and display panels.
+    - Added Aquilo cross-planet startup supplies for quantum processor and fusion chains, including tungsten carbide, superconductors, carbon fiber, holmium plates, and more quantum processors.
+    - Replaced Fulgora lightning rods with one stack of legendary lightning collectors.
+    - Expressed spidertron cargo quantities in whole stacks and resolve final counts from runtime item prototype stack sizes.
+
+---------------------------------------------------------------------------------------------------
 Version: 1.5.7
 Date: 2026-06-01
   Changes:
