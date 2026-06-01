@@ -1,4 +1,10 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.5.9
+Date: 2026-06-01
+  Changes:
+    - Changed spidertron nuclear heat pipes to normal quality and increased substations to two stacks.
+
+---------------------------------------------------------------------------------------------------
 Version: 1.5.8
 Date: 2026-06-01
   Changes:

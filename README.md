@@ -81,7 +81,7 @@ Planet spidertron cargo is assembled from trait-based packages. If spidertron sp
 | Common logistics | Construction Robot | Normal | 10 |
 | | Logistic Robot | Normal | 4 |
 | | Roboport | Normal | 2 |
-| | Big Electric Pole / Substation | Normal | 1 each |
+| | Big Electric Pole / Substation | Normal | 1 / 2 |
 | | Steel Chest | Normal | 1 |
 | | Active Provider / Passive Provider / Storage / Requester / Buffer Chest | Normal | 1 each |
 | | Bulk Inserter | Normal | 3 |
@@ -94,7 +94,7 @@ Planet spidertron cargo is assembled from trait-based packages. If spidertron sp
 | | Processing Unit / Low Density Structure / Rocket Fuel | Normal | 2 / 4 / 10 |
 | Common nuclear power | Nuclear Reactor | Legendary | 1 |
 | | Uranium Fuel Cell | Legendary | 4 |
-| | Heat Pipe | Legendary | 4 |
+| | Heat Pipe | Normal | 4 |
 | | Heat Exchanger | Legendary | 1 |
 | | Steam Turbine | Legendary | 10 |
 | Common fluids | Offshore Pump | Normal | 1 |

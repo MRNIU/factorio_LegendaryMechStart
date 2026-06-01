@@ -18,7 +18,7 @@ local COMMON_LOGISTICS_WISHLIST = {
     { name = "logistic-robot",         stacks = 4,  quality = "normal" },
     { name = "roboport",               stacks = 2,  quality = "normal" },
     { name = "big-electric-pole",      stacks = 1,  quality = "normal" },
-    { name = "substation",             stacks = 1,  quality = "normal" },
+    { name = "substation",             stacks = 2,  quality = "normal" },
     { name = "steel-chest",            stacks = 1,  quality = "normal" },
     { name = "active-provider-chest",  stacks = 1,  quality = "normal" },
     { name = "passive-provider-chest", stacks = 1,  quality = "normal" },
@@ -47,7 +47,7 @@ local COMMON_ROCKET_LAUNCH_WISHLIST = {
 local COMMON_NUCLEAR_POWER_WISHLIST = {
     { name = "nuclear-reactor",    stacks = 1,  quality = "legendary" },
     { name = "uranium-fuel-cell",  stacks = 4,  quality = "legendary" },
-    { name = "heat-pipe",          stacks = 4,  quality = "legendary" },
+    { name = "heat-pipe",          stacks = 4,  quality = "normal" },
     { name = "heat-exchanger",     stacks = 1,  quality = "legendary" },
     { name = "steam-turbine",      stacks = 10, quality = "legendary" },
 }
