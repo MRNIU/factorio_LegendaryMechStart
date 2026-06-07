@@ -15,7 +15,7 @@ local PLANET_TRAITS = {
 
 local COMMON_LOGISTICS_WISHLIST = {
     { name = "construction-robot",     stacks = 10, quality = "normal" },
-    { name = "logistic-robot",         stacks = 4,  quality = "normal" },
+    { name = "logistic-robot",         stacks = 20, quality = "normal" },
     { name = "roboport",               stacks = 2,  quality = "normal" },
     { name = "big-electric-pole",      stacks = 1,  quality = "normal" },
     { name = "substation",             stacks = 2,  quality = "normal" },
@@ -25,8 +25,9 @@ local COMMON_LOGISTICS_WISHLIST = {
     { name = "storage-chest",          stacks = 1,  quality = "normal" },
     { name = "requester-chest",        stacks = 1,  quality = "normal" },
     { name = "buffer-chest",           stacks = 1,  quality = "normal" },
-    { name = "bulk-inserter",          stacks = 3,  quality = "normal" },
-    { name = "stack-inserter",         stacks = 1,  quality = "normal" },
+    { name = "long-handed-inserter",   stacks = 1,  quality = "legendary" },
+    { name = "bulk-inserter",          stacks = 3,  quality = "legendary" },
+    { name = "stack-inserter",         stacks = 1,  quality = "legendary" },
     { name = "turbo-transport-belt",   stacks = 40, quality = "normal" },
     { name = "turbo-underground-belt", stacks = 4, quality = "normal" },
     { name = "turbo-splitter",         stacks = 2, quality = "normal" },
@@ -120,7 +121,7 @@ local PLANET_SPECIAL_WISHLISTS = {
         { name = "big-mining-drill",            stacks = 3,  quality = "legendary" },
         { name = "pumpjack",                    stacks = 1,  quality = "legendary" },
         { name = "uranium-235",                 stacks = 1,  quality = "normal" },
-        { name = "fast-inserter",               stacks = 2,  quality = "normal" },
+        { name = "fast-inserter",               stacks = 2,  quality = "legendary" },
     },
 
     vulcanus = {

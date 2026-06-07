@@ -10,7 +10,7 @@ A Factorio 2.0 Space Age mod that drops every player into fully-equipped legenda
 - **Optional seven-color legendary science packs** can be enabled with a runtime-global map setting before the team resource cache is delivered.
 - **Optional legendary spidertron on each planet**: a fully-equipped legendary spidertron is spawned once per planet surface, then loaded one tick later with a common maintenance kit plus planet-specific cargo. Nauvis/Vulcanus/Gleba also receive a normal-quality defense package and dedicated spidertron ammo-slot rockets.
 - **Freeplay intro cleanup**: the mod re-runs after the cutscene finishes, so the default pistol and firearm magazines Freeplay hands out are removed.
-- **Quality-aware**: every inserted stack declares its `quality` explicitly. Core production assets, mining drills, pumpjacks, recyclers, agricultural towers, modules, and beacons are legendary; bulk infrastructure, robots, roboports, chests, inserters, power equipment, weapons, ammo, and consumables stay normal on purpose.
+- **Quality-aware**: every inserted stack declares its `quality` explicitly. Core production assets, mining drills, pumpjacks, recyclers, agricultural towers, modules, beacons, and inserters are legendary; bulk infrastructure, robots, roboports, chests, power equipment, weapons, ammo, and consumables stay normal on purpose.
 - **Multiplayer-aware**: the team resources are tracked with `storage.team_cache_placed`, so cutscene replays and late joiners never duplicate them.
 - **Safe on missing prototypes and unexpected overflow**: every insert checks `prototypes.item[name]` / `prototypes.equipment[name]` first. The intended path fits in the target inventory; if an unexpected partial insert still happens, the remainder is logged and spilled near the player or spidertron.
 
@@ -79,13 +79,14 @@ Planet spidertron cargo is assembled from trait-based packages. If spidertron sp
 | Scope | Item | Quality | Stacks |
 | :-- | :-- | :-: | :-: |
 | Common logistics | Construction Robot | Normal | 10 |
-| | Logistic Robot | Normal | 4 |
+| | Logistic Robot | Normal | 20 |
 | | Roboport | Normal | 2 |
 | | Big Electric Pole / Substation | Normal | 1 / 2 |
 | | Steel Chest | Normal | 1 |
 | | Active Provider / Passive Provider / Storage / Requester / Buffer Chest | Normal | 1 each |
-| | Bulk Inserter | Normal | 3 |
-| | Stack Inserter | Normal | 1 |
+| | Long-handed Inserter | Legendary | 1 |
+| | Bulk Inserter | Legendary | 3 |
+| | Stack Inserter | Legendary | 1 |
 | | Turbo Transport Belt | Normal | 40 |
 | | Turbo Underground Belt / Turbo Splitter | Normal | 4 / 2 |
 | Common exploration | Cargo Landing Pad | Normal | 1 |
@@ -133,7 +134,7 @@ Planet spidertron cargo is assembled from trait-based packages. If spidertron sp
 | | Big Mining Drill | Legendary | 3 |
 | | Pumpjack | Legendary | 1 |
 | | Uranium-235 | Normal | 1 |
-| | Fast Inserter | Normal | 2 |
+| | Fast Inserter | Legendary | 2 |
 | Vulcanus | Electric Furnace | Legendary | 2 |
 | | Foundry / Big Mining Drill | Legendary | 2 / 2 |
 | | Pumpjack | Legendary | 1 |

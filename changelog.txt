@@ -1,4 +1,11 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.5.10
+Date: 2026-06-07
+  Changes:
+    - Changed all spidertron cargo inserters to legendary quality and added one stack of legendary long-handed inserters.
+    - Increased common spidertron logistic robot cargo to 20 stacks.
+
+---------------------------------------------------------------------------------------------------
 Version: 1.5.9
 Date: 2026-06-01
   Changes:
