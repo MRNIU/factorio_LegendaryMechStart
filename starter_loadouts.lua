@@ -111,7 +111,7 @@ local PLANET_SPECIAL_WISHLISTS = {
         { name = "electric-furnace",            stacks = 8,  quality = "legendary" },
         { name = "oil-refinery",                stacks = 2,  quality = "legendary" },
         { name = "chemical-plant",              stacks = 6,  quality = "legendary" },
-        { name = "foundry",                     stacks = 1,  quality = "legendary" },
+        { name = "foundry",                     stacks = 2,  quality = "legendary" },
         { name = "biochamber",                  stacks = 1,  quality = "legendary" },
         { name = "biolab",                      stacks = 1,  quality = "legendary" },
         { name = "centrifuge",                  stacks = 1,  quality = "legendary" },
