@@ -55,6 +55,9 @@ local COMMON_NUCLEAR_POWER_WISHLIST = {
 
 local COMMON_FLUIDS_WISHLIST = {
     { name = "offshore-pump",         stacks = 1,  quality = "normal" },
+    { name = "pump",                  stacks = 1,  quality = "normal" },
+    { name = "pipe",                  stacks = 2,  quality = "normal" },
+    { name = "pipe-to-ground",        stacks = 2,  quality = "normal" },
 }
 
 local COMMON_CIRCUIT_CONTROL_WISHLIST = {
@@ -134,9 +137,6 @@ local PLANET_SPECIAL_WISHLISTS = {
         { name = "tungsten-plate",       stacks = 5,  quality = "normal" },
         { name = "tungsten-carbide",     stacks = 10, quality = "normal" },
         { name = "carbon",               stacks = 10, quality = "normal" },
-        { name = "pipe",                 stacks = 3,  quality = "normal" },
-        { name = "pipe-to-ground",       stacks = 3,  quality = "normal" },
-        { name = "pump",                 stacks = 1,  quality = "normal" },
         { name = "foundation",           stacks = 2,  quality = "normal" },
     },
 
@@ -166,6 +166,7 @@ local PLANET_SPECIAL_WISHLISTS = {
         { name = "electric-furnace", stacks = 2,  quality = "legendary" },
         { name = "foundry",          stacks = 1,  quality = "legendary" },
         { name = "cryogenic-plant",  stacks = 1,  quality = "legendary" },
+        { name = "pumpjack",         stacks = 1,  quality = "legendary" },
         { name = "heating-tower",    stacks = 2,  quality = "normal" },
         { name = "ice-platform",     stacks = 5,  quality = "normal" },
         { name = "concrete",         stacks = 10, quality = "normal" },

@@ -99,6 +99,8 @@ Planet spidertron cargo is assembled from trait-based packages. If spidertron sp
 | | Heat Exchanger | Legendary | 1 |
 | | Steam Turbine | Legendary | 10 |
 | Common fluids | Offshore Pump | Normal | 1 |
+| | Pump | Normal | 1 |
+| | Pipe / Pipe to Ground | Normal | 2 each |
 | Common circuit control | Arithmetic / Decider / Selector / Constant Combinator | Normal | 1 each |
 | | Power Switch / Display Panel | Normal | 1 each |
 | Common industry | Assembling Machine 3 | Legendary | 2 |
@@ -141,7 +143,6 @@ Planet spidertron cargo is assembled from trait-based packages. If spidertron sp
 | | Calcite | Normal | 20 |
 | | Tungsten Ore / Tungsten Plate / Tungsten Carbide | Normal | 10 / 5 / 10 |
 | | Carbon | Normal | 10 |
-| | Pipe / Pipe to Ground / Pump | Normal | 3 / 3 / 1 |
 | | Foundation | Normal | 2 |
 | Fulgora | Electromagnetic Plant / Recycler | Legendary | 2 total / 3 total |
 | | Lightning Collector | Legendary | 1 |
@@ -156,6 +157,7 @@ Planet spidertron cargo is assembled from trait-based packages. If spidertron sp
 | Aquilo | Electric Furnace | Legendary | 2 |
 | | Foundry | Legendary | 1 |
 | | Cryogenic Plant | Legendary | 2 total |
+| | Pumpjack | Legendary | 1 |
 | | Heating Tower | Normal | 2 |
 | | Ice Platform | Normal | 5 |
 | | Concrete / Refined Concrete | Normal | 10 each |

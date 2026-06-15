@@ -1,4 +1,11 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.5.11
+Date: 2026-06-09
+  Changes:
+    - Moved pipe and pipe-to-ground cargo into the common fluids package with two stacks each for every planet.
+    - Moved pumps into the common fluids package with one normal stack for every planet, while keeping pumpjacks planet-specific for Nauvis, Vulcanus, and Aquilo.
+
+---------------------------------------------------------------------------------------------------
 Version: 1.5.10
 Date: 2026-06-07
   Changes:
