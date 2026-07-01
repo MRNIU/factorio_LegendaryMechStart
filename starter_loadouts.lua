@@ -137,6 +137,14 @@ local PLANET_SPECIAL_WISHLISTS = {
         { name = "tungsten-plate",       stacks = 5,  quality = "normal" },
         { name = "tungsten-carbide",     stacks = 10, quality = "normal" },
         { name = "carbon",               stacks = 10, quality = "normal" },
+        { name = "coal",                 stacks = 1,  quality = "normal" },
+        { name = "steel-plate",          stacks = 1,  quality = "normal" },
+        { name = "electronic-circuit",   stacks = 1,  quality = "normal" },
+        { name = "advanced-circuit",     stacks = 1,  quality = "normal" },
+        { name = "refined-concrete",     stacks = 1,  quality = "normal" },
+        { name = "lubricant-barrel",     stacks = 1,  quality = "normal" },
+        { name = "electric-engine-unit", stacks = 1,  quality = "normal" },
+        { name = "electric-mining-drill", stacks = 1, quality = "normal" },
         { name = "foundation",           stacks = 2,  quality = "normal" },
     },
 
@@ -149,6 +157,16 @@ local PLANET_SPECIAL_WISHLISTS = {
         { name = "holmium-plate",         stacks = 5,  quality = "normal" },
         { name = "superconductor",        stacks = 4,  quality = "normal" },
         { name = "supercapacitor",        stacks = 4,  quality = "normal" },
+        { name = "steel-plate",           stacks = 1,  quality = "normal" },
+        { name = "copper-plate",          stacks = 1,  quality = "normal" },
+        { name = "electronic-circuit",    stacks = 1,  quality = "normal" },
+        { name = "battery",               stacks = 1,  quality = "normal" },
+        { name = "plastic-bar",           stacks = 1,  quality = "normal" },
+        { name = "refined-concrete",      stacks = 1,  quality = "normal" },
+        { name = "stone",                 stacks = 1,  quality = "normal" },
+        { name = "water-barrel",          stacks = 1,  quality = "normal" },
+        { name = "heavy-oil-barrel",      stacks = 1,  quality = "normal" },
+        { name = "light-oil-barrel",      stacks = 1,  quality = "normal" },
     },
 
     gleba = {
@@ -160,6 +178,12 @@ local PLANET_SPECIAL_WISHLISTS = {
         { name = "rocket-turret",      stacks = 2, quality = "normal" },
         { name = "carbon-fiber",       stacks = 2, quality = "normal" },
         { name = "landfill",           stacks = 5, quality = "normal" },
+        { name = "spoilage",           stacks = 2, quality = "normal" },
+        { name = "bioflux",            stacks = 1, quality = "normal" },
+        { name = "yumako",             stacks = 1, quality = "normal" },
+        { name = "jellynut",           stacks = 1, quality = "normal" },
+        { name = "iron-plate",         stacks = 1, quality = "normal" },
+        { name = "electronic-circuit", stacks = 1, quality = "normal" },
     },
 
     aquilo = {
@@ -181,6 +205,8 @@ local PLANET_SPECIAL_WISHLISTS = {
         { name = "fusion-reactor",    stacks = 2,  quality = "normal" },
         { name = "fusion-generator",  stacks = 2,  quality = "normal" },
         { name = "fusion-power-cell", stacks = 2,  quality = "normal" },
+        { name = "ice",               stacks = 3,  quality = "normal" },
+        { name = "solid-fuel",        stacks = 1,  quality = "normal" },
     },
 }
 

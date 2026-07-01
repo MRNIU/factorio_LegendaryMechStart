@@ -1,9 +1,10 @@
 ---------------------------------------------------------------------------------------------------
 Version: 1.5.11
-Date: 2026-06-09
+Date: 2026-07-02
   Changes:
     - Moved pipe and pipe-to-ground cargo into the common fluids package with two stacks each for every planet.
     - Moved pumps into the common fluids package with one normal stack for every planet, while keeping pumpjacks planet-specific for Nauvis, Vulcanus, and Aquilo.
+    - Added planet-specific trigger-chain material reserves for Vulcanus, Fulgora, Gleba, and Aquilo, avoiding fast-spoiling Gleba intermediates and pentapod eggs.
 
 ---------------------------------------------------------------------------------------------------
 Version: 1.5.10

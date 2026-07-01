@@ -143,17 +143,23 @@ Planet spidertron cargo is assembled from trait-based packages. If spidertron sp
 | | Calcite | Normal | 20 |
 | | Tungsten Ore / Tungsten Plate / Tungsten Carbide | Normal | 10 / 5 / 10 |
 | | Carbon | Normal | 10 |
+| | Coal / Steel Plate / Electronic Circuit / Advanced Circuit / Refined Concrete | Normal | 1 each |
+| | Lubricant Barrel / Electric Engine Unit / Electric Mining Drill | Normal | 1 each |
 | | Foundation | Normal | 2 |
 | Fulgora | Electromagnetic Plant / Recycler | Legendary | 2 total / 3 total |
 | | Lightning Collector | Legendary | 1 |
 | | Scrap | Normal | 20 |
 | | Holmium Ore / Holmium Plate | Normal | 10 / 5 |
 | | Superconductor / Supercapacitor | Normal | 4 each |
+| | Steel Plate / Copper Plate / Electronic Circuit / Battery / Plastic Bar / Refined Concrete / Stone | Normal | 1 each |
+| | Water Barrel / Heavy Oil Barrel / Light Oil Barrel | Normal | 1 each |
 | Gleba | Electric Furnace | Legendary | 2 |
 | | Foundry | Legendary | 1 |
 | | Biochamber / Agricultural Tower | Legendary | 2 each |
 | | Heating Tower / Rocket Turret | Normal | 2 / 2 |
 | | Carbon Fiber / Landfill | Normal | 2 / 5 |
+| | Spoilage | Normal | 2 |
+| | Bioflux / Yumako / Jellynut / Iron Plate / Electronic Circuit | Normal | 1 each |
 | Aquilo | Electric Furnace | Legendary | 2 |
 | | Foundry | Legendary | 1 |
 | | Cryogenic Plant | Legendary | 2 total |
@@ -165,6 +171,7 @@ Planet spidertron cargo is assembled from trait-based packages. If spidertron sp
 | | Tungsten Carbide / Superconductor / Carbon Fiber / Holmium Plate | Normal | 10 / 10 / 5 / 5 |
 | | Quantum Processor | Normal | 2 |
 | | Fusion Reactor / Fusion Generator / Fusion Power Cell | Normal | 2 / 2 / 2 |
+| | Ice / Solid Fuel | Normal | 3 / 1 |
 
 ## Multiplayer behaviour
 
