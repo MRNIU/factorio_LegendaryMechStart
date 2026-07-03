@@ -174,7 +174,7 @@ When a planet spidertron is spawned or adopted, the cargo-fill stage also places
 | | Foundry | Legendary | 1 |
 | | Cryogenic Plant | Legendary | 2 total |
 | | Pumpjack | Legendary | 1 |
-| | Heating Tower | Legendary | 2 |
+| | Heating Tower | Normal | 2 |
 | | Ice Platform | Normal | 5 |
 | | Concrete / Refined Concrete | Normal | 10 each |
 | | Lithium / Lithium Plate | Normal | 5 each |
