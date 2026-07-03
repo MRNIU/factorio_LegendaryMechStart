@@ -33,6 +33,10 @@ local COMMON_LOGISTICS_WISHLIST = {
     { name = "turbo-splitter",         stacks = 2, quality = "normal" },
 }
 
+local COMMON_MAINTENANCE_WISHLIST = {
+    { name = "repair-pack", stacks = 1, quality = "normal" },
+}
+
 local COMMON_EXPLORATION_WISHLIST = {
     { name = "cargo-landing-pad",     stacks = 1,  quality = "normal" },
     { name = "radar",                 stacks = 1,  quality = "legendary" },
@@ -91,11 +95,15 @@ local ACCUMULATOR_ONLY_POWER_WISHLIST = {
 }
 
 local HOSTILE_SUPPORT_WISHLIST = {
-    { name = "repair-pack",      stacks = 2, quality = "normal" },
     { name = "rocket",           stacks = 2, quality = "normal" },
     { name = "explosive-rocket", stacks = 2, quality = "normal" },
     { name = "atomic-bomb",      stacks = 1, quality = "normal" },
     { name = "laser-turret",     stacks = 1, quality = "normal" },
+}
+
+local BOOTSTRAP_ROBOPORT_ROBOT_WISHLIST = {
+    { name = "construction-robot", stacks = 2, quality = "normal" },
+    { name = "logistic-robot",     stacks = 2, quality = "normal" },
 }
 
 local NAUVIS_SCIENCE_PACK_WISHLIST = {
@@ -242,6 +250,7 @@ end
 function M.trunk_wishlist_for_surface(surface_name)
     local items = {}
     append_items(items, COMMON_LOGISTICS_WISHLIST)
+    append_items(items, COMMON_MAINTENANCE_WISHLIST)
     local traits = PLANET_TRAITS[surface_name]
     local planet_items = PLANET_SPECIAL_WISHLISTS[surface_name]
     if traits and planet_items then
@@ -269,6 +278,12 @@ end
 
 function M.team_cache_wishlist()
     return M.trunk_wishlist_for_surface("nauvis")
+end
+
+function M.roboport_robot_wishlist()
+    local items = {}
+    append_items(items, BOOTSTRAP_ROBOPORT_ROBOT_WISHLIST)
+    return items
 end
 
 function M.ammo_fill_for_surface(surface_name)

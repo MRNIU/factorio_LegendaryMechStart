@@ -1,4 +1,11 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.5.13
+Date: 2026-07-03
+  Changes:
+    - Added one normal stack of repair packs to every planet spidertron cargo package.
+    - Added a per-planet normal bootstrap roboport near each starter spidertron with normal construction and logistic robots.
+
+---------------------------------------------------------------------------------------------------
 Version: 1.5.11
 Date: 2026-07-02
   Changes:

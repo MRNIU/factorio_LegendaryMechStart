@@ -30,6 +30,10 @@ local PEACEFUL_SPIDER_EQUIPMENT_WISHLIST = {
 
 local SPIDER_SEARCH_RADII     = { 128, 256, 512 }
 local SPIDER_SEARCH_PRECISION = 1
+local BOOTSTRAP_SEARCH_RADIUS = 24
+local BOOTSTRAP_ROBOPORT_NAME = "roboport"
+local BOOTSTRAP_ROBOPORT_QUALITY = "normal"
+local BOOTSTRAP_ROBOPORT_OFFSET = { x = 10, y = 0 }
 
 --------------------------------------------------------------------------------
 local function find_safe_position(surface, origin)
@@ -70,6 +74,67 @@ local function place_overflow(spider, items, label)
         spider.surface, spider.position, spider.force, items)
     log(("[LegendaryMechStart] unexpected %s overflow: %d spilled items")
         :format(label, spilled))
+    return spilled
+end
+
+local function offset_position(position, offset)
+    return {
+        x = (position.x or position[1]) + offset.x,
+        y = (position.y or position[2]) + offset.y,
+    }
+end
+
+local function create_bootstrap_roboport(spider)
+    if not (prototypes.entity and prototypes.entity[BOOTSTRAP_ROBOPORT_NAME]) then return nil end
+
+    local desired = offset_position(spider.position, BOOTSTRAP_ROBOPORT_OFFSET)
+    local position = spider.surface.find_non_colliding_position(
+        BOOTSTRAP_ROBOPORT_NAME, desired, BOOTSTRAP_SEARCH_RADIUS, 1)
+    if not position then
+        log(("[LegendaryMechStart] bootstrap: no clear position for %s on %s")
+            :format(BOOTSTRAP_ROBOPORT_NAME, spider.surface.name))
+        return nil
+    end
+
+    local ok, entity = pcall(function()
+        return spider.surface.create_entity({
+            name        = BOOTSTRAP_ROBOPORT_NAME,
+            position    = position,
+            force       = spider.force,
+            quality     = BOOTSTRAP_ROBOPORT_QUALITY,
+            raise_built = true,
+        })
+    end)
+    if not (ok and entity and entity.valid) then
+        log(("[LegendaryMechStart] bootstrap: create_entity failed for %s on %s: %s")
+            :format(BOOTSTRAP_ROBOPORT_NAME, spider.surface.name, tostring(entity)))
+        return nil
+    end
+
+    return entity
+end
+
+local function fill_roboport(roboport)
+    if not (roboport and roboport.valid) then return 0 end
+
+    local spilled = 0
+    local robot_inv = roboport.get_inventory(defines.inventory.roboport_robot)
+    local robot_leftover = item_delivery.insert_into_inventory(
+        robot_inv, starter_loadouts.roboport_robot_wishlist(), "normal",
+        "bootstrap roboport robots " .. roboport.surface.name)
+    spilled = spilled + item_delivery.spill_items(
+        roboport.surface, roboport.position, roboport.force, robot_leftover)
+
+    return spilled
+end
+
+local function place_bootstrap_roboport(spider)
+    local roboport = create_bootstrap_roboport(spider)
+    local spilled = fill_roboport(roboport)
+    if roboport then
+        log(("[LegendaryMechStart] bootstrap roboport on %s placed%s")
+            :format(spider.surface.name, spilled > 0 and " with unexpected robot overflow" or ""))
+    end
     return spilled
 end
 
@@ -153,7 +218,8 @@ function M.fill_cargo_on_surface(surface, force)
     log_trunk_capacity(spider, surface.name)
     local trunk_spilled = fill_trunk(spider, surface.name)
     local ammo_spilled = fill_ammo(spider, surface.name)
-    return spider, trunk_spilled + ammo_spilled
+    local roboport_spilled = place_bootstrap_roboport(spider)
+    return spider, trunk_spilled + ammo_spilled + roboport_spilled
 end
 
 return M

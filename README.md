@@ -8,9 +8,9 @@ A Factorio 2.0 Space Age mod that drops every player into fully-equipped legenda
 - **Personal starter kit** in each player's inventory: bootstrap materials, personal construction and logistic robots, defensive turrets, temporary wiring and piping, spare ammunition and repair packs. Inventory items are inserted after the character main inventory is available and at least one tick after the mech armor is equipped so toolbelt bonuses can refresh first.
 - **Team resource cache** delivered once per save. If legendary spidertrons are enabled, the Nauvis team resources are loaded into the Nauvis spidertron trunk instead of being placed on the ground. If spidertrons are disabled, the same Nauvis cache is placed into normal steel chests near map spawn.
 - **Optional seven-color legendary science packs** can be enabled with a runtime-global map setting before the team resource cache is delivered.
-- **Optional legendary spidertron on each planet**: a fully-equipped legendary spidertron is spawned once per planet surface, then loaded one tick later with a common maintenance kit plus planet-specific cargo. Nauvis/Vulcanus/Gleba also receive a normal-quality defense package and dedicated spidertron ammo-slot rockets.
+- **Optional legendary spidertron on each planet**: a fully-equipped legendary spidertron is spawned once per planet surface, then loaded one tick later with a common maintenance kit plus planet-specific cargo. A bootstrap roboport is placed near it and loaded with starter robots. Nauvis/Vulcanus/Gleba also receive a normal-quality defense package and dedicated spidertron ammo-slot rockets.
 - **Freeplay intro cleanup**: the mod re-runs after the cutscene finishes, so the default pistol and firearm magazines Freeplay hands out are removed.
-- **Quality-aware**: every inserted stack declares its `quality` explicitly. Core production assets, mining drills, pumpjacks, recyclers, agricultural towers, modules, beacons, and inserters are legendary; bulk infrastructure, robots, roboports, chests, power equipment, weapons, ammo, and consumables stay normal on purpose.
+- **Quality-aware**: every inserted stack declares its `quality` explicitly. Core production assets, mining drills, pumpjacks, recyclers, agricultural towers, modules, beacons, and inserters are legendary; bulk infrastructure, cargo robots, roboports, chests, power equipment, weapons, ammo, and consumables stay normal on purpose.
 - **Multiplayer-aware**: the team resources are tracked with `storage.team_cache_placed`, so cutscene replays and late joiners never duplicate them.
 - **Safe on missing prototypes and unexpected overflow**: every insert checks `prototypes.item[name]` / `prototypes.equipment[name]` first. The intended path fits in the target inventory; if an unexpected partial insert still happens, the remainder is logged and spilled near the player or spidertron.
 
@@ -89,6 +89,7 @@ Planet spidertron cargo is assembled from trait-based packages. If spidertron sp
 | | Stack Inserter | Legendary | 1 |
 | | Turbo Transport Belt | Normal | 40 |
 | | Turbo Underground Belt / Turbo Splitter | Normal | 4 / 2 |
+| Common maintenance | Repair Pack | Normal | 1 |
 | Common exploration | Cargo Landing Pad | Normal | 1 |
 | | Radar | Legendary | 1 |
 | Common rocket launch | Rocket Silo | Legendary | 1 |
@@ -108,11 +109,20 @@ Planet spidertron cargo is assembled from trait-based packages. If spidertron sp
 | | Electromagnetic Plant / Recycler / Cryogenic Plant | Legendary | 1 each |
 | | Beacon | Legendary | 2 |
 | | Speed / Productivity / Efficiency Module 3 | Legendary | 8 / 4 / 2 |
-| Hostile support: Nauvis/Vulcanus/Gleba only | Repair Pack | Normal | 2 |
-| | Rocket / Explosive Rocket | Normal | 2 each |
+| Hostile support: Nauvis/Vulcanus/Gleba only | Rocket / Explosive Rocket | Normal | 2 each |
 | | Atomic Bomb | Normal | 1 |
 | | Laser Turret | Normal | 1 |
 | | Spidertron ammo slot: Rocket | Normal | 4 |
+
+## Spidertron bootstrap roboport
+
+When a planet spidertron is spawned or adopted, the cargo-fill stage also places one roboport near the spidertron and loads it directly with starter robots.
+
+| Entity / inventory | Quality | Count |
+| :-- | :-: | :-: |
+| Roboport | Normal | 1 |
+| Roboport robot inventory: Construction Robot | Normal | 2 stacks |
+| Roboport robot inventory: Logistic Robot | Normal | 2 stacks |
 
 | Power trait | Planets | Item | Quality | Stacks |
 | :-- | :-- | :-- | :-: | :-: |
@@ -187,6 +197,7 @@ Planet spidertron cargo is assembled from trait-based packages. If spidertron sp
 - **Fallback team cache placement** is anchored to `LuaForce::get_spawn_position(surface)` — the force's configured spawn (`(0, 0)` on vanilla Nauvis) — rather than the character's actual position. This keeps the cache at map origin even when a sibling mod (e.g. [BestLanding](https://github.com/MRNIU/factorio_BestLanding)) pushes the player far from spawn by filling the area with a landing blueprint.
 - **Spidertron placement** is delayed until the next tick after a surface appears. This lets sibling mods finish landing-area cleanup and blueprint placement before the spidertron searches for a non-colliding position near `(0, 0)`.
 - **Spidertron trunk and ammo capacity** is checked through `LuaInventory::insert` one tick after the spidertron equipment grid is packed. The log records trunk slots, grid size, toolbelt count, and inventory bonus; the designed cargo should fit, and unexpected leftovers are logged and spilled near the spidertron.
+- **Bootstrap roboport placement** happens in the same delayed cargo stage. The roboport is loaded directly through `defines.inventory.roboport_robot`, so the local logistic network has active robots without needing a player to land first.
 - If spidertrons are disabled and no free tile exists within 15 tiles of `(0, 0)`, any fallback chest items that could not be placed are spilled on the ground — the placer never destroys existing entities.
 
 ## Installation
