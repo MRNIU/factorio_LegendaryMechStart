@@ -116,7 +116,7 @@ Planet spidertron cargo is assembled from trait-based packages. If spidertron sp
 
 ## Spidertron bootstrap roboport
 
-When a planet spidertron is spawned or adopted, the cargo-fill stage also places one roboport near the spidertron and loads it directly with starter robots.
+When a planet spidertron is spawned or adopted, the cargo-fill stage also places one roboport near the planet origin and loads it directly with starter robots. Placement searches the origin with a 16-tile radius.
 
 | Entity / inventory | Quality | Count |
 | :-- | :-: | :-: |
@@ -174,7 +174,7 @@ When a planet spidertron is spawned or adopted, the cargo-fill stage also places
 | | Foundry | Legendary | 1 |
 | | Cryogenic Plant | Legendary | 2 total |
 | | Pumpjack | Legendary | 1 |
-| | Heating Tower | Normal | 2 |
+| | Heating Tower | Legendary | 2 |
 | | Ice Platform | Normal | 5 |
 | | Concrete / Refined Concrete | Normal | 10 each |
 | | Lithium / Lithium Plate | Normal | 5 each |

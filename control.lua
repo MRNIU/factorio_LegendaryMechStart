@@ -57,10 +57,14 @@ local function spawn_spidertron_enabled()
     return s == nil or s.value
 end
 
+local function is_planet_surface(surface)
+    return surface and surface.valid and (surface.name == "nauvis" or surface.planet)
+end
+
 local function queue_spider(surface)
     ensure_storage()
     if not spawn_spidertron_enabled() then return end
-    if not (surface and surface.valid) then return end
+    if not is_planet_surface(surface) then return end
     if storage.spawned_spider_surfaces[surface.index] then return end
     if storage.pending_spider_surfaces[surface.index] then
         ensure_tick_handler()
@@ -73,7 +77,7 @@ end
 
 local function queue_spider_cargo(surface)
     ensure_storage()
-    if not (surface and surface.valid) then return end
+    if not is_planet_surface(surface) then return end
     if storage.pending_spider_cargo[surface.index] then
         ensure_tick_handler()
         return
@@ -97,9 +101,7 @@ end
 
 local function queue_all_planet_surfaces()
     for _, surface in pairs(game.surfaces) do
-        if surface.name == "nauvis" or surface.planet then
-            queue_spider(surface)
-        end
+        if is_planet_surface(surface) then queue_spider(surface) end
     end
 end
 
@@ -116,7 +118,7 @@ local function OnInit()
     storage.pending_spider_cargo     = {}
     storage.pending_player_loadouts  = {}
     storage.spawned_spider_surfaces  = {}
-    queue_spider(game.surfaces.nauvis)
+    queue_all_planet_surfaces()
 end
 
 OnTick = function()
@@ -251,9 +253,7 @@ script.on_event(defines.events.on_cutscene_cancelled, ForceAddStartItem)
 script.on_event(defines.events.on_cutscene_finished, ForceAddStartItem)
 script.on_event(defines.events.on_surface_created, function(event)
     local surface = game.surfaces[event.surface_index]
-    if surface and surface.planet then
-        queue_spider(surface)
-    end
+    queue_spider(surface)
 end)
 script.on_event(defines.events.on_runtime_mod_setting_changed, function(event)
     if event.setting == SETTING_SPAWN_SPIDERTRON and spawn_spidertron_enabled() then

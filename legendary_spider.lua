@@ -30,10 +30,11 @@ local PEACEFUL_SPIDER_EQUIPMENT_WISHLIST = {
 
 local SPIDER_SEARCH_RADII     = { 128, 256, 512 }
 local SPIDER_SEARCH_PRECISION = 1
-local BOOTSTRAP_SEARCH_RADIUS = 24
+local BOOTSTRAP_SEARCH_RADIUS = 16
+local BOOTSTRAP_CHUNK_RADIUS = 1
+local BOOTSTRAP_SEARCH_CENTER = { x = 0, y = 0 }
 local BOOTSTRAP_ROBOPORT_NAME = "roboport"
 local BOOTSTRAP_ROBOPORT_QUALITY = "normal"
-local BOOTSTRAP_ROBOPORT_OFFSET = { x = 10, y = 0 }
 
 --------------------------------------------------------------------------------
 local function find_safe_position(surface, origin)
@@ -77,22 +78,43 @@ local function place_overflow(spider, items, label)
     return spilled
 end
 
-local function offset_position(position, offset)
-    return {
-        x = (position.x or position[1]) + offset.x,
-        y = (position.y or position[2]) + offset.y,
-    }
+local function find_bootstrap_position(spider)
+    return spider.surface.find_non_colliding_position(
+        BOOTSTRAP_ROBOPORT_NAME, BOOTSTRAP_SEARCH_CENTER,
+        BOOTSTRAP_SEARCH_RADIUS, 1)
+end
+
+local function force_generate_bootstrap_chunks(spider)
+    spider.surface.request_to_generate_chunks(
+        BOOTSTRAP_SEARCH_CENTER, BOOTSTRAP_CHUNK_RADIUS)
+    spider.surface.force_generate_chunk_requests()
+end
+
+local function find_existing_bootstrap_roboport(spider)
+    local center = BOOTSTRAP_SEARCH_CENTER
+    local roboports = spider.surface.find_entities_filtered({
+        name = BOOTSTRAP_ROBOPORT_NAME,
+        force = spider.force,
+        area = {
+            { center.x - BOOTSTRAP_SEARCH_RADIUS, center.y - BOOTSTRAP_SEARCH_RADIUS },
+            { center.x + BOOTSTRAP_SEARCH_RADIUS, center.y + BOOTSTRAP_SEARCH_RADIUS },
+        },
+    })
+    return roboports[1]
 end
 
 local function create_bootstrap_roboport(spider)
     if not (prototypes.entity and prototypes.entity[BOOTSTRAP_ROBOPORT_NAME]) then return nil end
 
-    local desired = offset_position(spider.position, BOOTSTRAP_ROBOPORT_OFFSET)
-    local position = spider.surface.find_non_colliding_position(
-        BOOTSTRAP_ROBOPORT_NAME, desired, BOOTSTRAP_SEARCH_RADIUS, 1)
+    local existing = find_existing_bootstrap_roboport(spider)
+    if existing then return existing, false end
+
+    force_generate_bootstrap_chunks(spider)
+    local position = find_bootstrap_position(spider)
     if not position then
-        log(("[LegendaryMechStart] bootstrap: no clear position for %s on %s")
-            :format(BOOTSTRAP_ROBOPORT_NAME, spider.surface.name))
+        log(("[LegendaryMechStart] bootstrap: no clear origin position for %s on %s within radius %d")
+            :format(BOOTSTRAP_ROBOPORT_NAME, spider.surface.name,
+                BOOTSTRAP_SEARCH_RADIUS))
         return nil
     end
 
@@ -111,7 +133,7 @@ local function create_bootstrap_roboport(spider)
         return nil
     end
 
-    return entity
+    return entity, true
 end
 
 local function fill_roboport(roboport)
@@ -129,10 +151,10 @@ local function fill_roboport(roboport)
 end
 
 local function place_bootstrap_roboport(spider)
-    local roboport = create_bootstrap_roboport(spider)
-    local spilled = fill_roboport(roboport)
+    local roboport, created = create_bootstrap_roboport(spider)
+    local spilled = created and fill_roboport(roboport) or 0
     if roboport then
-        log(("[LegendaryMechStart] bootstrap roboport on %s placed%s")
+        log(("[LegendaryMechStart] bootstrap roboport on %s ready%s")
             :format(spider.surface.name, spilled > 0 and " with unexpected robot overflow" or ""))
     end
     return spilled

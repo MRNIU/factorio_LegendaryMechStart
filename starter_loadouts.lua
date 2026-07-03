@@ -199,7 +199,7 @@ local PLANET_SPECIAL_WISHLISTS = {
         { name = "foundry",          stacks = 1,  quality = "legendary" },
         { name = "cryogenic-plant",  stacks = 1,  quality = "legendary" },
         { name = "pumpjack",         stacks = 1,  quality = "legendary" },
-        { name = "heating-tower",    stacks = 2,  quality = "normal" },
+        { name = "heating-tower",    stacks = 2,  quality = "legendary" },
         { name = "ice-platform",     stacks = 5,  quality = "normal" },
         { name = "concrete",         stacks = 10, quality = "normal" },
         { name = "refined-concrete", stacks = 10, quality = "normal" },

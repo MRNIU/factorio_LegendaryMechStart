@@ -1,4 +1,13 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.6.1
+Date: 2026-07-03
+  Changes:
+    - Queue every planet surface instead of only Nauvis so each starter spidertron receives its cargo.
+    - Place one normal bootstrap roboport with starter robots near each planet origin during the spidertron cargo stage.
+    - Limit bootstrap roboport placement to a 16-tile origin-centered search.
+    - Changed Aquilo heating towers to legendary quality.
+
+---------------------------------------------------------------------------------------------------
 Version: 1.6.0
 Date: 2026-07-03
   Changes:
