@@ -1,14 +1,14 @@
 {
     "name": "LegendaryMechStart",
-    "version": "1.5.13",
+    "version": "1.6.0",
     "title": "LegendaryMechStart",
     "author": "zhihong",
     "contact": "zhihong@nzhnb.com",
     "homepage": "https://github.com/MRNIU/factorio_LegendaryMechStart",
     "description": "Start with legendary mech armor, team resources, and optional legendary spidertrons on each planet.",
-    "factorio_version": "2.0",
+    "factorio_version": "2.1",
     "dependencies": [
-        "base >= 2.0.76",
+        "base >= 2.1.9",
         "space-age",
         "quality"
     ]

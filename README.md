@@ -1,6 +1,6 @@
 # Legendary Mech Start
 
-A Factorio 2.0 Space Age mod that drops every player into fully-equipped legendary mech armor, seeds the team with enough industrial gear to go interplanetary on day one, and can place a legendary spidertron on each planet.
+A Factorio 2.1 Space Age mod that drops every player into fully-equipped legendary mech armor, seeds the team with enough industrial gear to go interplanetary on day one, and can place a legendary spidertron on each planet.
 
 ## What it does
 
@@ -209,7 +209,7 @@ When a planet spidertron is spawned or adopted, the cargo-fill stage also places
 
 ## Compatibility
 
-- Factorio 2.0.76 or newer.
+- Factorio 2.1.9 or newer.
 - Requires `base`, `space-age`, `quality`.
 
 ## License
