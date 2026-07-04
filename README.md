@@ -7,7 +7,7 @@ A Factorio 2.1 Space Age mod that drops every player into fully-equipped legenda
 - **Legendary mech armor on spawn** for every player (single-player, host and late joiners in multiplayer). The equipment grid is packed automatically from a prioritised wishlist, so adding or removing items only takes editing the list.
 - **Personal starter kit** in each player's inventory: bootstrap materials, personal construction and logistic robots, defensive turrets, temporary wiring and piping, spare ammunition and repair packs. Inventory items are inserted after the character main inventory is available and at least one tick after the mech armor is equipped so toolbelt bonuses can refresh first.
 - **Team resource cache** delivered once per save. If legendary spidertrons are enabled, the Nauvis team resources are loaded into the Nauvis spidertron trunk instead of being placed on the ground. If spidertrons are disabled, the same Nauvis cache is placed into normal steel chests near map spawn.
-- **Optional seven-color legendary science packs** can be enabled with a runtime-global map setting before the team resource cache is delivered.
+- **Optional legendary science pack cache** can be enabled with a runtime-global map setting before the team resource cache is delivered. On Nauvis, the science packs are placed into adjacent legendary passive provider chests near the bootstrap roboport instead of consuming spidertron trunk space.
 - **Optional legendary spidertron on each planet**: a fully-equipped legendary spidertron is spawned once per planet surface, then loaded one tick later with a common maintenance kit plus planet-specific cargo. A bootstrap roboport is placed near it and loaded with starter robots. Nauvis/Vulcanus/Gleba also receive a normal-quality defense package and dedicated spidertron ammo-slot rockets.
 - **Freeplay intro cleanup**: the mod re-runs after the cutscene finishes, so the default pistol and firearm magazines Freeplay hands out are removed.
 - **Quality-aware**: every inserted stack declares its `quality` explicitly. Core production assets, mining drills, pumpjacks, recyclers, agricultural towers, modules, beacons, and inserters are legendary; bulk infrastructure, cargo robots, roboports, chests, power equipment, weapons, ammo, and consumables stay normal on purpose.
@@ -74,7 +74,7 @@ The toolbelts are intentional: the starter spidertron carries more than a normal
 
 ## Spidertron cargo and fallback team cache
 
-Planet spidertron cargo is assembled from trait-based packages. If spidertron spawning is disabled, the fallback Nauvis team cache uses the same Nauvis packages in normal steel chests near map spawn.
+Planet spidertron cargo is assembled from trait-based packages. If spidertron spawning is disabled, the fallback Nauvis team cache uses the same Nauvis packages in normal steel chests near map spawn. The optional science pack cache is separate from the spidertron trunk cargo.
 
 | Scope | Item | Quality | Stacks |
 | :-- | :-- | :-: | :-: |
@@ -139,7 +139,6 @@ When a planet spidertron is spawned or adopted, the cargo-fill stage also places
 | | Foundry | Legendary | 1 |
 | | Biochamber | Legendary | 1 |
 | | Biolab | Legendary | 1 |
-| | Automation (red) / Logistic (green) / Chemical (blue) / Military (black) / Utility (yellow) / Production (purple) / Space (white) Science Pack (setting enabled) | Legendary | 8 / 8 / 5 / 3 / 3 / 2 / 1 |
 | | Centrifuge | Legendary | 1 |
 | | Beacon | Legendary | 5 total |
 | | Speed / Productivity Module 3 | Legendary | 20 / 8 total |
@@ -182,6 +181,25 @@ When a planet spidertron is spawned or adopted, the cargo-fill stage also places
 | | Quantum Processor | Normal | 2 |
 | | Fusion Reactor / Fusion Generator / Fusion Power Cell | Normal | 2 / 2 / 2 |
 | | Ice / Solid Fuel | Normal | 3 / 1 |
+
+## Optional Nauvis science pack cache
+
+When `LegendaryMechStart-include-science-packs` is enabled before the team resource cache is delivered, the Nauvis cargo stage places the science packs into adjacent legendary passive provider chests near the bootstrap roboport. Counts are based on measured consumption for all non-repeatable technologies, using 200 packs per stack.
+
+| Item | Quality | Stacks |
+| :-- | :-: | :-: |
+| Promethium Science Pack | Legendary | 0 |
+| Chemical Science Pack | Legendary | 4 |
+| Utility Science Pack | Legendary | 15 |
+| Electromagnetic Science Pack | Legendary | 8 |
+| Metallurgic Science Pack | Legendary | 6 |
+| Space Science Pack | Legendary | 17 |
+| Agricultural Science Pack | Legendary | 10 |
+| Production Science Pack | Legendary | 9 |
+| Cryogenic Science Pack | Legendary | 22 |
+| Military Science Pack | Legendary | 9 |
+| Logistic Science Pack | Legendary | 24 |
+| Automation Science Pack | Legendary | 24 |
 
 ## Multiplayer behaviour
 

@@ -35,6 +35,16 @@ local BOOTSTRAP_CHUNK_RADIUS = 1
 local BOOTSTRAP_SEARCH_CENTER = { x = 0, y = 0 }
 local BOOTSTRAP_ROBOPORT_NAME = "roboport"
 local BOOTSTRAP_ROBOPORT_QUALITY = "normal"
+local SCIENCE_CHEST_NAME = "passive-provider-chest"
+local SCIENCE_CHEST_QUALITY = "legendary"
+local SCIENCE_CHEST_RADIUS = 8
+local SCIENCE_CHEST_LINE_LIMIT = 8
+local SCIENCE_CHEST_LINE_DIRECTIONS = {
+    { x = 1,  y = 0 },
+    { x = -1, y = 0 },
+    { x = 0,  y = 1 },
+    { x = 0,  y = -1 },
+}
 
 --------------------------------------------------------------------------------
 local function find_safe_position(surface, origin)
@@ -157,7 +167,135 @@ local function place_bootstrap_roboport(spider)
         log(("[LegendaryMechStart] bootstrap roboport on %s ready%s")
             :format(spider.surface.name, spilled > 0 and " with unexpected robot overflow" or ""))
     end
-    return spilled
+    return roboport, spilled
+end
+
+local function item_count(items)
+    local total = 0
+    for _, item in ipairs(items or {}) do
+        total = total + (item.count or 0)
+    end
+    return total
+end
+
+local function offset_position(position, direction, distance)
+    return {
+        x = position.x + direction.x * distance,
+        y = position.y + direction.y * distance,
+    }
+end
+
+local function can_place_science_chest(surface, force, position)
+    local ok, can_place = pcall(function()
+        return surface.can_place_entity({
+            name     = SCIENCE_CHEST_NAME,
+            position = position,
+            force    = force,
+        })
+    end)
+    return ok and can_place
+end
+
+local function create_science_chest(surface, force, position)
+    if not (prototypes.entity and prototypes.entity[SCIENCE_CHEST_NAME]) then return nil end
+
+    local ok, chest = pcall(function()
+        return surface.create_entity({
+            name        = SCIENCE_CHEST_NAME,
+            position    = position,
+            force       = force,
+            quality     = SCIENCE_CHEST_QUALITY,
+            raise_built = true,
+        })
+    end)
+    if ok and chest and chest.valid then return chest end
+    return nil
+end
+
+local function fill_science_chest(chest, remaining, surface_name)
+    local inv = chest and chest.valid and chest.get_inventory(defines.inventory.chest)
+    if not inv then return remaining, false end
+
+    local before = item_count(remaining)
+    local leftover = item_delivery.insert_into_inventory(
+        inv, remaining, "legendary", "science pack chest " .. surface_name)
+    return leftover, item_count(leftover) < before
+end
+
+local function best_science_chest_line(surface, force, first_position)
+    local best_direction = SCIENCE_CHEST_LINE_DIRECTIONS[1]
+    local best_length = 1
+
+    for _, direction in ipairs(SCIENCE_CHEST_LINE_DIRECTIONS) do
+        local length = 1
+        for distance = 1, SCIENCE_CHEST_LINE_LIMIT - 1 do
+            local position = offset_position(first_position, direction, distance)
+            if not can_place_science_chest(surface, force, position) then break end
+            length = length + 1
+        end
+        if length > best_length then
+            best_direction = direction
+            best_length = length
+        end
+    end
+
+    local positions = { first_position }
+    for distance = 1, best_length - 1 do
+        positions[#positions + 1] = offset_position(first_position, best_direction, distance)
+    end
+    return positions
+end
+
+local function dump_into_science_chest_line(surface, center, force, items, surface_name)
+    local remaining = item_delivery.copy_items(items, "legendary")
+    local first_position = surface.find_non_colliding_position(
+        SCIENCE_CHEST_NAME, center, SCIENCE_CHEST_RADIUS, 1)
+    if not first_position then return 0, remaining end
+
+    local chest_count = 0
+    for _, position in ipairs(best_science_chest_line(surface, force, first_position)) do
+        if #remaining == 0 then break end
+
+        local chest = create_science_chest(surface, force, position)
+        if not chest then break end
+
+        local inserted
+        remaining, inserted = fill_science_chest(chest, remaining, surface_name)
+        if inserted then
+            chest_count = chest_count + 1
+        else
+            chest.destroy()
+            break
+        end
+    end
+
+    return chest_count, remaining
+end
+
+local function place_science_pack_chests(spider, surface_name, anchor)
+    local items = starter_loadouts.science_pack_wishlist_for_surface(surface_name)
+    if #items == 0 then return 0, 0 end
+
+    local center = (anchor and anchor.valid and anchor.position) or spider.position
+    local chest_count, leftover = dump_into_science_chest_line(
+        spider.surface, center, spider.force, items, surface_name)
+    if #leftover > 0 then
+        local fallback_count, fallback_leftover = item_delivery.dump_into_chests(
+            spider.surface, center, spider.force, leftover, {
+                chest_name    = SCIENCE_CHEST_NAME,
+                chest_quality = SCIENCE_CHEST_QUALITY,
+                radius        = SCIENCE_CHEST_RADIUS,
+            })
+        chest_count = chest_count + fallback_count
+        leftover = fallback_leftover
+    end
+    local spilled = item_delivery.spill_items(
+        spider.surface, center, spider.force, leftover)
+
+    log(("[LegendaryMechStart] science packs on %s placed into %d legendary logistic chests%s")
+        :format(surface_name, chest_count,
+            spilled > 0 and " with unexpected overflow" or ""))
+    return chest_count, spilled
 end
 
 local function log_trunk_capacity(spider, surface_name)
@@ -240,8 +378,9 @@ function M.fill_cargo_on_surface(surface, force)
     log_trunk_capacity(spider, surface.name)
     local trunk_spilled = fill_trunk(spider, surface.name)
     local ammo_spilled = fill_ammo(spider, surface.name)
-    local roboport_spilled = place_bootstrap_roboport(spider)
-    return spider, trunk_spilled + ammo_spilled + roboport_spilled
+    local roboport, roboport_spilled = place_bootstrap_roboport(spider)
+    local science_chests, science_spilled = place_science_pack_chests(spider, surface.name, roboport)
+    return spider, trunk_spilled + ammo_spilled + roboport_spilled + science_spilled, science_chests
 end
 
 return M

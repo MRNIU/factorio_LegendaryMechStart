@@ -146,7 +146,7 @@ OnTick = function()
 
         local surface = game.surfaces[surface_index]
         if surface and surface.valid and spawn_spidertron_enabled() then
-            local ok, spider, spilled = pcall(
+            local ok, spider, spilled, science_chests = pcall(
                 legendary_spider.fill_cargo_on_surface, surface, game.forces.player)
             if ok and spider then
                 if surface.name == "nauvis" and not storage.team_cache_placed then
@@ -155,8 +155,13 @@ OnTick = function()
                     if (spilled or 0) > 0 then
                         overflow_note = " Unexpected overflow was spilled near the spidertron."
                     end
+                    local science_note = ""
+                    if (science_chests or 0) > 0 then
+                        science_note = (" Legendary science packs were placed into %d legendary logistic chests near the Nauvis roboport.")
+                            :format(science_chests)
+                    end
                     notify_players("[LegendaryMechStart] Team resources loaded into the Nauvis spidertron trunk." ..
-                        overflow_note)
+                        science_note .. overflow_note)
                 end
             elseif ok then
                 storage.spawned_spider_surfaces[surface_index] = nil

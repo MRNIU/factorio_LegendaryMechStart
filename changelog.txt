@@ -1,4 +1,18 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.6.3
+Date: 2026-07-04
+  Changes:
+    - Changed optional Nauvis science pack cache containers to legendary passive provider chests.
+    - Place optional Nauvis science pack cache chests as a tight row near the bootstrap roboport before falling back to radius search.
+
+---------------------------------------------------------------------------------------------------
+Version: 1.6.2
+Date: 2026-07-04
+  Changes:
+    - Moved the optional Nauvis legendary science packs out of the spidertron trunk and into passive provider chests near the bootstrap roboport.
+    - Updated the optional Nauvis science pack cache to the measured 148-stack non-repeatable technology demand across Space Age science packs.
+
+---------------------------------------------------------------------------------------------------
 Version: 1.6.1
 Date: 2026-07-03
   Changes:
