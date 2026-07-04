@@ -147,6 +147,7 @@ When a planet spidertron is spawned or adopted, the cargo-fill stage also places
 | | Uranium-235 | Normal | 1 |
 | | Fast Inserter | Legendary | 2 |
 | Vulcanus | Electric Furnace | Legendary | 2 |
+| | Oil Refinery | Legendary | 1 |
 | | Foundry / Big Mining Drill | Legendary | 2 / 2 |
 | | Pumpjack | Legendary | 1 |
 | | Calcite | Normal | 20 |
@@ -156,6 +157,7 @@ When a planet spidertron is spawned or adopted, the cargo-fill stage also places
 | | Lubricant Barrel / Electric Engine Unit / Electric Mining Drill | Normal | 1 each |
 | | Foundation | Normal | 2 |
 | Fulgora | Electromagnetic Plant / Recycler | Legendary | 2 total / 3 total |
+| | Oil Refinery | Legendary | 1 |
 | | Lightning Collector | Legendary | 1 |
 | | Scrap | Normal | 20 |
 | | Holmium Ore / Holmium Plate | Normal | 10 / 5 |
@@ -189,14 +191,14 @@ When `LegendaryMechStart-include-science-packs` is enabled before the team resou
 | Item | Quality | Stacks |
 | :-- | :-: | :-: |
 | Promethium Science Pack | Legendary | 0 |
-| Chemical Science Pack | Legendary | 4 |
+| Chemical Science Pack | Legendary | 22 |
 | Utility Science Pack | Legendary | 15 |
 | Electromagnetic Science Pack | Legendary | 8 |
 | Metallurgic Science Pack | Legendary | 6 |
 | Space Science Pack | Legendary | 17 |
 | Agricultural Science Pack | Legendary | 10 |
 | Production Science Pack | Legendary | 9 |
-| Cryogenic Science Pack | Legendary | 22 |
+| Cryogenic Science Pack | Legendary | 4 |
 | Military Science Pack | Legendary | 9 |
 | Logistic Science Pack | Legendary | 24 |
 | Automation Science Pack | Legendary | 24 |

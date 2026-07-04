@@ -1,4 +1,11 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.6.4
+Date: 2026-07-04
+  Changes:
+    - Corrected the measured Nauvis science pack cache counts for chemical and cryogenic science packs.
+    - Added one stack of legendary oil refineries to the Vulcanus and Fulgora spidertron cargo packages.
+
+---------------------------------------------------------------------------------------------------
 Version: 1.6.3
 Date: 2026-07-04
   Changes:

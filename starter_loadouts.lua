@@ -109,14 +109,14 @@ local BOOTSTRAP_ROBOPORT_ROBOT_WISHLIST = {
 local NAUVIS_SCIENCE_PACK_WISHLIST = {
     -- 按非循环科技实测消耗配置；钷素科研包为 0 组，保留条目便于核账。
     { name = "promethium-science-pack",     stacks = 0,  quality = "legendary" },
-    { name = "chemical-science-pack",       stacks = 4,  quality = "legendary" },
+    { name = "chemical-science-pack",       stacks = 22, quality = "legendary" },
     { name = "utility-science-pack",        stacks = 15, quality = "legendary" },
     { name = "electromagnetic-science-pack", stacks = 8, quality = "legendary" },
     { name = "metallurgic-science-pack",    stacks = 6,  quality = "legendary" },
     { name = "space-science-pack",          stacks = 17, quality = "legendary" },
     { name = "agricultural-science-pack",   stacks = 10, quality = "legendary" },
     { name = "production-science-pack",     stacks = 9,  quality = "legendary" },
-    { name = "cryogenic-science-pack",      stacks = 22, quality = "legendary" },
+    { name = "cryogenic-science-pack",      stacks = 4,  quality = "legendary" },
     { name = "military-science-pack",       stacks = 9,  quality = "legendary" },
     { name = "logistic-science-pack",       stacks = 24, quality = "legendary" },
     { name = "automation-science-pack",     stacks = 24, quality = "legendary" },
@@ -143,6 +143,7 @@ local PLANET_SPECIAL_WISHLISTS = {
 
     vulcanus = {
         { name = "electric-furnace",     stacks = 2,  quality = "legendary" },
+        { name = "oil-refinery",         stacks = 1,  quality = "legendary" },
         { name = "foundry",              stacks = 2,  quality = "legendary" },
         { name = "big-mining-drill",     stacks = 2,  quality = "legendary" },
         { name = "pumpjack",             stacks = 1,  quality = "legendary" },
@@ -165,6 +166,7 @@ local PLANET_SPECIAL_WISHLISTS = {
     fulgora = {
         { name = "recycler",              stacks = 2,  quality = "legendary" },
         { name = "electromagnetic-plant", stacks = 1,  quality = "legendary" },
+        { name = "oil-refinery",          stacks = 1,  quality = "legendary" },
         { name = "lightning-collector",   stacks = 1,  quality = "legendary" },
         { name = "scrap",                 stacks = 20, quality = "normal" },
         { name = "holmium-ore",           stacks = 10, quality = "normal" },
