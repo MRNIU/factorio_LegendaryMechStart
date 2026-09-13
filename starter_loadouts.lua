@@ -83,6 +83,7 @@ local COMMON_INDUSTRY_WISHLIST = {
     { name = "speed-module-3",        stacks = 8, quality = "legendary" },
     { name = "productivity-module-3", stacks = 4, quality = "legendary" },
     { name = "efficiency-module-3",   stacks = 2, quality = "legendary" },
+    { name = "quality-module-3",      stacks = 4, quality = "legendary" },
 }
 
 local SOLAR_POWER_WISHLIST = {
@@ -125,12 +126,13 @@ local NAUVIS_SCIENCE_PACK_WISHLIST = {
 local PLANET_SPECIAL_WISHLISTS = {
     nauvis = {
         { name = "space-platform-starter-pack", stacks = 1,  quality = "normal" },
+        { name = "asteroid-collector",          stacks = 1,  quality = "normal" },
         { name = "electric-furnace",            stacks = 8,  quality = "legendary" },
         { name = "oil-refinery",                stacks = 2,  quality = "legendary" },
         { name = "chemical-plant",              stacks = 6,  quality = "legendary" },
         { name = "foundry",                     stacks = 2,  quality = "legendary" },
         { name = "biochamber",                  stacks = 1,  quality = "legendary" },
-        { name = "biolab",                      stacks = 1,  quality = "legendary" },
+        { name = "biolab",                      stacks = 4,  quality = "legendary" },
         { name = "centrifuge",                  stacks = 1,  quality = "legendary" },
         { name = "beacon",                      stacks = 3,  quality = "legendary" },
         { name = "speed-module-3",              stacks = 12, quality = "legendary" },

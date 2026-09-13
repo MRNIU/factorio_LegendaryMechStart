@@ -109,6 +109,7 @@ Planet spidertron cargo is assembled from trait-based packages. If spidertron sp
 | | Electromagnetic Plant / Recycler / Cryogenic Plant | Legendary | 1 each |
 | | Beacon | Legendary | 2 |
 | | Speed / Productivity / Efficiency Module 3 | Legendary | 8 / 4 / 2 |
+| | Quality Module 3 | Legendary | 4 |
 | Hostile support: Nauvis/Vulcanus/Gleba only | Rocket / Explosive Rocket | Normal | 2 each |
 | | Atomic Bomb | Normal | 1 |
 | | Laser Turret | Normal | 1 |
@@ -133,12 +134,13 @@ When a planet spidertron is spawned or adopted, the cargo-fill stage also places
 | Planet | Item | Quality | Stacks |
 | :-- | :-- | :-: | :-: |
 | Nauvis | Space Platform Starter Pack | Normal | 1 |
+| | Asteroid Collector | Normal | 1 |
 | | Electric Furnace | Legendary | 8 |
 | | Oil Refinery | Legendary | 2 |
 | | Chemical Plant | Legendary | 8 total |
 | | Foundry | Legendary | 1 |
 | | Biochamber | Legendary | 1 |
-| | Biolab | Legendary | 1 |
+| | Biolab | Legendary | 4 |
 | | Centrifuge | Legendary | 1 |
 | | Beacon | Legendary | 5 total |
 | | Speed / Productivity Module 3 | Legendary | 20 / 8 total |
