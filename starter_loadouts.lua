@@ -79,6 +79,7 @@ local COMMON_INDUSTRY_WISHLIST = {
     { name = "electromagnetic-plant", stacks = 1, quality = "legendary" },
     { name = "recycler",              stacks = 1, quality = "legendary" },
     { name = "cryogenic-plant",       stacks = 1, quality = "legendary" },
+    { name = "heating-tower",         stacks = 1, quality = "legendary" },
     { name = "beacon",                stacks = 2, quality = "legendary" },
     { name = "speed-module-3",        stacks = 8, quality = "legendary" },
     { name = "productivity-module-3", stacks = 4, quality = "legendary" },

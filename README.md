@@ -107,6 +107,7 @@ Planet spidertron cargo is assembled from trait-based packages. If spidertron sp
 | Common industry | Assembling Machine 3 | Legendary | 2 |
 | | Chemical Plant | Legendary | 2 |
 | | Electromagnetic Plant / Recycler / Cryogenic Plant | Legendary | 1 each |
+| | Heating Tower | Legendary | 1 |
 | | Beacon | Legendary | 2 |
 | | Speed / Productivity / Efficiency Module 3 | Legendary | 8 / 4 / 2 |
 | | Quality Module 3 | Legendary | 4 |
