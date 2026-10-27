@@ -35,23 +35,24 @@ Factorio 2.1 Mod（`LegendaryMechStart`），用 Lua 编写。仓库本身即是
 
 ### `control.lua` — 事件注册 + 状态机
 
-- `on_init` → 初始化 `storage.given_items = {}`、`storage.team_cache_placed = false`、蜘蛛生成/载货队列、玩家个人包队列，并把 Nauvis 加入待生成队列。
-- `on_player_created` → 调 `AddStartItem`，已发过个人包的玩家直接跳过。
-- `on_cutscene_cancelled` + `on_cutscene_finished` → 调 `ForceAddStartItem`，**有意再清背包、再发个人包**（用来抹掉 Freeplay 开场动画结束时塞给 host 的手枪 + 手枪子弹）。team cache 只看 `storage.team_cache_placed`，不会重发。
+- `on_init` → 初始化 `storage.team_cache_placed = false`、蜘蛛生成/载货队列、玩家装备准备/个人包队列，并把 Nauvis 加入待生成队列。
+- `on_player_created` → 调 `AddStartItem`，为新创建的玩家排 `pending_player_preparations`。重连不触发创建事件，无需另存已发放标记。
+- 不监听 `on_cutscene_cancelled` / `on_cutscene_finished` 重发。其他 Mod 的过场不得清空已领取玩家的背包或装备。
 - `on_surface_created` → 对新行星 surface 加入蜘蛛生成队列；太空平台跳过。
-- `on_tick` → 只在队列非空时临时注册：下一 tick 生成蜘蛛，再下一 tick 填 trunk / ammo；玩家个人背包在角色主背包可用后延后一 tick 插入。这样等兄弟 Mod 完成同一事件里的清理 / 蓝图后再找落脚点，同时给工具腰带的背包容量加成时间刷新。
-- `on_configuration_changed` → 只补齐 `storage` 字段，不做旧存档补发 / 补蜘蛛逻辑。
+- `on_tick` → 只在队列非空时临时注册：下一 tick 生成蜘蛛，再下一 tick 填 trunk / ammo；玩家准备阶段等 `character` 控制器及 `player.character` 可用后才装备机甲，下一 tick 再发个人背包。断线或过场期间继续等待，工具腰带有一 tick 刷新容量。
+- `on_load` → 仅读取队列并恢复条件 tick 订阅，不访问 `game` 或写 `storage`。
+- `on_configuration_changed` → 补齐 `storage` 字段并恢复队列；旧 `given_items` 标记尚未完成首次发放的玩家，其待发个人包转入装备准备队列，之后移除旧标记。已领取玩家的待发个人包只继续填背包，不重新装备；不对已完成玩家补发或补蜘蛛。
 - `on_runtime_mod_setting_changed` → 打开蜘蛛开关时，扫描已有行星 surface，为还没处理过的 surface 排队。
-- 蜘蛛开关开启时，Nauvis 团队资源随 Nauvis 蜘蛛进入 trunk，不落地生成箱子；蜘蛛开关关闭时才由首个玩家触发 `legendary_items.place_team_cache`，在 spawn 附近生成普通钢箱兜底。
+- 蜘蛛开关开启时，Nauvis 团队资源随 Nauvis 蜘蛛进入 trunk，不落地生成箱子；蜘蛛开关关闭时由首个完成装备准备的玩家触发 `legendary_items.place_team_cache`，在 spawn 附近生成普通钢箱兜底。
 
 持久化状态：
 
 | 字段 | 语义 |
 | :-- | :-- |
-| `storage.given_items[player_index] = true` | 这个玩家已经发过个人包 |
 | `storage.team_cache_placed : bool` | 整档的团队资源是否已经进入 Nauvis 蜘蛛或兜底箱 |
 | `storage.pending_spider_surfaces[index] = tick` | 到 tick 后需要尝试生成蜘蛛的 surface |
 | `storage.pending_spider_cargo[index] = tick` | 到 tick 后需要给该 surface 蜘蛛填 trunk / ammo |
+| `storage.pending_player_preparations[player_index] = tick` | 到 tick 后等待玩家拥有可操作的角色，再执行一次装备准备 |
 | `storage.pending_player_loadouts[player_index] = tick` | 到 tick 后需要给该玩家主背包插入个人包 |
 | `storage.spawned_spider_surfaces[index] = true` | 该 surface 已经生成或检测到起始蜘蛛 |
 
@@ -150,7 +151,8 @@ Factorio 2.1 Mod（`LegendaryMechStart`），用 Lua 编写。仓库本身即是
 - `LuaForce::get_spawn_position(surface)`（用它而不是 `player.position` 作兜底团队箱圆心）
 - `defines.inventory.spider_trunk` / `spider_ammo`
 - `settings.global`、`defines.events.on_runtime_mod_setting_changed`
-- `defines.events.on_init` / `on_configuration_changed` / `on_player_created` / `on_cutscene_cancelled` / `on_cutscene_finished` / `on_surface_created` / `on_tick`
+- `LuaBootstrap::on_init` / `on_load` / `on_configuration_changed` / `on_event`
+- `defines.events.on_player_created` / `on_surface_created` / `on_tick`
 
 ## 本地化
 

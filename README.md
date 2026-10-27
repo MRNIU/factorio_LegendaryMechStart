@@ -4,12 +4,12 @@ A Factorio 2.1 Space Age mod that drops every player into fully-equipped legenda
 
 ## What it does
 
-- **Legendary mech armor on spawn** for every player (single-player, host and late joiners in multiplayer). The equipment grid is packed automatically from a prioritised wishlist, so adding or removing items only takes editing the list.
+- **Legendary mech armor at the start** for every player (single-player, host and late joiners in multiplayer). Delivery waits until the player has an active character after the intro. The equipment grid is packed automatically from a prioritised wishlist.
 - **Personal starter kit** in each player's inventory: bootstrap materials, personal construction and logistic robots, defensive turrets, temporary wiring and piping, spare ammunition and repair packs. Inventory items are inserted after the character main inventory is available and at least one tick after the mech armor is equipped so toolbelt bonuses can refresh first.
 - **Team resource cache** delivered once per save. If legendary spidertrons are enabled, the Nauvis team resources are loaded into the Nauvis spidertron trunk instead of being placed on the ground. If spidertrons are disabled, the same Nauvis cache is placed into normal steel chests near map spawn.
 - **Optional legendary science pack cache** can be enabled with a runtime-global map setting before the team resource cache is delivered. On Nauvis, the science packs are placed into adjacent legendary passive provider chests near the bootstrap roboport instead of consuming spidertron trunk space.
 - **Optional legendary spidertron on each planet**: a fully-equipped legendary spidertron is spawned once per planet surface, then loaded one tick later with a common maintenance kit plus planet-specific cargo. A bootstrap roboport is placed near it and loaded with starter robots. Nauvis/Vulcanus/Gleba also receive a normal-quality defense package and dedicated spidertron ammo-slot rockets.
-- **Freeplay intro cleanup**: the mod re-runs after the cutscene finishes, so the default pistol and firearm magazines Freeplay hands out are removed.
+- **One-time Freeplay intro cleanup**: initial equipment preparation removes the default starter items after the character becomes available. Later cutscenes, including those added by other mods, never clear inventories or re-grant starter equipment.
 - **Quality-aware**: every inserted stack declares its `quality` explicitly. Core production assets, mining drills, pumpjacks, recyclers, agricultural towers, modules, beacons, and inserters are legendary; bulk infrastructure, cargo robots, roboports, chests, power equipment, weapons, ammo, and consumables stay normal on purpose.
 - **Multiplayer-aware**: the team resources are tracked with `storage.team_cache_placed`, so cutscene replays and late joiners never duplicate them.
 - **Safe on missing prototypes and unexpected overflow**: every insert checks `prototypes.item[name]` / `prototypes.equipment[name]` first. The intended path fits in the target inventory; if an unexpected partial insert still happens, the remainder is logged and spilled near the player or spidertron.
@@ -210,9 +210,12 @@ When `LegendaryMechStart-include-science-packs` is enabled before the team resou
 
 | Event | Personal pack | Team resources |
 | :-- | :-: | :-: |
-| Host / single player, first `on_player_created` | re-granted | queued for Nauvis spidertron, or chests if spidertrons are disabled |
-| Host `on_cutscene_finished` (wipes Freeplay's pistol) | re-granted | already delivered, not duplicated |
-| Late joiner `on_player_created` | granted | already delivered, not duplicated |
+| Host / single player, first `on_player_created` | queued until the character is ready; equipped once, inventory filled one tick later | queued for Nauvis spidertron, or chests during preparation if spidertrons are disabled |
+| Later cutscene finishes or is cancelled | unchanged | unchanged |
+| Late joiner `on_player_created` | queued and granted once | already delivered, not duplicated |
+| Save/load during pending startup | resumes the pending stage | resumes pending delivery |
+
+Upgrading a save does not replace a completed starter kit. Unfinished first-time delivery from older versions resumes with equipment preparation; pending inventory delivery for players who already received a kit resumes without clearing their equipment.
 
 ## Design notes
 

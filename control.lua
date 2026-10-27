@@ -7,32 +7,30 @@ local SETTING_SPAWN_SPIDERTRON = "LegendaryMechStart-spawn-spidertron"
 
 -- ============================================================================
 -- 持久化状态
---   storage.given_items[player_index] = true  该玩家已经发过个人包
 --   storage.team_cache_placed                 整档只一次：团队资源是否已发放
 --   storage.pending_spider_surfaces[index]    下一 tick 再生成蜘蛛，避开清理流水线
 --   storage.pending_spider_cargo[index]       蜘蛛装备刷新后再插 trunk / ammo
+--   storage.pending_player_preparations[index] 等待角色可用后再装机甲
 --   storage.pending_player_loadouts[index]    玩家机甲装备刷新后再插个人背包
 --   storage.spawned_spider_surfaces[index]    该 surface 已经处理过蜘蛛生成
 --
 -- 发放模型：
---   - 每个玩家 on_player_created 时拿 PERSONAL 包（进背包）
+--   - 每个玩家 on_player_created 时排队；等开场结束、角色库存可用后只发一次
 --   - 蜘蛛开关开启时，团队资源随 Nauvis 蜘蛛进入 trunk，不再地面落箱
---   - 蜘蛛开关关闭时，第一个被创建的玩家触发团队箱落地
---   - host 经历 cutscene 会再触发 ForceAddStartItem，这时只重发个人包；
---     `storage.team_cache_placed` 已是 true，不会重复生成团队资源
---   - late joiner 不经历 cutscene，ForceAddStartItem 对他们不触发
+--   - 蜘蛛开关关闭时，首个完成装备准备的玩家触发团队箱落地
+--   - 不监听过场结束/取消来重发；其他 Mod 的过场不会清掉玩家现有装备和物品
 -- ============================================================================
 
 local function ensure_storage()
-    if not storage.given_items then storage.given_items = {} end
     if storage.team_cache_placed == nil then storage.team_cache_placed = false end
     if not storage.pending_spider_surfaces then storage.pending_spider_surfaces = {} end
     if not storage.pending_spider_cargo then storage.pending_spider_cargo = {} end
+    if not storage.pending_player_preparations then storage.pending_player_preparations = {} end
     if not storage.pending_player_loadouts then storage.pending_player_loadouts = {} end
     if not storage.spawned_spider_surfaces then storage.spawned_spider_surfaces = {} end
 end
 
-local OnTick
+local OnTick, give
 
 local function due_keys(queue)
     local keys = {}
@@ -47,9 +45,11 @@ local function ensure_tick_handler()
 end
 
 local function has_pending_work()
-    return next(storage.pending_spider_surfaces) ~= nil
-        or next(storage.pending_spider_cargo) ~= nil
-        or next(storage.pending_player_loadouts) ~= nil
+    -- on_load 只能读 storage，旧存档可能没有新增的队列字段。
+    return next(storage.pending_spider_surfaces or {}) ~= nil
+        or next(storage.pending_spider_cargo or {}) ~= nil
+        or next(storage.pending_player_preparations or {}) ~= nil
+        or next(storage.pending_player_loadouts or {}) ~= nil
 end
 
 local function spawn_spidertron_enabled()
@@ -88,13 +88,6 @@ local function queue_spider_cargo(surface)
 end
 
 local function queue_player_loadout(player)
-    ensure_storage()
-    if not (player and player.valid) then return end
-    if storage.pending_player_loadouts[player.index] then
-        ensure_tick_handler()
-        return
-    end
-
     storage.pending_player_loadouts[player.index] = game.tick + 1
     ensure_tick_handler()
 end
@@ -112,10 +105,10 @@ local function notify_players(message)
 end
 
 local function OnInit()
-    storage.given_items              = {}
     storage.team_cache_placed        = false
     storage.pending_spider_surfaces  = {}
     storage.pending_spider_cargo     = {}
+    storage.pending_player_preparations = {}
     storage.pending_player_loadouts  = {}
     storage.spawned_spider_surfaces  = {}
     queue_all_planet_surfaces()
@@ -174,6 +167,16 @@ OnTick = function()
         end
     end
 
+    for _, player_index in ipairs(due_keys(storage.pending_player_preparations)) do
+        local player = game.players[player_index]
+        if not player then
+            storage.pending_player_preparations[player_index] = nil
+        elseif player.character and player.controller_type == defines.controllers.character then
+            storage.pending_player_preparations[player_index] = nil
+            give(player)
+        end
+    end
+
     for _, player_index in ipairs(due_keys(storage.pending_player_loadouts)) do
         storage.pending_player_loadouts[player_index] = nil
 
@@ -182,7 +185,6 @@ OnTick = function()
             local ok, finished, spilled = pcall(
                 legendary_items.finish_start_items, player)
             if ok and finished then
-                storage.given_items[player_index] = true
                 if (spilled or 0) > 0 then
                     player.print("[LegendaryMechStart] Some personal starter items did not fit in your inventory; " ..
                         "the remainder was spilled near your character.")
@@ -201,11 +203,7 @@ OnTick = function()
     end
 end
 
-local function give(player_index)
-    ensure_storage()
-    local player = game.players[player_index]
-    if not (player and player.valid) then return end
-
+give = function(player)
     legendary_items.prepare_start_items(player)
     queue_player_loadout(player)
 
@@ -233,29 +231,34 @@ local function give(player_index)
 end
 
 --------------------------------------------------------------------------------------
--- 首次发放：on_player_created（每玩家最多触发一次）
+-- 只由玩家创建开启发放；延后一 tick，避开同一事件中的开场设置和库存修改。
 local function AddStartItem(event)
     ensure_storage()
-    if storage.given_items[event.player_index] then return end
-    if storage.pending_player_loadouts[event.player_index] then return end
-    give(event.player_index)
-end
-
---------------------------------------------------------------------------------------
--- 强制再发：cutscene 结束/取消后清掉 Freeplay 塞的开场手枪
--- late joiner 不经历 cutscene，不会触发此路径
-local function ForceAddStartItem(event)
-    give(event.player_index)
+    storage.pending_player_preparations[event.player_index] = game.tick + 1
+    ensure_tick_handler()
 end
 
 --------------------------------------------------------------------------------------
 script.on_init(OnInit)
+script.on_load(function()
+    -- 条件注册不会随存档恢复；此处只恢复订阅，不访问 game 或写 storage。
+    if has_pending_work() then ensure_tick_handler() end
+end)
 script.on_configuration_changed(function()
     ensure_storage()
+    -- 旧版开场可能只排了背包而尚未装备；迁移未完成的首次发放后移除旧标记。
+    if storage.given_items then
+        for player_index in pairs(storage.pending_player_loadouts) do
+            if not storage.given_items[player_index] then
+                storage.pending_player_loadouts[player_index] = nil
+                storage.pending_player_preparations[player_index] = game.tick + 1
+            end
+        end
+        storage.given_items = nil
+    end
+    if has_pending_work() then ensure_tick_handler() end
 end)
 script.on_event(defines.events.on_player_created, AddStartItem)
-script.on_event(defines.events.on_cutscene_cancelled, ForceAddStartItem)
-script.on_event(defines.events.on_cutscene_finished, ForceAddStartItem)
 script.on_event(defines.events.on_surface_created, function(event)
     local surface = game.surfaces[event.surface_index]
     queue_spider(surface)
